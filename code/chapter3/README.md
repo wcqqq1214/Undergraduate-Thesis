@@ -32,13 +32,13 @@ chapter3/
 
 ```bash
 cd /home/wcqqq21/thesis/my_code/chapter3
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 ```
 
 ### 2. 运行主程序
 
 ```bash
-python main.py
+uv run main.py
 ```
 
 ## 主要功能
@@ -98,19 +98,19 @@ python main.py
 
 ```bash
 # 测试数据加载
-python data/data_loader.py
+uv run data/data_loader.py
 
 # 测试MVIF
-python models/mvif.py
+uv run models/mvif.py
 
 # 测试LSTM
-python models/quantile_lstm.py
+uv run models/quantile_lstm.py
 
 # 测试指标
-python utils/metrics.py
+uv run utils/metrics.py
 
 # 测试可视化
-python utils/visualization.py
+uv run utils/visualization.py
 ```
 
 ## 作者
