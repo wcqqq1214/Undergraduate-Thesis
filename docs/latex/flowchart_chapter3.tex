@@ -1,0 +1,82 @@
+% 第三章流程图：多项式去趋势 + 分位数LSTM
+% 需要在主文档导言区添加：\usepackage{tikz} 和 \usetikzlibrary{shapes,arrows,positioning,fit,backgrounds}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    node distance=1.2cm and 2cm,
+    startstop/.style={rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=red!20, font=\small},
+    process/.style={rectangle, minimum width=3.5cm, minimum height=1cm, text centered, draw=black, fill=blue!15, font=\small},
+    decision/.style={diamond, minimum width=2.5cm, minimum height=1cm, text centered, draw=black, fill=green!15, font=\small, aspect=2},
+    data/.style={trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=0.8cm, text centered, draw=black, fill=yellow!20, font=\small},
+    arrow/.style={thick,->,>=stealth},
+    dashedarrow/.style={thick,dashed,->,>=stealth}
+]
+
+% 第一层：开始
+\node (start) [startstop] {开始};
+
+% 第二层：数据加载
+\node (load) [process, below=of start] {步骤1：数据加载与预处理\\{\footnotesize 加载监测数据、缺失值处理}};
+
+% 第三层：多项式去趋势
+\node (detrend) [process, below=of load] {多项式去趋势分解\\{\footnotesize $y(t) = y_{\text{趋势}}(t) + y_{\text{周期}}(t)$}};
+
+% 分支：趋势项和周期项
+\node (trend) [data, below left=1.5cm and 1.5cm of detrend] {趋势项 $y_{\text{趋势}}$\\{\footnotesize 多项式拟合}};
+\node (periodic) [data, below right=1.5cm and 1.5cm of detrend] {周期项 $y_{\text{周期}}$\\{\footnotesize 残差序列}};
+
+% 第四层：数据标准化
+\node (normalize) [process, below=2.5cm of detrend] {数据标准化\\{\footnotesize 标准化周期项用于训练}};
+
+% 第五层：数据集划分
+\node (split) [process, below=of normalize] {数据集划分\\{\footnotesize 训练集(70\%) / 验证集(10\%) / 测试集(20\%)}};
+
+% 第六层：LSTM训练
+\node (lstm) [process, below=of split] {步骤2：分位数LSTM训练\\{\footnotesize Pinball Loss，预测周期项}};
+
+% 第七层：早停判断
+\node (earlystop) [decision, below=of lstm] {验证集\\损失下降？};
+
+% 循环箭头
+\node (continue) [right=2.5cm of earlystop] {};
+
+% 第八层：预测
+\node (predict) [process, below=1.5cm of earlystop] {步骤3：模型预测\\{\footnotesize 预测周期项 $\hat{y}_{\text{周期}}$}};
+
+% 第九层：组合预测
+\node (combine) [process, below=of predict] {最终预测组合\\{\footnotesize $\hat{y} = y_{\text{趋势}} + \hat{y}_{\text{周期}}$}};
+
+% 第十层：评估
+\node (evaluate) [process, below=of combine] {模型评估\\{\footnotesize MAE, RMSE, R², PICP, PINAW, CWC}};
+
+% 第十一层：可视化
+\node (visualize) [process, below=of evaluate] {步骤4：结果可视化\\{\footnotesize 生成图表和LaTeX表格}};
+
+% 结束
+\node (end) [startstop, below=of visualize] {结束};
+
+% 绘制箭头
+\draw [arrow] (start) -- (load);
+\draw [arrow] (load) -- (detrend);
+\draw [arrow] (detrend) -- (trend);
+\draw [arrow] (detrend) -- (periodic);
+\draw [arrow] (trend) |- (normalize);
+\draw [arrow] (periodic) |- (normalize);
+\draw [arrow] (normalize) -- (split);
+\draw [arrow] (split) -- (lstm);
+\draw [arrow] (lstm) -- (earlystop);
+\draw [arrow] (earlystop) -- node[right, font=\footnotesize] {否} (predict);
+\draw [arrow] (earlystop) -- node[above, font=\footnotesize] {是} (continue.center) |- (lstm);
+\draw [arrow] (predict) -- (combine);
+\draw [arrow] (combine) -- (evaluate);
+\draw [arrow] (evaluate) -- (visualize);
+\draw [arrow] (visualize) -- (end);
+
+% 添加趋势项到组合的虚线箭头
+\draw [dashedarrow] (trend) -- ++(0,-8.5) -| (combine);
+
+\end{tikzpicture}
+\caption{多项式去趋势与分位数LSTM预测流程图}
+\label{fig:chapter3_flowchart}
+\end{figure}
