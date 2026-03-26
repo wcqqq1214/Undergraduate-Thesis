@@ -96,8 +96,9 @@
 
 ## 运行方式
 
-在 `my_code` 目录下执行：
+在项目根目录下执行：
 
 ```bash
-python3 lgbm_shap_warning.py
+cd code/chapter2
+uv run python lgbm_shap_warning.py
 ```
