@@ -66,3 +66,7 @@ Thumbs.db
 *.blg
 *.bcf
 *.run.xml
+
+# Project-specific
+/原始监测数据/
+/docs/superpowers
