@@ -52,3 +52,17 @@ Thumbs.db
 *.tmp
 *.bak
 .lock
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.synctex(busy)
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.bbl
+*.blg
+*.bcf
+*.run.xml
