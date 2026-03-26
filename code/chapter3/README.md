@@ -1,122 +1,121 @@
-# 第三章：MVIF + 分位数LSTM
+# 第三章：基于位移运动学特征的滑坡位移预测模型研究
 
-基于MVIF趋势项提取和Pinball Loss的分位数LSTM预测模型
+本章实现了基于LSTM和GRU的滑坡位移预测模型，采用多项式分解方法将位移分为趋势项和周期项。
 
-## 项目结构
+## 目录结构
 
 ```
 chapter3/
-├── config.py              # 配置文件
-├── main.py               # 主程序入口
-├── requirements.txt      # 依赖包
-├── data/
-│   ├── __init__.py
-│   └── data_loader.py    # 数据加载和预处理
-├── models/
-│   ├── __init__.py
-│   ├── mvif.py          # MVIF趋势项提取
-│   └── quantile_lstm.py # 分位数LSTM模型
-├── utils/
-│   ├── __init__.py
-│   ├── metrics.py       # 评估指标
-│   └── visualization.py # 可视化
-└── outputs/
-    ├── figures/         # 图表输出
-    ├── tables/          # LaTeX表格
-    └── models/          # 模型保存
+├── README.md                          # 本文件
+├── LSTM-Periodic-submit.ipynb         # LSTM周期项预测模型
+├── LSTM-trend-submit.ipynb            # LSTM趋势项预测模型
+├── GRU-Periodic-submit.ipynb          # GRU周期项预测模型
+├── GRU-Trend-submit.ipynb             # GRU趋势项预测模型
+├── visualize_results.py               # 结果可视化脚本
+└── outputs/                           # 输出目录（自动创建）
 ```
 
-## 快速开始
+## 环境要求
 
-### 1. 安装依赖
+确保已安装以下依赖：
 
 ```bash
-cd /home/wcqqq21/thesis/my_code/chapter3
-uv pip install -r requirements.txt
+uv pip install pandas numpy matplotlib openpyxl scikit-learn torch
 ```
 
-### 2. 运行主程序
+## 运行步骤
+
+### 1. 训练模型（可选）
+
+如果需要重新训练模型，可以运行Jupyter notebooks：
 
 ```bash
-uv run main.py
+# 启动Jupyter
+uv run jupyter notebook
+
+# 然后依次运行以下notebooks：
+# 1. LSTM-trend-submit.ipynb      - 训练LSTM趋势项模型
+# 2. LSTM-Periodic-submit.ipynb   - 训练LSTM周期项模型
+# 3. GRU-Trend-submit.ipynb       - 训练GRU趋势项模型
+# 4. GRU-Periodic-submit.ipynb    - 训练GRU周期项模型
 ```
 
-## 主要功能
+### 2. 生成可视化结果
 
-### 数据处理
-- 自动加载Excel数据
-- 缺失值处理（ffill + bfill）
-- 数据标准化（X和y都标准化）
-- 数据集划分（70% train / 10% val / 20% test）
-
-### MVIF趋势项提取
-- 非线性最小二乘拟合
-- 趋势项和周期项分离
-- Savitzky-Golay平滑
-
-### 分位数LSTM
-- Pinball Loss损失函数
-- 多分位数预测（5%, 50%, 95%）
-- 早停机制
-- LayerNorm正则化
-
-### 评估指标
-- 点预测：MAE, RMSE, R², MAPE
-- 区间预测：PICP, PINAW, CWC
-
-### 可视化
-- MVIF分解图
-- 训练曲线
-- 预测结果对比
-- 预测区间可视化
-- LaTeX表格生成
-
-## 配置说明
-
-所有配置参数在 `config.py` 中：
-
-- `TARGET_POINT`: 目标监测点（默认'MJ9'）
-- `LOOKBACK_DAYS`: 时间窗口（默认5天）
-- `LSTM_CONFIG`: LSTM超参数
-- `QUANTILES`: 分位数列表（默认[0.05, 0.5, 0.95]）
-
-## 输出文件
-
-运行完成后，输出文件位于 `outputs/` 目录：
-
-- `figures/mvif_decomposition.pdf`: MVIF分解图
-- `figures/training_curves.pdf`: 训练曲线
-- `figures/test_predictions.pdf`: 预测结果
-- `figures/prediction_intervals.pdf`: 预测区间
-- `tables/model_performance.tex`: LaTeX表格
-- `models/`: 训练好的模型
-- `training.log`: 完整日志
-
-## 测试模块
-
-每个模块都可以独立测试：
+使用已有的 `result.xlsx` 文件生成图表：
 
 ```bash
-# 测试数据加载
-uv run data/data_loader.py
+# 进入chapter3目录
+cd code/chapter3
 
-# 测试MVIF
-uv run models/mvif.py
-
-# 测试LSTM
-uv run models/quantile_lstm.py
-
-# 测试指标
-uv run utils/metrics.py
-
-# 测试可视化
-uv run utils/visualization.py
+# 运行可视化脚本
+uv run python visualize_results.py
 ```
 
-## 作者
+### 3. 查看输出
 
-wcqqq21
+脚本会在 `outputs/` 目录下生成以下文件：
 
-## 日期
+- `lstm_gru_comparison.png` - LSTM和GRU分别的预测结果（上下对比）
+- `uncertainty_comparison.png` - LSTM和GRU的不确定性对比（标准差）
+- `lstm_gru_combined.png` - LSTM和GRU在同一图中的对比
+- `statistics_summary.csv` - 统计摘要表格
 
-2026-03-25
+## 模型说明
+
+### LSTM模型
+
+长短期记忆网络（LSTM）是一种特殊的循环神经网络，能够学习长期依赖关系。本章使用LSTM分别对趋势项和周期项进行预测：
+
+- **趋势项**：使用多项式拟合提取长期蠕变趋势
+- **周期项**：使用LSTM学习外部触发因子（降雨、库水位等）与位移的非线性关系
+
+### GRU模型
+
+门控循环单元（GRU）是LSTM的简化版本，参数更少，训练更快。作为对比模型，验证LSTM的必要性。
+
+### 概率预测
+
+通过50次独立运行，获得预测的统计分布，提供：
+- 均值预测
+- 标准差（不确定性）
+- 置信区间（5%, 25%, 50%, 75%, 95%分位数）
+
+## 数据来源
+
+- 输入数据：`../../data/monitoring data.xlsx`
+- 模型结果：`../../data/result.xlsx`
+  - Sheet: `LSTM-50runs` - LSTM模型50次运行结果
+  - Sheet: `GRU-50runs` - GRU模型50次运行结果
+
+## 论文对应章节
+
+本代码对应论文第三章：**基于位移运动学特征的滑坡位移预测模型研究**
+
+主要内容：
+1. 位移分解方法（趋势项+周期项）
+2. LSTM时序预测模型
+3. GRU对比模型
+4. 概率预测与不确定性量化
+
+## 注意事项
+
+1. 本章聚焦于**单监测点**的位移预测
+2. 不涉及多监测点的空间关系建模（那是ST-GNN的工作）
+3. 确保 `result.xlsx` 文件路径正确
+4. 生成的图表为高分辨率（300 DPI），适合论文使用
+
+## 常见问题
+
+**Q: 为什么不使用ST-GNN模型？**
+A: ST-GNN是时空图神经网络，用于多监测点的空间关系建模。第三章聚焦单点预测，因此使用LSTM/GRU。
+
+**Q: 如何修改图表样式？**
+A: 编辑 `visualize_results.py`，修改 matplotlib 参数。
+
+**Q: 如何添加真实值对比？**
+A: 需要从 `monitoring data.xlsx` 读取真实位移数据，然后在可视化脚本中添加对比曲线。
+
+## 联系方式
+
+如有问题，请联系：韦承谦
