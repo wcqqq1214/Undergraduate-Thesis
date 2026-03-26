@@ -36,12 +36,10 @@ env/
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# Data files
-*.csv
-*.xlsx
-*.xls
-data/*.xlsx
-data/*.csv
+# Data files (commented out for private repo)
+# *.csv
+# *.xlsx
+# *.xls
 
 # OS
 .DS_Store
