@@ -14,9 +14,12 @@ plt.rcParams['font.sans-serif'] = ['WenQuanYi Zen Hei', 'SimHei', 'DejaVu Sans']
 plt.rcParams['axes.unicode_minus'] = False
 
 # 配置
-RESULT_FILE = Path(__file__).parent.parent.parent / "data" / "result.xlsx"
-OUTPUT_DIR = Path(__file__).parent / "outputs"
-OUTPUT_DIR.mkdir(exist_ok=True)
+RESULT_FILE = Path(__file__).parent.parent.parent.parent / "data" / "result.xlsx"
+OUTPUT_DIR = Path(__file__).parent.parent / "outputs"
+FIGURES_DIR = OUTPUT_DIR / "figures"
+TABLES_DIR = OUTPUT_DIR / "tables"
+FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+TABLES_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def load_data(sheet_name):
@@ -108,7 +111,7 @@ def plot_lstm_gru_comparison():
     ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
 
     plt.tight_layout()
-    output_path = OUTPUT_DIR / "lstm_gru_comparison.png"
+    output_path = FIGURES_DIR / "lstm_gru_comparison.png"
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     print(f"保存图表: {output_path}")
     plt.close()
@@ -138,7 +141,7 @@ def plot_uncertainty_comparison():
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
 
     plt.tight_layout()
-    output_path = OUTPUT_DIR / "uncertainty_comparison.png"
+    output_path = FIGURES_DIR / "uncertainty_comparison.png"
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     print(f"保存图表: {output_path}")
     plt.close()
@@ -175,7 +178,7 @@ def plot_combined_comparison():
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
 
     plt.tight_layout()
-    output_path = OUTPUT_DIR / "lstm_gru_combined.png"
+    output_path = FIGURES_DIR / "lstm_gru_combined.png"
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     print(f"保存图表: {output_path}")
     plt.close()
@@ -211,7 +214,7 @@ def generate_statistics_table():
     }
 
     df_stats = pd.DataFrame(stats_summary)
-    output_path = OUTPUT_DIR / "statistics_summary.csv"
+    output_path = TABLES_DIR / "statistics_summary.csv"
     df_stats.to_csv(output_path, index=False, encoding='utf-8-sig')
     print(f"保存统计表格: {output_path}")
     print("\n统计摘要:")

@@ -45,5 +45,8 @@ def read_excel_file(file_path):
         sys.exit(1)
 
 if __name__ == "__main__":
-    file_path = "/home/wcqqq21/Undergraduate-Thesis/data/result.xlsx"
-    read_excel_file(file_path)
+    from pathlib import Path
+    # 动态获取项目根目录
+    project_root = Path(__file__).parent.parent.parent
+    file_path = project_root / "data" / "result.xlsx"
+    read_excel_file(str(file_path))

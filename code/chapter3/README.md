@@ -7,16 +7,26 @@
 ```
 chapter3/
 ├── README.md                          # 本文件
-├── LSTM-Periodic-submit.ipynb         # LSTM周期项预测模型
-├── LSTM-trend-submit.ipynb            # LSTM趋势项预测模型
-├── GRU-Periodic-submit.ipynb          # GRU周期项预测模型
-├── GRU-Trend-submit.ipynb             # GRU趋势项预测模型
-├── visualize_results.py               # 结果可视化脚本
-└── outputs/                           # 输出目录（自动创建）
-    ├── lstm_gru_comparison.pdf        # LSTM和GRU对比图
-    ├── lstm_gru_combined.pdf          # LSTM和GRU综合对比
-    ├── uncertainty_comparison.pdf     # 不确定性对比
-    └── statistics_summary.csv         # 统计摘要表格
+├── notebooks/                         # Jupyter notebooks
+│   ├── LSTM-Periodic-submit.ipynb    # LSTM周期项预测模型
+│   ├── LSTM-trend-submit.ipynb       # LSTM趋势项预测模型
+│   ├── GRU-Periodic-submit.ipynb     # GRU周期项预测模型
+│   └── GRU-Trend-submit.ipynb        # GRU趋势项预测模型
+├── scripts/                           # 分析和计算脚本
+│   ├── calculate_correct_params.py   # 计算正确的模型参数量
+│   ├── calculate_model_params.py     # 理论参数量计算
+│   ├── extract_model_info.py         # 提取模型信息
+│   └── visualize_results.py          # 结果可视化脚本
+└── outputs/                           # 输出目录
+    ├── figures/                       # 图片输出
+    │   ├── lstm_gru_comparison.png   # LSTM和GRU对比图
+    │   ├── lstm_gru_combined.png     # LSTM和GRU综合对比
+    │   └── uncertainty_comparison.png # 不确定性对比
+    └── tables/                        # 数据表格输出
+        ├── model_comparison_for_paper.csv      # 论文用模型对比表
+        ├── model_comparison_theoretical.csv    # 理论参数量对比
+        ├── model_params_correct.csv            # 正确的参数量计算
+        └── statistics_summary.csv              # 统计摘要表格
 ```
 
 ## 环境要求
@@ -34,20 +44,38 @@ uv pip install pandas numpy matplotlib openpyxl scikit-learn torch
 如果已有 `result.xlsx` 文件，直接运行可视化脚本：
 
 ```bash
-# 进入chapter3目录
-cd code/chapter3
+# 进入scripts目录
+cd code/chapter3/scripts
 
 # 运行可视化脚本
 uv run python visualize_results.py
 ```
 
 **输出结果：**
-- `outputs/lstm_gru_comparison.pdf` - LSTM和GRU分别的预测结果（上下对比）
-- `outputs/uncertainty_comparison.pdf` - LSTM和GRU的不确定性对比（标准差）
-- `outputs/lstm_gru_combined.pdf` - LSTM和GRU在同一图中的对比
-- `outputs/statistics_summary.csv` - 统计摘要表格
+- `outputs/figures/lstm_gru_comparison.png` - LSTM和GRU分别的预测结果（上下对比）
+- `outputs/figures/uncertainty_comparison.png` - LSTM和GRU的不确定性对比（标准差）
+- `outputs/figures/lstm_gru_combined.png` - LSTM和GRU在同一图中的对比
+- `outputs/tables/statistics_summary.csv` - 统计摘要表格
 
-### 方法2：重新训练模型（可选）
+### 方法2：运行参数计算脚本
+
+计算LSTM和GRU模型的参数量：
+
+```bash
+# 进入scripts目录
+cd code/chapter3/scripts
+
+# 计算正确的参数量（基于实际notebook配置）
+uv run python calculate_correct_params.py
+
+# 计算理论参数量
+uv run python calculate_model_params.py
+
+# 提取模型信息（需要实际训练）
+uv run python extract_model_info.py
+```
+
+### 方法3：重新训练模型（可选）
 
 如果需要重新训练模型：
 
@@ -55,7 +83,7 @@ uv run python visualize_results.py
 # 启动Jupyter
 uv run jupyter notebook
 
-# 然后依次运行以下notebooks：
+# 然后依次运行以下notebooks（在notebooks/目录下）：
 # 1. LSTM-trend-submit.ipynb      - 训练LSTM趋势项模型
 # 2. LSTM-Periodic-submit.ipynb   - 训练LSTM周期项模型
 # 3. GRU-Trend-submit.ipynb       - 训练GRU趋势项模型
@@ -97,16 +125,16 @@ uv run jupyter notebook
 
 ## 生成的图表说明
 
-### 1. lstm_gru_comparison.pdf
+### 1. lstm_gru_comparison.png
 - 上图：LSTM模型预测结果
 - 下图：GRU模型预测结果
 - 显示均值预测、50%置信区间、90%置信区间
 
-### 2. uncertainty_comparison.pdf
+### 2. uncertainty_comparison.png
 - 对比LSTM和GRU的预测标准差（不确定性）
 - 标准差越大，表示预测不确定性越高
 
-### 3. lstm_gru_combined.pdf
+### 3. lstm_gru_combined.png
 - LSTM和GRU在同一图中对比
 - 便于直接比较两个模型的性能
 
@@ -126,16 +154,20 @@ LSTM     578.64     407.96     466.65     308.27
 ## 论文中如何使用这些图表
 
 1. **图3-X：LSTM与GRU模型预测结果对比**
-   - 使用 `lstm_gru_comparison.pdf`
+   - 使用 `outputs/figures/lstm_gru_comparison.png`
    - 说明：展示两个模型的预测结果和置信区间
 
 2. **图3-Y：LSTM与GRU模型不确定性对比**
-   - 使用 `uncertainty_comparison.pdf`
+   - 使用 `outputs/figures/uncertainty_comparison.png`
    - 说明：对比两个模型的预测不确定性
 
 3. **表3-Z：LSTM与GRU模型性能统计**
-   - 使用 `statistics_summary.csv` 中的数据
+   - 使用 `outputs/tables/statistics_summary.csv` 中的数据
    - 说明：定量对比两个模型的性能指标
+
+4. **表3-W：LSTM与GRU模型参数量对比**
+   - 使用 `outputs/tables/model_comparison_for_paper.csv` 中的数据
+   - 说明：对比两个模型的参数量和训练时间
 
 ## 数据来源
 
@@ -160,7 +192,7 @@ LSTM     578.64     407.96     466.65     308.27
 A: ST-GNN是时空图神经网络，用于多监测点的空间关系建模。第三章聚焦单点预测，因此使用LSTM/GRU。
 
 **Q: 如何修改图表样式？**
-A: 编辑 `visualize_results.py`，修改 matplotlib 参数。
+A: 编辑 `scripts/visualize_results.py`，修改 matplotlib 参数。
 
 **Q: 如何添加真实值对比？**
 A: 需要从 `monitoring data.xlsx` 读取真实位移数据，然后在可视化脚本中添加对比曲线。
