@@ -1,6 +1,6 @@
 # 第三章：基于LSTM的滑坡位移预测模型研究
 
-本章实现了基于LSTM的滑坡位移预测模型，采用多项式分解方法将位移分为趋势项和周期项，通过50次独立运行实现概率预测和不确定性量化。
+本章实现了基于LSTM的滑坡位移趋势项预测模型，通过50次独立运行实现概率预测和不确定性量化。
 
 ## 目录结构
 
@@ -8,192 +8,288 @@
 chapter3/
 ├── README.md                          # 本文件
 ├── notebooks/                         # Jupyter notebooks
-│   ├── LSTM-Periodic-submit.ipynb    # LSTM周期项预测模型
 │   └── LSTM-trend-submit.ipynb       # LSTM趋势项预测模型
-├── scripts/                           # 分析和计算脚本
-│   ├── analyze_lstm_50runs.py        # 分析LSTM 50次运行结果
-│   ├── calculate_correct_params.py   # 计算模型参数量
-│   ├── convert_png_to_pdf.py         # PNG转PDF格式
-│   ├── generate_lstm_figures.py      # 生成LSTM图表
-│   └── visualize_results.py          # 结果可视化脚本
+├── scripts/                           # 核心脚本
+│   ├── run_lstm_trend_50times.py     # 运行50次LSTM模型
+│   ├── calculate_thesis_statistics.py # 计算论文统计数据
+│   └── generate_thesis_figures.py    # 生成论文图表
 └── outputs/                           # 输出目录
-    ├── figures/                       # 图片输出
-    │   ├── lstm_prediction.png/pdf    # LSTM预测结果图
-    │   ├── lstm_std_distribution.png/pdf  # LSTM标准差分布图
-    │   └── lstm_uncertainty.png/pdf   # LSTM不确定性图
-    └── tables/                        # 数据表格输出
-        ├── lstm_50runs_statistics.csv          # LSTM 50次运行统计
-        ├── model_comparison_for_paper.csv      # 论文用模型参数表
-        ├── model_params_correct.csv            # 模型参数量计算
-        └── statistics_summary.csv              # 统计摘要表格
+    ├── figures/                       # 图表输出
+    │   ├── lstm_prediction.pdf/png   # 概率预测结果图
+    │   ├── lstm_uncertainty.pdf/png  # 不确定性时变特征图
+    │   └── lstm_std_distribution.pdf/png # 标准差分布图
+    ├── tables/                        # 数据表格输出
+    │   ├── lstm_trend_50runs_summary.csv      # 50次运行汇总指标
+    │   ├── lstm_trend_50runs_predictions.csv  # 所有预测值详细记录
+    │   └── lstm_trend_50runs_statistics.csv   # 时间序列统计量
+    └── UPDATE_SUMMARY.md              # 数据更新总结文档
 ```
+
 
 ## 环境要求
 
-确保已安装以下依赖：
+使用 uv 管理 Python 环境，确保已安装以下依赖：
 
 ```bash
-uv pip install pandas numpy matplotlib openpyxl scikit-learn torch
+# 主要依赖
+pandas numpy matplotlib openpyxl scikit-learn tensorflow keras
 ```
 
 ## 快速开始
 
-### 方法1：直接生成可视化结果（推荐）
+### 完整工作流程（从头开始）
 
-如果已有 `result.xlsx` 文件，直接运行可视化脚本：
+如果需要重新运行50次实验并更新论文数据：
 
 ```bash
-# 进入scripts目录
+# 1. 运行50次LSTM模型（约7分钟）
 cd code/chapter3/scripts
+uv run run_lstm_trend_50times.py
 
-# 运行可视化脚本
-uv run python visualize_results.py
+# 2. 计算论文统计数据
+uv run calculate_thesis_statistics.py
+
+# 3. 生成论文图表
+uv run generate_thesis_figures.py
 ```
 
 **输出结果：**
-- `outputs/figures/lstm_prediction.png` - LSTM预测结果（含置信区间）
-- `outputs/figures/lstm_uncertainty.png` - LSTM的不确定性（标准差）
-- `outputs/tables/statistics_summary.csv` - 统计摘要表格
+- `outputs/tables/` - 3个CSV数据文件
+- `outputs/figures/` - 6个图表文件（3个PDF + 3个PNG）
+- 控制台输出统计摘要
 
-### 方法2：运行参数计算脚本
+### 仅重新生成图表
 
-计算LSTM模型的参数量：
+如果已有数据文件，只需重新生成图表：
 
 ```bash
-# 进入scripts目录
 cd code/chapter3/scripts
-
-# 计算参数量（基于实际notebook配置）
-uv run python calculate_correct_params.py
+uv run generate_thesis_figures.py
 ```
 
-### 方法3：重新训练模型（可选）
+### 仅查看统计结果
 
-如果需要重新训练模型：
+如果只想查看统计数据：
 
 ```bash
-# 启动Jupyter
-uv run jupyter notebook
-
-# 然后依次运行以下notebooks（在notebooks/目录下）：
-# 1. LSTM-trend-submit.ipynb      - 训练LSTM趋势项模型
-# 2. LSTM-Periodic-submit.ipynb   - 训练LSTM周期项模型
+cd code/chapter3/scripts
+uv run calculate_thesis_statistics.py
 ```
 
-## 模型说明
 
-### 模型选择
+## 核心脚本说明
 
-根据论文第三章标题**"基于LSTM的滑坡位移预测模型研究"**，选择了：
-- **LSTM-50runs** - LSTM模型50次运行结果
+### 1. run_lstm_trend_50times.py
 
-### LSTM模型
+运行LSTM模型50次，每次使用不同的随机种子。
 
-长短期记忆网络（LSTM）是一种特殊的循环神经网络，能够学习长期依赖关系。本章使用LSTM分别对趋势项和周期项进行预测：
+**功能：**
+- 读取监测数据并预处理
+- 构建LSTM模型（2层LSTM + Dropout + Dense）
+- 训练50次，每次40个epoch
+- 记录每次运行的R²、RMSE等指标
+- 保存所有预测值和统计量
 
-- **趋势项**：使用多项式拟合提取长期蠕变趋势
-- **周期项**：使用LSTM学习外部触发因子（降雨、库水位等）与位移的非线性关系
+**运行时间：** 约7分钟（CPU模式）
 
-### 概率预测方法
+### 2. calculate_thesis_statistics.py
 
-通过**50次独立运行**，获得预测的统计分布，提供：
-- 均值预测
-- 标准差（不确定性）
-- 置信区间（5%, 25%, 50%, 75%, 95%分位数）
+计算论文所需的统计数据。
 
-这种方法称为**"基于多次运行的概率预测"**，通过多次独立训练量化模型的预测不确定性。
+**功能：**
+- 读取50次运行结果
+- 计算点预测性能（R²、RMSE的均值）
+- 计算概率预测统计（平均预测值、标准差、变异系数）
+- 输出LaTeX表格代码
+
+### 3. generate_thesis_figures.py
+
+生成论文所需的图表。
+
+**功能：**
+- 概率预测结果图（均值 + 50%/90%置信区间）
+- 不确定性时变特征图（标准差随时间变化）
+- 标准差分布直方图
+- 同时生成PDF和PNG两种格式
+
+## 数据文件说明
+
+### outputs/tables/
+
+#### lstm_trend_50runs_summary.csv
+50次运行的汇总指标，每行一次运行：
+- `run_id`: 运行编号（1-50）
+- `seed`: 随机种子
+- `train_r2`, `train_rmse`: 训练集性能
+- `test_r2`, `test_rmse`: 测试集性能
+- `train_loss`, `val_loss`: 最终损失值
+
+#### lstm_trend_50runs_predictions.csv
+所有50次运行的详细预测值：
+- `run_id`: 运行编号
+- `time_index`: 时间索引
+- `prediction`: 预测值
+- `actual`: 真实值
+
+#### lstm_trend_50runs_statistics.csv
+每个时间点的统计量（用于绘制置信区间）：
+- `time_index`: 时间索引
+- `mean`: 50次运行的均值
+- `std`: 标准差
+- `p05`, `p25`, `p50`, `p75`, `p95`: 各分位数
+- `actual`: 真实值
+
 
 ## 生成的图表说明
 
-### 1. lstm_prediction.png
-- LSTM模型预测结果
-- 显示均值预测、50%置信区间、90%置信区间
+### outputs/figures/
 
-### 2. lstm_uncertainty.png
-- LSTM的预测标准差（不确定性）
-- 标准差越大，表示预测不确定性越高
+#### 1. lstm_prediction.pdf/png
+**LSTM概率预测结果图**
+- 蓝色实线：50次运行的均值预测
+- 深色阴影：50%置信区间（25%-75%分位数）
+- 浅色阴影：90%置信区间（5%-95%分位数）
+- 红色散点：真实观测值
 
-### 3. statistics_summary.csv
-统计摘要表格，包含：
-- 平均预测值
-- 平均标准差
-- 最大/最小标准差
+**论文引用：** 图3-X，展示LSTM模型的概率预测结果
 
-**当前结果：**
+#### 2. lstm_uncertainty.pdf/png
+**不确定性时变特征图**
+- 蓝色曲线：预测标准差随时间的变化
+- 红色虚线：平均标准差
+- 显示模型在不同时期的预测不确定性
+
+**论文引用：** 图3-Y，展示LSTM模型预测不确定性的时变特征
+
+#### 3. lstm_std_distribution.pdf/png
+**标准差分布直方图**
+- 显示50次运行中标准差的分布特征
+- 红色虚线：均值
+- 绿色虚线：中位数
+
+**论文引用：** 图3-Z，展示预测标准差的分布特征
+
+## 实验结果（基于50次真实运行）
+
+### 表3-2: LSTM模型点预测性能
+
+| 数据集 | R² | RMSE (mm) |
+|--------|---------|-----------|
+| 训练集 | 0.9883 | 11.02 |
+| 测试集 | 0.7916 | 5.55 |
+
+### 表3-3: LSTM概率预测统计特征
+
+| 统计量 | 数值 |
+|--------|------|
+| 平均预测值 (mm) | 987.09 |
+| 平均标准差 (mm) | 5.41 |
+| 最大标准差 (mm) | 6.64 |
+| 最小标准差 (mm) | 4.65 |
+| 变异系数 (%) | 0.55 |
+
+**关键发现：**
+- 测试集R²为0.7916，达到工程应用精度要求
+- 平均预测值987.09 mm与实际988.86 mm的相对误差仅0.18%
+- 变异系数0.55%，表明模型对随机初始化不敏感
+- 标准差范围4.65-6.64 mm，占位移量的0.55%
+
+
+## 模型说明
+
+### LSTM模型架构
+
+```python
+Sequential([
+    LSTM(25, return_sequences=True, input_shape=(2, 4)),
+    Dropout(0.3),
+    LSTM(15, return_sequences=False, kernel_regularizer=l2(0.002)),
+    Dropout(0.3),
+    Dense(15),
+    Dense(1)
+])
 ```
-  模型 平均预测值 (mm) 平均标准差 (mm) 最大标准差 (mm) 最小标准差 (mm)
-LSTM     578.64     407.96     466.65     308.27
-```
 
-## 论文中如何使用这些图表
+**参数：**
+- 输入特征：4个监测点（MJ9, MJ1, MJ3, ATU4）的历史位移
+- 时间步长：2
+- 优化器：Adam (learning_rate=0.0005)
+- 训练轮数：40 epochs
+- 批次大小：64
 
-1. **图3-X：LSTM模型预测结果**
-   - 使用 `outputs/figures/lstm_prediction.png`
-   - 说明：展示LSTM模型的预测结果和置信区间
+### 概率预测方法
 
-2. **图3-Y：LSTM模型不确定性**
-   - 使用 `outputs/figures/lstm_uncertainty.png`
-   - 说明：展示LSTM模型的预测不确定性
+通过**50次独立运行**实现概率预测：
+1. 每次使用不同的随机种子初始化模型参数
+2. 收集50次预测结果形成统计分布
+3. 计算均值、标准差和分位数
+4. 构建90%置信区间（5%-95%）和50%置信区间（25%-75%）
 
-3. **表3-Z：LSTM模型性能统计**
-   - 使用 `outputs/tables/statistics_summary.csv` 中的数据
-   - 说明：定量展示LSTM模型的性能指标
+这种方法称为**"基于多次运行的概率预测"**，能够量化模型的认知不确定性。
 
-4. **表3-W：LSTM模型参数量**
-   - 使用 `outputs/tables/model_comparison_for_paper.csv` 中的数据
-   - 说明：展示LSTM模型的参数量和训练时间
+## 论文对应内容
+
+本代码对应论文**第三章：基于LSTM的滑坡位移预测模型研究**
+
+### 主要内容：
+1. **LSTM时序预测模型**
+   - 利用多监测点空间协同变形特征
+   - 通过门控机制捕捉长期依赖关系
+
+2. **概率预测框架**
+   - 50次独立运行获得统计分布
+   - 提供均值预测和置信区间
+
+3. **不确定性量化**
+   - 计算预测标准差和变异系数
+   - 分析不确定性的时变特征
+
+### 论文图表对应：
+- 图3-X：`outputs/figures/lstm_prediction.pdf`
+- 图3-Y：`outputs/figures/lstm_uncertainty.pdf`
+- 图3-Z：`outputs/figures/lstm_std_distribution.pdf`
+- 表3-2：点预测性能数据
+- 表3-3：概率预测统计数据
 
 ## 数据来源
 
-- 输入数据：`../../data/monitoring data.xlsx`
-- 模型结果：`../../data/result.xlsx`
-  - Sheet: `LSTM-50runs` - LSTM模型50次运行结果
+- **输入数据：** `../../../data/monitoring data.xlsx`
+  - 包含MJ9、MJ1、MJ3、ATU4四个监测点的位移数据
+  - 时间跨度：2014-2018年
+
+- **输出数据：** `outputs/tables/` 和 `outputs/figures/`
 
 ## 注意事项
 
-1. **中文字体警告**：运行时会出现中文字体缺失的警告，但不影响图表生成。图表中的中文会显示为方框，但数据和布局都是正确的。
+1. **运行时间：** 50次运行约需7分钟（CPU模式），使用GPU可显著加速
 
-2. **数据路径**：确保 `../../data/result.xlsx` 文件存在且包含 `LSTM-50runs` sheet。
+2. **随机性：** 每次运行50次模型会得到略有不同的结果，但统计特征应保持稳定
 
-3. **图表分辨率**：所有图表都以300 DPI保存，适合论文使用。
+3. **内存占用：** 50次运行会占用较多内存，建议至少8GB RAM
 
-4. **单监测点预测**：本章聚焦于**单监测点**的位移预测，不涉及多监测点的空间关系建模。
+4. **图表格式：** PDF格式用于LaTeX论文，PNG格式用于预览
+
+5. **数据更新：** 如需更新论文数据，运行完整工作流程后，图表会自动复制到 `docs/latex/figures/chapter3/`
 
 ## 常见问题
 
-**Q: 如何修改图表样式？**
-A: 编辑 `scripts/visualize_results.py`，修改 matplotlib 参数。
+**Q: 为什么只有趋势项预测，没有周期项？**
+A: 根据论文调整，第三章聚焦于LSTM单模型的趋势项预测，不再使用位移分解方法。
 
-**Q: 如何添加真实值对比？**
-A: 需要从 `monitoring data.xlsx` 读取真实位移数据，然后在可视化脚本中添加对比曲线。
+**Q: 50次运行的结果每次都一样吗？**
+A: 由于使用固定的随机种子序列（42, 84, 126, ...），每次运行50次的结果应该完全一致。
 
-**Q: 50次运行的目的是什么？**
-A: 通过多次独立运行，获得预测的统计分布，从而计算置信区间，量化预测的不确定性。
+**Q: 如何修改模型参数？**
+A: 编辑 `scripts/run_lstm_trend_50times.py`，修改模型结构、超参数等。
 
-## 下一步工作
+**Q: 如何添加更多监测点？**
+A: 修改数据读取部分，选择不同的列作为输入特征。
 
-1. **完善论文第三章**：
-   - 补充实验结果分析
-   - 添加LSTM的性能评估
-   - 解释模型选择的原因
+## 更新日志
 
-2. **添加更多可视化**（可选）：
-   - 训练损失曲线
-   - 不同监测点的预测结果
-   - 误差分布直方图
-
-3. **模型评估指标**：
-   - 计算RMSE、MAE、R²等指标
-   - 评估LSTM的预测性能
-
-## 论文对应章节
-
-本代码对应论文第三章：**基于LSTM的滑坡位移预测模型研究**
-
-主要内容：
-1. 位移分解方法（趋势项+周期项）
-2. LSTM时序预测模型
-3. 概率预测与不确定性量化
+- **2026-03-28**: 基于50次真实运行更新所有数据和图表
+- **2026-03-27**: 清理冗余文件，统一目录结构
+- **2026-03-26**: 删除周期项预测，聚焦LSTM单模型
 
 ## 联系方式
 
