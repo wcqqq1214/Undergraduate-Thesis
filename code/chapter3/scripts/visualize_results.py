@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 第三章结果可视化脚本
-从 result.xlsx 读取 LSTM-50runs 和 GRU-50runs 数据，生成对比图表
+从 result.xlsx 读取 LSTM-50runs 数据，生成图表
 """
 import pandas as pd
 import numpy as np
@@ -68,117 +68,61 @@ def calculate_statistics(df, prefix='Predict'):
     return stats
 
 
-def plot_lstm_gru_comparison():
-    """绘制LSTM和GRU的对比图"""
-    print("加载LSTM和GRU数据...")
+def plot_lstm_prediction():
+    """绘制LSTM预测结果"""
+    print("加载LSTM数据...")
     lstm_df = load_data('LSTM-50runs')
-    gru_df = load_data('GRU-50runs')
 
     print("计算统计量...")
     lstm_stats = calculate_statistics(lstm_df)
-    gru_stats = calculate_statistics(gru_df)
 
     dates = lstm_df['Date']
 
     # 创建图表
-    fig, axes = plt.subplots(2, 1, figsize=(14, 10))
+    fig, ax = plt.subplots(figsize=(14, 7))
 
     # LSTM预测结果
-    ax1 = axes[0]
-    ax1.plot(dates, lstm_stats['mean'], 'b-', label='LSTM均值', linewidth=1.5)
-    ax1.fill_between(dates, lstm_stats['q05'], lstm_stats['q95'],
+    ax.plot(dates, lstm_stats['mean'], 'b-', label='LSTM均值', linewidth=2)
+    ax.fill_between(dates, lstm_stats['q05'], lstm_stats['q95'],
                       alpha=0.2, color='blue', label='90%置信区间')
-    ax1.fill_between(dates, lstm_stats['q25'], lstm_stats['q75'],
+    ax.fill_between(dates, lstm_stats['q25'], lstm_stats['q75'],
                       alpha=0.3, color='blue', label='50%置信区间')
-    ax1.set_ylabel('累积位移 (mm)', fontsize=12)
-    ax1.set_title('LSTM模型预测结果 (50次运行)', fontsize=14, fontweight='bold')
-    ax1.legend(loc='upper left', fontsize=10)
-    ax1.grid(True, alpha=0.3)
-    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-
-    # GRU预测结果
-    ax2 = axes[1]
-    ax2.plot(dates, gru_stats['mean'], 'r-', label='GRU均值', linewidth=1.5)
-    ax2.fill_between(dates, gru_stats['q05'], gru_stats['q95'],
-                      alpha=0.2, color='red', label='90%置信区间')
-    ax2.fill_between(dates, gru_stats['q25'], gru_stats['q75'],
-                      alpha=0.3, color='red', label='50%置信区间')
-    ax2.set_xlabel('日期', fontsize=12)
-    ax2.set_ylabel('累积位移 (mm)', fontsize=12)
-    ax2.set_title('GRU模型预测结果 (50次运行)', fontsize=14, fontweight='bold')
-    ax2.legend(loc='upper left', fontsize=10)
-    ax2.grid(True, alpha=0.3)
-    ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.set_xlabel('日期', fontsize=12)
+    ax.set_ylabel('累积位移 (mm)', fontsize=12)
+    ax.set_title('LSTM模型预测结果 (50次运行)', fontsize=14, fontweight='bold')
+    ax.legend(loc='upper left', fontsize=11)
+    ax.grid(True, alpha=0.3)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
 
     plt.tight_layout()
-    output_path = FIGURES_DIR / "lstm_gru_comparison.png"
+    output_path = FIGURES_DIR / "lstm_prediction.png"
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     print(f"保存图表: {output_path}")
     plt.close()
 
 
-def plot_uncertainty_comparison():
-    """绘制LSTM和GRU的不确定性对比"""
-    print("生成不确定性对比图...")
+def plot_uncertainty():
+    """绘制LSTM的不确定性"""
+    print("生成不确定性图...")
     lstm_df = load_data('LSTM-50runs')
-    gru_df = load_data('GRU-50runs')
 
     lstm_stats = calculate_statistics(lstm_df)
-    gru_stats = calculate_statistics(gru_df)
 
     dates = lstm_df['Date']
 
     fig, ax = plt.subplots(figsize=(14, 6))
 
-    # 绘制标准差对比
+    # 绘制标准差
     ax.plot(dates, lstm_stats['std'], 'b-', label='LSTM标准差', linewidth=1.5)
-    ax.plot(dates, gru_stats['std'], 'r-', label='GRU标准差', linewidth=1.5)
     ax.set_xlabel('日期', fontsize=12)
     ax.set_ylabel('预测标准差 (mm)', fontsize=12)
-    ax.set_title('LSTM与GRU模型预测不确定性对比', fontsize=14, fontweight='bold')
+    ax.set_title('LSTM模型预测不确定性', fontsize=14, fontweight='bold')
     ax.legend(loc='upper left', fontsize=11)
     ax.grid(True, alpha=0.3)
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
 
     plt.tight_layout()
-    output_path = FIGURES_DIR / "uncertainty_comparison.png"
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    print(f"保存图表: {output_path}")
-    plt.close()
-
-
-def plot_combined_comparison():
-    """绘制LSTM和GRU在同一图中的对比"""
-    print("生成综合对比图...")
-    lstm_df = load_data('LSTM-50runs')
-    gru_df = load_data('GRU-50runs')
-
-    lstm_stats = calculate_statistics(lstm_df)
-    gru_stats = calculate_statistics(gru_df)
-
-    dates = lstm_df['Date']
-
-    fig, ax = plt.subplots(figsize=(14, 7))
-
-    # LSTM
-    ax.plot(dates, lstm_stats['mean'], 'b-', label='LSTM均值', linewidth=2)
-    ax.fill_between(dates, lstm_stats['q05'], lstm_stats['q95'],
-                     alpha=0.15, color='blue', label='LSTM 90%置信区间')
-
-    # GRU
-    ax.plot(dates, gru_stats['mean'], 'r-', label='GRU均值', linewidth=2)
-    ax.fill_between(dates, gru_stats['q05'], gru_stats['q95'],
-                     alpha=0.15, color='red', label='GRU 90%置信区间')
-
-    ax.set_xlabel('日期', fontsize=12)
-    ax.set_ylabel('累积位移 (mm)', fontsize=12)
-    ax.set_title('LSTM与GRU模型预测结果对比', fontsize=14, fontweight='bold')
-    ax.legend(loc='upper left', fontsize=11)
-    ax.grid(True, alpha=0.3)
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-
-    plt.tight_layout()
-    output_path = FIGURES_DIR / "lstm_gru_combined.png"
+    output_path = FIGURES_DIR / "lstm_uncertainty.png"
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     print(f"保存图表: {output_path}")
     plt.close()
@@ -188,29 +132,15 @@ def generate_statistics_table():
     """生成统计表格"""
     print("生成统计表格...")
     lstm_df = load_data('LSTM-50runs')
-    gru_df = load_data('GRU-50runs')
 
     lstm_stats = calculate_statistics(lstm_df)
-    gru_stats = calculate_statistics(gru_df)
 
     stats_summary = {
-        '模型': ['LSTM', 'GRU'],
-        '平均预测值 (mm)': [
-            f"{np.mean(lstm_stats['mean']):.2f}",
-            f"{np.mean(gru_stats['mean']):.2f}"
-        ],
-        '平均标准差 (mm)': [
-            f"{np.mean(lstm_stats['std']):.2f}",
-            f"{np.mean(gru_stats['std']):.2f}"
-        ],
-        '最大标准差 (mm)': [
-            f"{np.max(lstm_stats['std']):.2f}",
-            f"{np.max(gru_stats['std']):.2f}"
-        ],
-        '最小标准差 (mm)': [
-            f"{np.min(lstm_stats['std']):.2f}",
-            f"{np.min(gru_stats['std']):.2f}"
-        ]
+        '模型': ['LSTM'],
+        '平均预测值 (mm)': [f"{np.mean(lstm_stats['mean']):.2f}"],
+        '平均标准差 (mm)': [f"{np.mean(lstm_stats['std']):.2f}"],
+        '最大标准差 (mm)': [f"{np.max(lstm_stats['std']):.2f}"],
+        '最小标准差 (mm)': [f"{np.min(lstm_stats['std']):.2f}"]
     }
 
     df_stats = pd.DataFrame(stats_summary)
@@ -228,9 +158,8 @@ def main():
     print("=" * 60)
 
     try:
-        plot_lstm_gru_comparison()
-        plot_uncertainty_comparison()
-        plot_combined_comparison()
+        plot_lstm_prediction()
+        plot_uncertainty()
         generate_statistics_table()
 
         print("\n" + "=" * 60)
