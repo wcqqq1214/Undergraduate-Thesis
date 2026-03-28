@@ -26,7 +26,8 @@ from read_monitoring_data import load_monitoring_data
 from model_training import cross_validate_models
 from shap_analysis import analyze_shap_reg, analyze_shap_cls
 
-plt.rcParams['font.sans-serif'] = ['WenQuanYi Zen Hei', 'SimHei', 'DejaVu Sans']
+plt.rcParams['font.serif'] = ['Times New Roman', 'SimSun']
+plt.rcParams['font.family'] = 'serif'
 plt.rcParams['axes.unicode_minus'] = False
 
 
