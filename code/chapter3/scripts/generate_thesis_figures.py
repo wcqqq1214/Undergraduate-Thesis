@@ -8,8 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta
 
-# 设置字体：中文使用SimSun，英文使用Times New Roman
-plt.rcParams['font.sans-serif'] = ['SimSun', 'Times New Roman', 'DejaVu Sans']
+# 设置字体：中文使用SimSun，英文使用Times New Roman（不允许降级）
 plt.rcParams['font.serif'] = ['Times New Roman', 'SimSun']
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['axes.unicode_minus'] = False
