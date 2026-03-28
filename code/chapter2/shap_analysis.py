@@ -95,7 +95,7 @@ def _sort_by_lag(shap_values: np.ndarray, feature_names: List[str], max_display:
 
 def _setup_matplotlib() -> None:
     """配置中文字体与负号显示"""
-    plt.rcParams['font.serif'] = ['Times New Roman', 'SimSun']
+    plt.rcParams['font.serif'] = ['SimSun', 'Times New Roman']
     plt.rcParams['font.family'] = 'serif'
     plt.rcParams['axes.unicode_minus'] = False
     plt.rcParams.update({
