@@ -1,0 +1,16 @@
+{
+  "total_days": 1460,
+  "level_distribution": {
+    "绿色": 534,
+    "蓝色": 299,
+    "黄色": 250,
+    "橙色": 103,
+    "红色": 274
+  },
+  "high_risk_days": 377,
+  "warning_days": 627,
+  "mean_velocity": 0.2354673877358133,
+  "max_velocity": 0.9188939048259499,
+  "min_velocity": -0.0698394952723902,
+  "std_velocity": 0.22766815497702228
+}

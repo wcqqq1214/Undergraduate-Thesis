@@ -1,0 +1,534 @@
+[
+  {
+    "warning_index": 214,
+    "exceed_index": 214,
+    "lead_time_days": 0,
+    "warning_level": 4,
+    "actual_increment": 0.31671379464489746
+  },
+  {
+    "warning_index": 215,
+    "exceed_index": 215,
+    "lead_time_days": 0,
+    "warning_level": 4,
+    "actual_increment": 0.3491822840879877
+  },
+  {
+    "warning_index": 216,
+    "exceed_index": 216,
+    "lead_time_days": 0,
+    "warning_level": 4,
+    "actual_increment": 0.380572200333404
+  },
+  {
+    "warning_index": 217,
+    "exceed_index": 217,
+    "lead_time_days": 0,
+    "warning_level": 4,
+    "actual_increment": 0.4103982707420073
+  },
+  {
+    "warning_index": 218,
+    "exceed_index": 218,
+    "lead_time_days": 0,
+    "warning_level": 4,
+    "actual_increment": 0.4386604953137976
+  },
+  {
+    "warning_index": 219,
+    "exceed_index": 219,
+    "lead_time_days": 0,
+    "warning_level": 4,
+    "actual_increment": 0.4653588740483201
+  },
+  {
+    "warning_index": 220,
+    "exceed_index": 220,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.49049340694580223
+  },
+  {
+    "warning_index": 221,
+    "exceed_index": 221,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.514064094006585
+  },
+  {
+    "warning_index": 222,
+    "exceed_index": 222,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.5360709352301001
+  },
+  {
+    "warning_index": 223,
+    "exceed_index": 223,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.5565139306169158
+  },
+  {
+    "warning_index": 224,
+    "exceed_index": 224,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.5753930801666911
+  },
+  {
+    "warning_index": 225,
+    "exceed_index": 225,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.5927083838793124
+  },
+  {
+    "warning_index": 226,
+    "exceed_index": 226,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6084598417550069
+  },
+  {
+    "warning_index": 227,
+    "exceed_index": 227,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6226474537938884
+  },
+  {
+    "warning_index": 228,
+    "exceed_index": 228,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6352712199956159
+  },
+  {
+    "warning_index": 229,
+    "exceed_index": 229,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6463311403604166
+  },
+  {
+    "warning_index": 230,
+    "exceed_index": 230,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6558272148882907
+  },
+  {
+    "warning_index": 231,
+    "exceed_index": 231,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.663759443579238
+  },
+  {
+    "warning_index": 232,
+    "exceed_index": 232,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6701278264329176
+  },
+  {
+    "warning_index": 233,
+    "exceed_index": 233,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6749323634498978
+  },
+  {
+    "warning_index": 234,
+    "exceed_index": 234,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.678173054629724
+  },
+  {
+    "warning_index": 235,
+    "exceed_index": 235,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6798498999727371
+  },
+  {
+    "warning_index": 236,
+    "exceed_index": 236,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6799628994787099
+  },
+  {
+    "warning_index": 237,
+    "exceed_index": 237,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6785120531475286
+  },
+  {
+    "warning_index": 238,
+    "exceed_index": 238,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6754973609797617
+  },
+  {
+    "warning_index": 239,
+    "exceed_index": 239,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6709188229746132
+  },
+  {
+    "warning_index": 240,
+    "exceed_index": 240,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6647764391326518
+  },
+  {
+    "warning_index": 241,
+    "exceed_index": 241,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.65707020945365
+  },
+  {
+    "warning_index": 242,
+    "exceed_index": 242,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6478001339377215
+  },
+  {
+    "warning_index": 243,
+    "exceed_index": 243,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6372873776857659
+  },
+  {
+    "warning_index": 244,
+    "exceed_index": 244,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6268166011019503
+  },
+  {
+    "warning_index": 245,
+    "exceed_index": 245,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6167089692869467
+  },
+  {
+    "warning_index": 246,
+    "exceed_index": 246,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.6069644822410964
+  },
+  {
+    "warning_index": 247,
+    "exceed_index": 247,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.5975831399639446
+  },
+  {
+    "warning_index": 248,
+    "exceed_index": 248,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.5885649424560597
+  },
+  {
+    "warning_index": 249,
+    "exceed_index": 249,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.579909889716987
+  },
+  {
+    "warning_index": 250,
+    "exceed_index": 250,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.5716179817471811
+  },
+  {
+    "warning_index": 251,
+    "exceed_index": 251,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.5636892185460738
+  },
+  {
+    "warning_index": 252,
+    "exceed_index": 252,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.556123600114006
+  },
+  {
+    "warning_index": 253,
+    "exceed_index": 253,
+    "lead_time_days": 0,
+    "warning_level": 3,
+    "actual_increment": 0.5489211264509777
+  },
+  {
+    "warning_index": 254,
+    "exceed_index": 254,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.5420817975569889
+  },
+  {
+    "warning_index": 255,
+    "exceed_index": 255,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.535605613431926
+  },
+  {
+    "warning_index": 256,
+    "exceed_index": 256,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.529492574075789
+  },
+  {
+    "warning_index": 257,
+    "exceed_index": 257,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.5237426794885778
+  },
+  {
+    "warning_index": 258,
+    "exceed_index": 258,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.5183559296706335
+  },
+  {
+    "warning_index": 259,
+    "exceed_index": 259,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.5133323246215014
+  },
+  {
+    "warning_index": 260,
+    "exceed_index": 260,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.5086718643414088
+  },
+  {
+    "warning_index": 261,
+    "exceed_index": 261,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.504374548830242
+  },
+  {
+    "warning_index": 262,
+    "exceed_index": 262,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.5004403780881148
+  },
+  {
+    "warning_index": 263,
+    "exceed_index": 263,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.49686935211479977
+  },
+  {
+    "warning_index": 264,
+    "exceed_index": 264,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.49366147091075163
+  },
+  {
+    "warning_index": 265,
+    "exceed_index": 265,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.49081673447562935
+  },
+  {
+    "warning_index": 266,
+    "exceed_index": 266,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.4883351428093192
+  },
+  {
+    "warning_index": 267,
+    "exceed_index": 267,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.48621669591193495
+  },
+  {
+    "warning_index": 268,
+    "exceed_index": 268,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.48446139378393127
+  },
+  {
+    "warning_index": 269,
+    "exceed_index": 269,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.48306923642473976
+  },
+  {
+    "warning_index": 270,
+    "exceed_index": 270,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.4820402238344741
+  },
+  {
+    "warning_index": 271,
+    "exceed_index": 271,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.4813743560131343
+  },
+  {
+    "warning_index": 272,
+    "exceed_index": 272,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.481071632960834
+  },
+  {
+    "warning_index": 273,
+    "exceed_index": 273,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.48113205467757325
+  },
+  {
+    "warning_index": 274,
+    "exceed_index": 274,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.4815651055166654
+  },
+  {
+    "warning_index": 275,
+    "exceed_index": 275,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.48240872289147774
+  },
+  {
+    "warning_index": 276,
+    "exceed_index": 276,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.48367239115532357
+  },
+  {
+    "warning_index": 277,
+    "exceed_index": 277,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.4853561103083166
+  },
+  {
+    "warning_index": 278,
+    "exceed_index": 278,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.4874598803506842
+  },
+  {
+    "warning_index": 279,
+    "exceed_index": 279,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.4899837012817443
+  },
+  {
+    "warning_index": 280,
+    "exceed_index": 280,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.49292757310217894
+  },
+  {
+    "warning_index": 281,
+    "exceed_index": 281,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.4962914958116471
+  },
+  {
+    "warning_index": 282,
+    "exceed_index": 282,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.5000754694102625
+  },
+  {
+    "warning_index": 283,
+    "exceed_index": 283,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.5042794938979114
+  },
+  {
+    "warning_index": 284,
+    "exceed_index": 284,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.5089035692747075
+  },
+  {
+    "warning_index": 285,
+    "exceed_index": 285,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.5139476955407645
+  },
+  {
+    "warning_index": 286,
+    "exceed_index": 286,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.5194118726956276
+  },
+  {
+    "warning_index": 287,
+    "exceed_index": 287,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.5252961007397516
+  },
+  {
+    "warning_index": 288,
+    "exceed_index": 288,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.5316003796732502
+  },
+  {
+    "warning_index": 289,
+    "exceed_index": 289,
+    "lead_time_days": 0,
+    "warning_level": 2,
+    "actual_increment": 0.5383247094953276
+  }
+]

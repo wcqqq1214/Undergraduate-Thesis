@@ -1,0 +1,8 @@
+{
+  "mean_exceed_prob": 0.23648275862068965,
+  "max_exceed_prob": 0.98,
+  "min_exceed_prob": 0.0,
+  "exceed_prob_std": 0.34722551756396364,
+  "high_risk_days": 72,
+  "total_days": 290
+}
