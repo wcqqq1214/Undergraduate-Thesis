@@ -119,6 +119,7 @@ def _save_figure(output_dir: Path, stem: str) -> None:
     """保存高清 PNG（600 dpi）和矢量 PDF"""
     output_dir.mkdir(parents=True, exist_ok=True)
     plt.savefig(output_dir / f"{stem}.png", dpi=600, bbox_inches="tight")
+    plt.savefig(output_dir / f"{stem}.pdf", dpi=300, bbox_inches="tight", format='pdf')
     plt.close()
 
 

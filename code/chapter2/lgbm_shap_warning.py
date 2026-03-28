@@ -15,9 +15,12 @@
     - outputs/shap_summary_regression.png / .pdf
     - outputs/shap_summary_classification.png / .pdf
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent / 'utils'))
+
 import numpy as np
 import pandas as pd
-from pathlib import Path
 from typing import List, Tuple
 
 import matplotlib.pyplot as plt
