@@ -9,11 +9,20 @@ chapter4/
 │   ├── 02_determine_warning_levels.py      # 模块2: 确定预警等级
 │   ├── 03_traditional_velocity_warning.py  # 模块3: 传统速率预警
 │   ├── 04_evaluate_performance.py          # 模块4: 性能评估
-│   └── 05_calculate_lead_time.py           # 模块5: 计算预警提前时间
+│   ├── 05_calculate_lead_time.py           # 模块5: 计算预警提前时间
+│   ├── 06_plot_warning_timeseries.py       # 模块6: 绘制预警时序图
+│   ├── 07_plot_detailed_periods.py         # 模块7: 绘制详细时段分析
+│   ├── 08_plot_active_period_fig43.py      # 模块8: 绘制活跃期预警分析
+│   └── 09_plot_shap_explanation.py         # 模块9: 绘制SHAP归因分析
 ├── outputs/                                # 输出结果
 │   ├── tables/                             # 表格数据
+│   │   ├── paper_tables/                   # 论文表格
+│   │   ├── intermediate_data/              # 中间数据
+│   │   └── statistics/                     # 统计信息
 │   └── figures/                            # 图表
 ├── run_all.py                              # 主运行脚本
+├── check_data.py                           # 数据检查脚本
+├── RESULTS_SUMMARY.md                      # 结果总结
 └── README.md                               # 本文件
 ```
 
@@ -39,27 +48,29 @@ python 05_calculate_lead_time.py
 
 ## 📊 模块说明
 
-### 模块1：计算越限概率
+### 数据处理与预警模块（01-05）
+
+#### 模块1：计算越限概率
 - **输入**: `chapter3/outputs/tables/lstm_trend_50runs_predictions.csv`
 - **输出**:
   - `exceed_probability.csv` - 每个时间步的越限概率
   - `daily_increments_50runs.npy` - 50次预测的日增量
 - **功能**: 基于50次LSTM预测结果，计算日位移增量超过0.3mm的概率
 
-### 模块2：确定预警等级
+#### 模块2：确定预警等级
 - **输入**: `exceed_probability.csv`
 - **输出**:
   - `warning_levels.csv` - 预警等级（绿/蓝/黄/橙/红）
 - **功能**: 根据越限概率确定五级预警等级
 
-### 模块3：传统速率预警
+#### 模块3：传统速率预警
 - **输入**: `data/monitoring data.xlsx`
 - **输出**:
   - `traditional_warning_levels.csv` - 传统方法的预警等级
   - `actual_displacement_MJ1.csv` - MJ1实际位移数据
 - **功能**: 实现传统速率预警方法作为对比基准
 
-### 模块4：性能评估
+#### 模块4：性能评估
 - **输入**:
   - `warning_levels.csv` (概率预警)
   - `traditional_warning_levels.csv` (传统预警)
@@ -69,7 +80,7 @@ python 05_calculate_lead_time.py
   - `performance_comparison.csv` - 性能指标对比（表4-4）
 - **功能**: 计算准确率、召回率、精确率、F1分数等指标
 
-### 模块5：计算预警提前时间
+#### 模块5：计算预警提前时间
 - **输入**:
   - `warning_levels.csv`
   - `traditional_warning_levels.csv`
@@ -78,6 +89,26 @@ python 05_calculate_lead_time.py
   - `lead_time_comparison.csv` - 提前时间对比（表4-2）
   - `probability_warning_events.json` - 预警事件详情
 - **功能**: 统计预警触发时刻与实际越限时刻的时间差
+
+### 可视化模块（06-09）
+
+#### 模块6：预警时序图
+- **输出**: `warning_timeseries.{png,pdf}` - 图4-1
+- **功能**: 绘制MJ1监测点的预警时间序列，展示概率预警与传统预警的对比
+
+#### 模块7：详细时段分析
+- **输出**: `detailed_period_YYYYMMDD.{png,pdf}` - 图4-2
+- **功能**: 绘制平稳期的预警细节，展示概率预警的缓冲效果
+
+#### 模块8：活跃期预警分析
+- **输出**: `mj1_active_period.{png,pdf}` - 图4-3
+- **功能**: 绘制阶跃变形期的预警细节，展示概率预警的敏感性
+
+#### 模块9：SHAP归因分析
+- **输出**:
+  - `shap_explanation.{png,pdf}` - SHAP力图
+  - `shap_waterfall.{png,pdf}` - SHAP瀑布图
+- **功能**: 绘制SHAP归因分析图，解释模型预测的可解释性
 
 ## 📈 生成的表格
 
@@ -108,20 +139,25 @@ python 05_calculate_lead_time.py
 表格数据生成后，运行绘图脚本生成图表：
 
 ```bash
-python src/06_plot_warning_timeseries.py    # 图4-1: 预警时间序列
-python src/07_plot_detailed_periods.py      # 图4-2: 详细时段分析
+python src/06_plot_warning_timeseries.py           # 图4-1: 预警时间序列
+python src/07_plot_detailed_periods.py             # 图4-2: 详细时段分析
+python src/08_plot_active_period_fig43.py          # 图4-3: 活跃期预警分析
+python src/09_plot_shap_explanation.py             # 图4-4: SHAP归因分析
 ```
 
 生成的图表会保存为PNG和PDF两种格式：
-- `outputs/figures/warning_timeseries.{png,pdf}` - 图4-1
-- `outputs/figures/detailed_period_YYYYMMDD.{png,pdf}` - 图4-2
+- `outputs/figures/warning_timeseries.{png,pdf}` - 图4-1: MJ1监测点预警时序图
+- `outputs/figures/detailed_period_YYYYMMDD.{png,pdf}` - 图4-2: 平稳期预警细节
+- `outputs/figures/mj1_active_period.{png,pdf}` - 图4-3: 阶跃变形期预警细节
+- `outputs/figures/shap_explanation.{png,pdf}` - 图4-4: SHAP归因分析（力图）
+- `outputs/figures/shap_waterfall.{png,pdf}` - 图4-4: SHAP归因分析（瀑布图）
 
 PDF格式的图表会自动复制到 `docs/latex/figures/chapter4/` 供论文使用。
 
 ## ⚙️ 依赖环境
 
 ```bash
-pip install numpy pandas openpyxl matplotlib seaborn
+pip install numpy pandas openpyxl matplotlib seaborn shap
 ```
 
 ## 🔍 数据说明
