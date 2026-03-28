@@ -1,0 +1,17 @@
+{
+  "confusion_matrix": {
+    "TP": 377,
+    "TN": 833,
+    "FP": 250,
+    "FN": 0
+  },
+  "accuracy": 0.8287671232876712,
+  "recall": 1.0,
+  "precision": 0.6012759170653907,
+  "f1_score": 0.750996015936255,
+  "false_positive_rate": 0.23084025854108955,
+  "false_negative_rate": 0.0,
+  "total_samples": 1460,
+  "positive_samples": 377,
+  "negative_samples": 1083
+}

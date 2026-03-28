@@ -1,0 +1,28 @@
+{
+  "mean_lead_time": 0.0,
+  "median_lead_time": 0.0,
+  "max_lead_time": 0,
+  "min_lead_time": 0,
+  "std_lead_time": 0.0,
+  "event_count": 76,
+  "detected_count": 76,
+  "missed_count": 0,
+  "detection_rate": 1.0,
+  "level_statistics": {
+    "黄色预警": {
+      "event_count": 36,
+      "mean_lead_time": 0.0,
+      "max_lead_time": 0
+    },
+    "橙色预警": {
+      "event_count": 34,
+      "mean_lead_time": 0.0,
+      "max_lead_time": 0
+    },
+    "红色预警": {
+      "event_count": 6,
+      "mean_lead_time": 0.0,
+      "max_lead_time": 0
+    }
+  }
+}
