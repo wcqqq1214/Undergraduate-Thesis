@@ -103,6 +103,8 @@ def _setup_matplotlib() -> None:
         'axes.labelsize': 12,
         'xtick.labelsize': 11,
         'ytick.labelsize': 11,
+        'pdf.fonttype': 42,  # 确保PDF中嵌入TrueType字体
+        'ps.fonttype': 42,
     })
 
 
