@@ -56,17 +56,181 @@
 
 \subsubsection{目的}
 
+本研究旨在通过运用岩土工程与计算机科学交叉学科知识，巩固深化岩土力学、边坡工程及机器学习算法的基本理论，学习和理解滑坡演化机理及预测预警的前沿方法。具体目标包括：
 
+\begin{enumerate}
+    \item 通过查阅国内外文献，系统掌握机器学习在滑坡位移预测中的原理和方法，梳理该领域的研究现状与发展趋势；
+    \item 选取三峡库区典型阶跃型滑坡——藕塘滑坡为研究对象，深入分析滑坡累积位移与库水位周期性涨落、季节性降雨等外部诱发因子之间的非线性关系及滞后规律；
+    \item 基于Python环境（PyTorch框架）构建机器学习预测模型，通过数据处理、特征工程、模型构建及结果分析的全过程训练，掌握数据驱动的滑坡位移预测方法与步骤；
+    \item 引入不确定性分析方法，构建滑坡位移的概率预测区间，制定科学的滑坡分级预警判据，为防灾减灾提供决策依据；
+    \item 通过建立机器学习预测模型的全过程训练，获得科研工作的基本训练，提高分析复杂岩土工程问题和解决问题的能力。
+\end{enumerate}
 
 \subsection{滑坡位移预测研究现状（国内外研究现状）}
+
+
+\subsubsection{国外研究动态}
+
+国外在滑坡灾害预测与预警领域的研究起步较早，近年来，该领域正经历着从单一物理模型向"数据-物理"深度融合的范式转变。最新的国际研究趋势不再局限于对监测数据的简单数值拟合，而是更加强调机器学习模型在复杂地质环境下的物理一致性与泛化能力。特别是在物理信息机器学习（PIML）领域，研究重心已显著转向将非饱和土力学中的控制方程或边坡稳定性物理约束直接嵌入神经网络的损失函数中，以解决小样本条件下的"黑箱"不可靠难题。
+
+在监测技术与空间协同预警方面，构建大范围区域的滑坡灾害时空动态感知系统已成为主流。最新的国际学术期刊研究显示，利用合成孔径雷达干涉测量（InSAR）技术获取地表形变场，并结合深度学习算法构建区域滑坡动态评估框架是当前的热点。例如，Zhang等\cite{zhang2025spatiotemporal}提出了一种融合空间图神经网络（GCN）与时间卷积网络（TCN）的时空位移预测模型（GMTC）。该研究利用Sentinel-1A卫星数据对滑坡进行三维形变分解，并通过多头自注意力机制捕捉滑坡形变在时空维度的非线性动态特征，显著优于传统的GRU和GCN模型，实现了对滑坡位移的高精度预测。
+
+此外，针对人工智能在防灾减灾决策中的信任问题，可解释性人工智能（Explainable AI, XAI）已成为当前国际滑坡研究的重要方向。为了将复杂的机器学习预测结果转化为决策者可理解的预警信息，国际学者引入了SHAP（Shapley Additive explanations）等归因分析方法。例如，Al-Najjar等\cite{al2025shapley}针对滑坡易发性建模中的"黑箱"问题，利用SHAP方法对随机森林模型的预测结果进行了全方位的解释。该研究不仅量化了地质环境因子（如地形、地质构造等）对模型预测的非线性贡献度，还通过可视化手段展示了特征交互作用，为制定科学的风险管控策略提供了强有力的理论依据，有效弥合了复杂算法与实际防灾应用之间的鸿沟。
+
+\subsubsection{国内研究动态}
+
+中国作为世界上水库滑坡灾害最为频发的国家之一，特别是三峡库区，其特殊的地质环境与周期性的库水位涨落（145米至175米）叠加季节性强降雨，使得滑坡演化机制极为复杂。针对水库滑坡特有的"阶梯状"演化特征，国内学术界已经建立了一套相对成熟的"时序分解-多源重构-组合预测"研究范式。早期的研究主要致力于解决非线性位移数据的降噪与分量提取问题，广泛采用了变分模态分解（VMD）、改进自适应噪声完备集合经验模态分解（ICEEMDAN）等信号处理技术。例如，马佳伟等\cite{ma2025iceemdan}建立了一种基于ICEEMDAN-CNN-BiLSTM-XGBoost的双层融合预测模型，有效解决了传统模型在位移分解中存在的模态混叠问题。在此基础上，国内学者通过引入智能优化策略，构建混合预测模型。唐宇峰等\cite{tang2025pso}提出的PSO-GRU-OL-MRT模型，通过深度挖掘位移监测数据与诱发因子之间的高维非线性映射关系，显著提升了滑坡位移的实时预测精度。
+
+随着人工智能技术的迭代升级，国内研究重点正逐步从传统的递归神经网络向基于注意力机制（Attention Mechanism）和Transformer架构的第三代深度学习模型演进。针对传统模型难以量化降雨和库水位"滞后效应"的痛点，最新的研究工作通过在模型中嵌入自注意力模块，实现了对多源诱发因子长时序依赖关系的动态捕捉。汪松林等\cite{wang2025transformer}构建了基于特征增强的Transformer-GRU模型，该模型不仅能够自动识别不同变形阶段的关键驱动因子，还能通过可视化权重分配，从数据层面反演滑坡对水文气象条件的响应规律。与此同时，针对特大型涉水滑坡（如藕塘滑坡）往往存在多级滑体且各部位变形不同步的特征，国内学者开始探索基于时空协同的预测新模式。高振武等\cite{gao2025spatiotemporal}提出了一种基于多测点时空模态信息互馈的阶跃式滑坡位移预测方法，通过融合多测点的时空模态信息，有效解决了局部监测噪声干扰导致的误报问题。
 
 
 
 \subsection{滑坡预警研究现状}
 
+在预警决策与风险评估方面，国内外研究正在推动从确定性的"点预测"向不确定性的"概率区间预测"跨越，旨在解决单纯数值预测无法量化风险可信度的问题。鉴于滑坡系统的随机性与模糊性，部分前沿学者将核密度估计（KDE）理论与深度学习预测结果相结合，构建了包含置信区间的概率预测模型，实现了对位移波动范围的科学度量。例如，王石等\cite{wang2025ssa}提出了基于SSA-CNN-BiLSTM-AM和KDE的滑坡位移混合点-区间预测方法，该方法不仅提供了位移的点预测值，还通过KDE方法构建了预测区间，量化了预测结果的不确定性，为滑坡预警提供了更加可靠的决策依据。
+
+更为深入的研究则进一步将位移预测延伸至物理力学层面的稳定性评估，提出了考虑滑带土应变软化特性的时变失效概率分析方法。通过建立滑坡稳定系数与库水位变动、降雨入渗及累积变形之间的动态响应方程，研究人员实现了对滑坡全生命周期灾变风险的动态追踪。孟轩宇\cite{meng2024time}针对三峡库区阶跃型库岸滑坡，提出了时变失效概率预测方法，该方法综合考虑了库水位涨落、降雨入渗以及滑带土应变软化等多重因素对滑坡稳定性的影响，实现了对滑坡灾变风险的定量评估。Zou等\cite{zou2023novel}以藕塘滑坡为例，提出了一种评估水库滑坡时变稳定性的新方法，该方法通过建立滑坡稳定系数与环境因子之间的动态响应模型，实现了对滑坡稳定性的实时监测与预警。
+
+这种融合了"数据驱动的高精度预测"与"物理驱动的稳定性评价"的综合研究体系，标志着国内外水库滑坡防灾减灾技术正朝着精细化、智能化和实用化的方向迈进。通过将机器学习的强大预测能力与岩土工程的物理机理相结合，不仅提高了滑坡位移预测的精度，还增强了预警系统的可靠性和可解释性，为地质灾害防治部门提供了更加科学、全面的决策支持。
+
+
 
 
 \subsection{主要研究内容及技术路线}
+
+\subsubsection{主要研究内容}
+
+本研究以三峡库区典型阶跃型滑坡——藕塘滑坡为研究对象，围绕机器学习方法在水库滑坡位移预测及预警中的应用展开系统研究。主要研究内容包括以下三个方面：
+
+\paragraph{滑坡变形演化机理与多源特征工程构建}
+
+深入分析藕塘滑坡累积位移与库水位周期性涨落、季节性降雨等外部诱发因子之间的非线性关系及滞后规律。对长序列监测数据进行清洗、降噪及归一化处理，利用可解析性机器学习方法（如LightGBM+SHAP）筛选出主控影响因子，定量评估各触发因子对滑坡位移的贡献度。通过特征重要性分析、局部依赖图和特征交互效应图等多维度可视化手段，揭示水文气象因素与滑坡变形之间的内在非线性映射关系，完成多源特征工程的构建，为模型训练提供高质量的输入数据。
+
+\paragraph{基于机器学习的滑坡位移预测模型搭建与对比}
+
+基于Python环境（PyTorch框架）搭建机器学习预测模型。针对滑坡变形的时空演化特征，探索不同机器学习算法在位移预测中的应用，重点解决多源数据融合及长时序依赖问题。通过开展对比实验，分析不同模型在预测精度（RMSE、MAE、R²）与泛化能力上的差异，重点关注阶跃变形期的预测效果，优选出适用于藕塘滑坡的最佳预测模型。
+
+\paragraph{滑坡位移不确定性分析与概率预警研究}
+
+针对确定性点预测难以反映结果可信度的问题，引入不确定性分析方法，构建滑坡位移的概率预测区间。基于测试集的预测误差，利用统计分析方法（如核密度估计KDE等）生成误差概率密度函数，构建一定置信水平下的预测区间，并计算区间覆盖率（PICP）和平均带宽（MPIW）评价区间质量。量化模型预测结果的波动范围与置信度，实现从单一数值预报向区间概率预报的转变。在此基础上，结合统计学准则或变形速率阈值，制定科学的滑坡分级预警判据，为防灾减灾提供决策依据。
+
+\subsubsection{拟解决的主要问题}
+
+本研究针对水库滑坡位移预测与预警中的关键科学问题，拟重点解决以下三个方面的难题：
+
+\paragraph{多源诱发因子的"最佳时滞"特征优选问题}
+
+库水位和降雨对滑坡的影响具有显著的滞后性与非线性特征。拟解决如何从海量监测数据中，精准识别出降雨和库水位影响滑坡变形的最优滞后时间窗口。通过有效的特征选择与降维策略，剔除冗余特征干扰，提高模型输入变量的物理相关性与有效性，解决多源数据输入的高维冗余难题。
+
+\paragraph{阶跃型滑坡"突变点"的预测削峰与滞后问题}
+
+常规机器学习模型在滑坡位移加速变形期（阶跃点）容易出现"削峰"现象（预测值偏低）或相位滞后，难以捕捉极端工况下的突变特征。拟解决如何通过改进模型架构或引入特征增强策略，提升模型对暴雨、水位急降等强激发条件下位移非线性动态变化的敏感性，进而提高阶跃变形期的峰值预测精度。
+
+\paragraph{预测结果的不确定性量化与预警可靠性问题}
+
+传统确定性点预测无法反映预测结果的可信度。拟解决如何构建包含置信度的概率预测区间，量化模型的不确定性风险，为滑坡预警提供更科学的决策依据。通过建立基于概率区间的动态预警体系，有效降低因监测噪声或局部扰动导致的误报率与漏报率。
+
+\subsubsection{技术路线}
+
+本研究的技术路线如图~\ref{fig:tech_route}所示，主要包括数据采集与预处理、特征工程构建、模型训练与优化、概率预警体系构建四个核心环节。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    scale=0.7, transform shape,
+    node distance=1.2cm and 2cm,
+    startstop/.style={rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=red!20, font=\small},
+    process/.style={rectangle, minimum width=3.5cm, minimum height=1cm, text centered, draw=black, fill=blue!15, font=\small, align=center},
+    decision/.style={diamond, minimum width=2.5cm, minimum height=1cm, text centered, draw=black, fill=green!20, font=\small},
+    data/.style={trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=0.8cm, text centered, draw=black, fill=yellow!20, font=\small},
+    arrow/.style={thick,->,>=stealth}
+]
+
+% 第一层：开始
+\node (start) [startstop] {数据采集};
+
+% 第二层：数据预处理
+\node (preprocess) [process, below=of start] {数据清洗与预处理\\插值、归一化};
+
+% 第三层：特征工程
+\node (feature) [process, below=of preprocess] {特征工程构建\\LightGBM+SHAP};
+
+% 第四层：特征选择结果
+\node (feature_result) [data, below=of feature] {主控影响因子筛选};
+
+% 第五层：模型构建
+\node (model) [process, below=of feature_result] {机器学习模型构建\\PyTorch框架};
+
+% 第六层：模型训练
+\node (train) [process, below=of model] {模型训练与优化\\超参数调优};
+
+% 第七层：模型对比
+\node (compare) [process, below=of train] {多模型对比分析\\RMSE/MAE/R²};
+
+% 第八层：最优模型
+\node (best_model) [data, below=of compare] {最优预测模型};
+
+% 第九层：概率预警
+\node (warning) [process, below=of best_model] {概率预警体系构建\\KDE+置信区间};
+
+% 第十层：结束
+\node (end) [startstop, below=of warning] {预警判据制定};
+
+% 绘制箭头
+\draw [arrow] (start) -- (preprocess);
+\draw [arrow] (preprocess) -- (feature);
+\draw [arrow] (feature) -- (feature_result);
+\draw [arrow] (feature_result) -- (model);
+\draw [arrow] (model) -- (train);
+\draw [arrow] (train) -- (compare);
+\draw [arrow] (compare) -- (best_model);
+\draw [arrow] (best_model) -- (warning);
+\draw [arrow] (warning) -- (end);
+
+% 添加右侧说明
+\node [right=3cm of preprocess, font=\footnotesize] {
+    \begin{minipage}{4cm}
+        \textbf{数据来源：}\\
+        位移监测数据\\
+        库水位数据\\
+        降雨量数据\\
+        地下水位数据
+    \end{minipage}
+};
+
+\node [right=3cm of feature, font=\footnotesize] {
+    \begin{minipage}{4cm}
+        \textbf{特征分析：}\\
+        贡献度分析\\
+        依赖关系分析\\
+        交互效应分析
+    \end{minipage}
+};
+
+\node [right=3cm of train, font=\footnotesize] {
+    \begin{minipage}{4cm}
+        \textbf{模型类型：}\\
+        时序预测模型\\
+        时空预测模型\\
+        混合预测模型
+    \end{minipage}
+};
+
+\node [right=3cm of warning, font=\footnotesize] {
+    \begin{minipage}{4cm}
+        \textbf{预警指标：}\\
+        预测区间\\
+        置信水平\\
+        预警等级
+    \end{minipage}
+};
+
+\end{tikzpicture}
+\caption{技术路线图}
+\label{fig:tech_route}
+\end{figure}
+
+
 
 
 \section{基于机器学习的水库滑坡时空位移预测及预警研究}
@@ -105,11 +269,11 @@
 
 \begin{figure}[htbp]
 \centering
-\scalebox{0.75}{
 \begin{tikzpicture}[
+    scale=0.75, transform shape,
     node distance=0.8cm and 1.5cm,
     startstop/.style={rectangle, rounded corners, minimum width=2.5cm, minimum height=0.8cm, text centered, draw=black, fill=red!20, font=\footnotesize},
-    process/.style={rectangle, minimum width=3cm, minimum height=0.8cm, text centered, draw=black, fill=blue!15, font=\footnotesize},
+    process/.style={rectangle, minimum width=3cm, minimum height=0.8cm, text centered, draw=black, fill=blue!15, font=\footnotesize, align=center},
     data/.style={rectangle, rounded corners=2pt, minimum width=2.5cm, minimum height=0.7cm, text centered, draw=black, fill=yellow!20, font=\footnotesize},
     arrow/.style={thick,->,>=stealth}
 ]
@@ -158,7 +322,6 @@
 \draw [arrow] (result) -- (end);
 
 \end{tikzpicture}
-}
 \caption{基于LightGBM+SHAP的滑坡位移预测算法流程图}
 \label{fig:algorithm_flowchart}
 \end{figure}
@@ -683,7 +846,7 @@ LSTM模型采用TensorFlow/Keras深度学习框架实现。模型的网络结构
 
 （1）模型具有较强的稳定性和可重复性。50次独立训练运行产生的预测结果较为一致，说明LSTM模型能够稳定地学习到滑坡位移的内在规律，对随机初始化和训练过程的随机性不敏感。
 
-（2）变异系数（0.55\%）表明模型的认知不确定性较小。这主要得益于：①充足的训练数据（4年日尺度监测数据）；②合理的模型结构和正则化策略；③LSTM的长期记忆能力能够有效捕捉位移演化的时序依赖关系。
+（2）变异系数（0.55\%）表明模型的认知不确定性较小。这主要得益于：(1)充足的训练数据（4年日尺度监测数据）；(2)合理的模型结构和正则化策略；(3)LSTM的长期记忆能力能够有效捕捉位移演化的时序依赖关系。
 
 （3）标准差的时变特征仍然具有物理意义。虽然整体不确定性较小，但在位移突变时期（如库水位快速下降叠加强降雨），标准差会从约4.7 mm增至6.6 mm左右，反映了模型对预测难度的自适应识别能力。这种细微的不确定性变化为风险评估提供了额外的信息维度。
 
@@ -1106,12 +1269,8 @@ V_t = \frac{D_t - D_{t-1}}{\Delta t}
 本章提出的基于概率预测的动态预警方法，实现了从传统确定性预警向概率预警的转变，从滞后性预警向前瞻性预警的跨越。该方法不仅提高了预警的准确性和时效性，还增强了预警系统的鲁棒性和可解释性，为水库滑坡的实时监测预警提供了新的技术途径，具有重要的理论意义和应用价值。
 \section{结论}
 
-\begin{thebibliography}{99}
+% \begin{thebibliography}{99}
 
-\end{thebibliography}
+% \end{thebibliography}
 
-\end{document}
-
-
-nd{document}
 \end{document}
