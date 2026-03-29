@@ -9,6 +9,7 @@
 \usepackage{multirow}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,positioning,fit,backgrounds,shapes.geometric}
+\usepackage{float}
 \usepackage{hyperref}
 \hypersetup{
     hidelinks  % 隐藏所有链接的边框
@@ -132,103 +133,6 @@
 
 \subsubsection{技术路线}
 
-本研究的技术路线如图~\ref{fig:tech_route}所示，主要包括数据采集与预处理、特征工程构建、模型训练与优化、概率预警体系构建四个核心环节。
-
-\begin{figure}[htbp]
-\centering
-\begin{tikzpicture}[
-    scale=0.7, transform shape,
-    node distance=1.2cm and 2cm,
-    startstop/.style={rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=red!20, font=\small},
-    process/.style={rectangle, minimum width=3.5cm, minimum height=1cm, text centered, draw=black, fill=blue!15, font=\small, align=center},
-    decision/.style={diamond, minimum width=2.5cm, minimum height=1cm, text centered, draw=black, fill=green!20, font=\small},
-    data/.style={trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=0.8cm, text centered, draw=black, fill=yellow!20, font=\small},
-    arrow/.style={thick,->,>=stealth}
-]
-
-% 第一层：开始
-\node (start) [startstop] {数据采集};
-
-% 第二层：数据预处理
-\node (preprocess) [process, below=of start] {数据清洗与预处理\\插值、归一化};
-
-% 第三层：特征工程
-\node (feature) [process, below=of preprocess] {特征工程构建\\LightGBM+SHAP};
-
-% 第四层：特征选择结果
-\node (feature_result) [data, below=of feature] {主控影响因子筛选};
-
-% 第五层：模型构建
-\node (model) [process, below=of feature_result] {机器学习模型构建\\PyTorch框架};
-
-% 第六层：模型训练
-\node (train) [process, below=of model] {模型训练与优化\\超参数调优};
-
-% 第七层：模型对比
-\node (compare) [process, below=of train] {多模型对比分析\\RMSE/MAE/R²};
-
-% 第八层：最优模型
-\node (best_model) [data, below=of compare] {最优预测模型};
-
-% 第九层：概率预警
-\node (warning) [process, below=of best_model] {概率预警体系构建\\KDE+置信区间};
-
-% 第十层：结束
-\node (end) [startstop, below=of warning] {预警判据制定};
-
-% 绘制箭头
-\draw [arrow] (start) -- (preprocess);
-\draw [arrow] (preprocess) -- (feature);
-\draw [arrow] (feature) -- (feature_result);
-\draw [arrow] (feature_result) -- (model);
-\draw [arrow] (model) -- (train);
-\draw [arrow] (train) -- (compare);
-\draw [arrow] (compare) -- (best_model);
-\draw [arrow] (best_model) -- (warning);
-\draw [arrow] (warning) -- (end);
-
-% 添加右侧说明
-\node [right=3cm of preprocess, font=\footnotesize] {
-    \begin{minipage}{4cm}
-        \textbf{数据来源：}\\
-        位移监测数据\\
-        库水位数据\\
-        降雨量数据\\
-        地下水位数据
-    \end{minipage}
-};
-
-\node [right=3cm of feature, font=\footnotesize] {
-    \begin{minipage}{4cm}
-        \textbf{特征分析：}\\
-        贡献度分析\\
-        依赖关系分析\\
-        交互效应分析
-    \end{minipage}
-};
-
-\node [right=3cm of train, font=\footnotesize] {
-    \begin{minipage}{4cm}
-        \textbf{模型类型：}\\
-        时序预测模型\\
-        时空预测模型\\
-        混合预测模型
-    \end{minipage}
-};
-
-\node [right=3cm of warning, font=\footnotesize] {
-    \begin{minipage}{4cm}
-        \textbf{预警指标：}\\
-        预测区间\\
-        置信水平\\
-        预警等级
-    \end{minipage}
-};
-
-\end{tikzpicture}
-\caption{技术路线图}
-\label{fig:tech_route}
-\end{figure}
 
 
 
@@ -239,6 +143,13 @@
 
 在构建数据驱动的水库滑坡时空位移预测模型时，输入特征的科学选取直接决定了模型的预测精度与泛化能力。传统基于经验的特征选择方法虽具备一定的工程地质学基础，但在处理复杂非线性的监测数据时往往带有较强的主观性，难以定量刻画各诱发因素的具体影响程度，缺乏统一的标准。为此，本章引入高效的梯度提升框架（LightGBM）与可解释性机器学习工具（SHAP），旨在对滑坡变形的候选驱动因子进行精准的定量评估与优选。本研究以典型的藕塘滑坡为案例，针对其复杂的地质演化特征，收集并整理了该区域长时间序列的库水位、降雨量及地表时空位移等监测数据。基于LightGBM模型的高效拟合能力，结合SHAP方法深入剖析各输入特征对滑坡时空位移的贡献度。通过特征重要性图、局部依赖图和特征交互效应图等多维度的可视化分析，系统揭示水文气象因素与滑坡变形之间的内在非线性映射关系。本章采用"先验知识指导初筛+数据算法量化验证"的研究策略，不仅有效克服了传统机器学习模型"黑盒"特性的不足，提升了特征选择的科学性与物理可解释性，更为后续构建高精度的藕塘滑坡时空位移预测及预警模型奠定了坚实的数据基础与理论支撑。
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/chapter2/藕塘滑坡全景图.pdf}
+    \caption{藕塘滑坡全景图（赵长军等，2025）\cite{zhao2025reactivation}}
+    \label{fig:panorama}
+\end{figure}
+
 \subsection{工程概况}
 
 本研究以典型的阶跃型水库滑坡——藕塘滑坡为核心研究对象。藕塘滑坡位于三峡库区重庆市奉节县安坪镇的长江南岸，属于构造剥蚀的中低山河谷地貌。该区域地形总体呈南高北低之势，滑坡体后缘高程达700余米，前缘直抵长江干流，整体坡度多在15°至30°之间。研究区出露地层主要以侏罗系（J）的泥岩、砂质泥岩与粉砂岩互层为主，这种软硬相间的岩层结构在长期风化和水流侵蚀下，极易形成软弱滑动面。
@@ -246,6 +157,20 @@
 在气候与水文条件方面，该地区属于亚热带季风气候，年平均气温约为18°C，多年平均降水量在1100毫米左右。降水在年内分配极不均匀，主要集中在每年的5月至9月，且多以暴雨形式出现。此外，三峡水库的周期性调度对滑坡的稳定性影响显著。库水位每年在145米至175米之间进行季节性的大幅波动：通常于9月开始蓄水，年末达到并维持175米高水位，次年春季逐步消落至145米防洪限制水位。
 
 研究区域的地下水动态受大气降水和水库蓄水双重控制。频繁的库水位升降交替与季节性强降雨的耦合作用，不断改变着坡体的渗流场与应力状态。鉴于藕塘滑坡体量巨大、地质条件复杂且变形响应极其敏感，将其作为此时空位移预测及预警模型研究的案例，具有重要的科学意义与防灾减灾实践价值。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/chapter2/藕塘滑坡地质图.pdf}
+    \caption{藕塘滑坡地质图（赵长军等，2025）\cite{zhao2025reactivation}}
+    \label{fig:geology}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/chapter2/藕塘滑坡典型地质纵剖面图.pdf}
+    \caption{藕塘滑坡典型地质纵剖面图（赵长军等，2025）\cite{zhao2025reactivation}}
+    \label{fig:profile}
+\end{figure}
 
 \subsection{研究方法}
 
