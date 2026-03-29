@@ -95,15 +95,21 @@ def _sort_by_lag(shap_values: np.ndarray, feature_names: List[str], max_display:
 
 def _setup_matplotlib() -> None:
     """配置中文字体与负号显示"""
-    plt.rcParams['font.serif'] = ['SimSun', 'Times New Roman']
-    plt.rcParams['font.family'] = 'serif'
+    import matplotlib.font_manager as fm
+    # 优先宋体，不可用则黑体
+    preferred = ['SimSun', 'SimHei', 'WenQuanYi Zen Hei', 'Noto Sans CJK SC']
+    available = {f.name for f in fm.fontManager.ttflist}
+    chosen = next((f for f in preferred if f in available), None)
+    if chosen:
+        plt.rcParams['font.sans-serif'] = [chosen, 'DejaVu Sans']
+    plt.rcParams['font.family'] = 'sans-serif'
     plt.rcParams['axes.unicode_minus'] = False
     plt.rcParams.update({
         'font.size': 12,
         'axes.labelsize': 12,
         'xtick.labelsize': 11,
         'ytick.labelsize': 11,
-        'pdf.fonttype': 42,  # 确保PDF中嵌入TrueType字体
+        'pdf.fonttype': 42,
         'ps.fonttype': 42,
     })
 
