@@ -7,6 +7,12 @@
 \usepackage{setspace}
 \usepackage{booktabs}
 \usepackage{multirow}
+\usepackage{caption}
+\DeclareCaptionFont{wuhao}{\fontsize{10.5pt}{13pt}\selectfont}
+\captionsetup{font={wuhao,bf}, labelfont={wuhao,bf}, labelsep=space,
+              justification=centering, skip=6pt}
+\captionsetup[figure]{position=below}
+\captionsetup[table]{position=above}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,positioning,fit,backgrounds,shapes.geometric}
 \usepackage{float}
@@ -25,8 +31,16 @@
 % 设置字体：中文使用SimSun（宋体），加粗使用SimHei（黑体），英文使用Times New Roman
 \setCJKmainfont{simsun.ttc}[Path=/usr/share/fonts/winfonts/, BoldFont=simhei.ttf]
 \setCJKfamilyfont{heiti}{simhei.ttf}[Path=/usr/share/fonts/winfonts/, AutoFakeBold=2]
+\setCJKfamilyfont{songbold}{simsun.ttc}[Path=/usr/share/fonts/winfonts/, AutoFakeBold=2]
 \renewcommand{\heiti}{\CJKfamily{heiti}}
 \setmainfont{Times New Roman}
+
+% 双语图表标题命令（中文在上，英文在下）
+% \figcaption{中文}{English}  \tabcaption{中文}{English}
+\newcommand{\figcaption}[2]{%
+  \caption[#1]{{\CJKfamily{songbold}#1}\\[2pt]Figure~\thefigure\quad#2}}
+\newcommand{\tabcaption}[2]{%
+  \caption[#1]{{\CJKfamily{songbold}#1}\\[2pt]Table~\thetable\quad#2}}
 
 \geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
 \onehalfspacing
@@ -212,7 +226,7 @@
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/chapter2/Panoramic_map_of_Outang_landslide.pdf}
-    \caption{藕塘滑坡全景图（赵长军等，2025）\cite{zhao2025reactivation}}
+    \figcaption{藕塘滑坡全景图（赵长军等，2025）\cite{zhao2025reactivation}}{Panoramic View of Outang Landslide (Zhao et al., 2025)}
     \label{fig:panorama}
 \end{figure}
 
@@ -227,21 +241,21 @@
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/chapter2/Geological_map_of_Outang_landslide.pdf}
-    \caption{藕塘滑坡地质图（赵长军等，2025）\cite{zhao2025reactivation}}
+    \figcaption{藕塘滑坡地质图（赵长军等，2025）\cite{zhao2025reactivation}}{Geological Map of Outang Landslide (Zhao et al., 2025)}
     \label{fig:geology}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/chapter2/Typical_geological_longitudinal_profile_of_Outang_landslide.pdf}
-    \caption{藕塘滑坡典型地质纵剖面图（赵长军等，2025）\cite{zhao2025reactivation}}
+    \figcaption{藕塘滑坡典型地质纵剖面图（赵长军等，2025）\cite{zhao2025reactivation}}{Typical Geological Longitudinal Profile of Outang Landslide (Zhao et al., 2025)}
     \label{fig:profile}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/chapter2/monitoring_data_overview.pdf}
-    \caption{藕塘滑坡监测数据概览（2016年7月—2020年6月）}
+    \figcaption{藕塘滑坡监测数据概览（2016年7月—2020年6月）}{Overview of Monitoring Data of Outang Landslide (July 2016--June 2020)}
     \label{fig:monitoring_overview_ch2}
 \end{figure}
 
@@ -320,7 +334,7 @@
 \draw [arrow] (result) -- (end);
 
 \end{tikzpicture}
-\caption{基于LightGBM+SHAP的滑坡位移预测算法流程图}
+\figcaption{基于LightGBM+SHAP的滑坡位移预测算法流程图}{Algorithm Flowchart of Landslide Displacement Feature Analysis Based on LightGBM+SHAP}
 \label{fig:algorithm_flowchart}
 \end{figure}
 
@@ -402,7 +416,7 @@ g(x') = \varphi_0 + \sum_{j=1}^{N} \varphi_j x'_j
 
 \begin{table}[htbp]
 \centering
-\caption{触发特征的候选因子}
+\tabcaption{触发特征的候选因子}{Candidate Triggering Features for Landslide Displacement}
 \label{tab:candidate_features}
 \begin{tabular}{ll}
 \toprule
@@ -497,7 +511,7 @@ g(x') = \varphi_0 + \sum_{j=1}^{N} \varphi_j x'_j
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{figures/chapter2/shap_summary_regression.pdf}
-\caption{SHAP特征重要性总结图（回归模型）}
+\figcaption{SHAP特征重要性总结图（回归模型）}{SHAP Feature Importance Summary Plot (Regression Model)}
 \label{fig:shap_regression}
 \end{figure}
 
@@ -520,7 +534,7 @@ g(x') = \varphi_0 + \sum_{j=1}^{N} \varphi_j x'_j
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{figures/chapter2/shap_summary_classification.pdf}
-\caption{SHAP特征重要性总结图（分类模型）}
+\figcaption{SHAP特征重要性总结图（分类模型）}{SHAP Feature Importance Summary Plot (Classification Model)}
 \label{fig:shap_classification}
 \end{figure}
 
@@ -660,7 +674,7 @@ SHAP依赖图揭示了滑坡对触发因素的非线性响应。例如，库水�
 \draw [arrow] (result) -- (end);
 
 \end{tikzpicture}
-\caption{基于LSTM的滑坡位移概率预测算法流程图}
+\figcaption{基于LSTM的滑坡位移概率预测算法流程图}{Algorithm Flowchart of Probabilistic Landslide Displacement Prediction Based on LSTM}
 \label{fig:lstm_algorithm_flowchart}
 \end{figure}
 
@@ -827,7 +841,7 @@ $\mu$为目标覆盖率（通常设为0.95），$\eta$为惩罚系数（通常�
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/chapter3/monitoring_data_overview.pdf}
-    \caption{藕塘滑坡监测数据概览（2016年7月—2020年6月）}
+    \figcaption{藕塘滑坡监测数据概览（2016年7月—2020年6月）}{Overview of Monitoring Data of Outang Landslide (July 2016--June 2020)}
     \label{fig:monitoring_overview_ch3}
 \end{figure}
 
@@ -865,7 +879,7 @@ LSTM模型采用TensorFlow/Keras深度学习框架实现。模型的网络结构
 
 \begin{table}[htbp]
 \centering
-\caption{LSTM模型点预测性能（基于50次运行均值）}
+\tabcaption{LSTM模型点预测性能（基于50次运行均值）}{Point Prediction Performance of LSTM Model (Mean of 50 Runs)}
 \label{tab:lstm-point-prediction}
 \begin{tabular}{lcc}
 \toprule
@@ -887,7 +901,7 @@ LSTM模型采用TensorFlow/Keras深度学习框架实现。模型的网络结构
 
 \begin{table}[htbp]
 \centering
-\caption{LSTM概率预测统计特征}
+\tabcaption{LSTM概率预测统计特征}{Statistical Characteristics of LSTM Probabilistic Prediction}
 \label{tab:lstm-probability-stats}
 \begin{tabular}{lc}
 \toprule
@@ -911,7 +925,7 @@ LSTM模型采用TensorFlow/Keras深度学习框架实现。模型的网络结构
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=1\textwidth]{figures/chapter3/lstm_prediction.pdf}
-\caption{LSTM模型概率预测结果}
+\figcaption{LSTM模型概率预测结果}{Probabilistic Prediction Results of LSTM Model}
 \label{fig:lstm-probability-prediction}
 \end{figure}
 
@@ -924,7 +938,7 @@ LSTM模型采用TensorFlow/Keras深度学习框架实现。模型的网络结构
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=1\textwidth]{figures/chapter3/lstm_uncertainty.pdf}
-\caption{LSTM模型预测不确定性时变特征}
+\figcaption{LSTM模型预测不确定性时变特征}{Time-varying Uncertainty Characteristics of LSTM Model Prediction}
 \label{fig:uncertainty-analysis}
 \end{figure}
 
@@ -943,7 +957,7 @@ LSTM模型采用TensorFlow/Keras深度学习框架实现。模型的网络结构
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=1\textwidth]{figures/chapter3/lstm_std_distribution.pdf}
-\caption{LSTM模型预测标准差分布直方图}
+\figcaption{LSTM模型预测标准差分布直方图}{Histogram of Prediction Standard Deviation of LSTM Model}
 \label{fig:std-distribution}
 \end{figure}
 
@@ -1057,7 +1071,7 @@ P_{\text{exceed},t} = \frac{1}{50} \sum_{i=1}^{50} \mathbb{I}(\hat{D}_t^{(i)} > 
 
 \begin{table}[htbp]
 \centering
-\caption{基于越限概率的滑坡预警等级划分标准}
+\tabcaption{基于越限概率的滑坡预警等级划分标准}{Landslide Warning Level Classification Criteria Based on Exceedance Probability}
 \label{tab:warning_levels}
 \begin{tabular}{ccccl}
 \toprule
@@ -1120,7 +1134,7 @@ MJ1监测点位于滑坡体的中前部，该区域地形坡度较大，受库�
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/chapter4/monitoring_data_overview.pdf}
-    \caption{藕塘滑坡监测数据概览（2016年7月—2020年6月）}
+    \figcaption{藕塘滑坡监测数据概览（2016年7月—2020年6月）}{Overview of Monitoring Data of Outang Landslide (July 2016--June 2020)}
     \label{fig:monitoring_overview_ch4}
 \end{figure}
 
@@ -1131,7 +1145,7 @@ MJ1监测点作为滑坡体中变形最为活跃的区域，其预警结果最�
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=1\textwidth]{figures/chapter4/warning_timeseries.pdf}
-\caption{基于概率预测的滑坡预警时间序列}
+\figcaption{基于概率预测的滑坡预警时间序列}{Landslide Warning Time Series Based on Probabilistic Prediction}
 \label{fig:warning_timeseries}
 \end{figure}
 
@@ -1144,7 +1158,7 @@ MJ1监测点作为滑坡体中变形最为活跃的区域，其预警结果最�
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=1\textwidth]{figures/chapter4/detailed_period_20161215.pdf}
-\caption{详细时段预警分析}
+\figcaption{详细时段预警分析}{Detailed Period Warning Analysis}
 \label{fig:detailed_period}
 \end{figure}
 
@@ -1158,7 +1172,7 @@ MJ1监测点作为滑坡体中变形最为活跃的区域，其预警结果最�
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/chapter4/mj1_active_period.pdf}
-\caption{MJ1监测点阶跃变形期预警细节（2019年3月18日-4月30日）}
+\figcaption{MJ1监测点阶跃变形期预警细节（2019年3月18日-4月30日）}{Warning Details During Step Deformation Period at MJ1 (March 18--April 30, 2019)}
 \label{fig:mj1_active_period}
 \end{figure}
 
@@ -1174,7 +1188,7 @@ MJ1监测点作为滑坡体中变形最为活跃的区域，其预警结果最�
 
 \begin{table}[htbp]
 \centering
-\caption{MJ1监测点预警提前时间统计}
+\tabcaption{MJ1监测点预警提前时间统计}{Statistics of Warning Lead Time at MJ1 Monitoring Point}
 \label{tab:lead_time_mj1}
 \begin{tabular}{cccc}
 \toprule
@@ -1223,7 +1237,7 @@ MJ3监测点位于滑坡体中部，其变形特征介于MJ1和MJ9之间。预�
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/chapter4/shap_explanation.pdf}
-\caption{2019年3月22日橙色预警事件的SHAP归因分析}
+\figcaption{2019年3月22日橙色预警事件的SHAP归因分析}{SHAP Attribution Analysis of Orange Warning Event on March 22, 2019}
 \label{fig:shap_explanation}
 \end{figure}
 
@@ -1276,7 +1290,7 @@ V_t = \frac{D_t - D_{t-1}}{\Delta t}
 
 \begin{table}[htbp]
 \centering
-\caption{MJ1监测点预警方法混淆矩阵对比}
+\tabcaption{MJ1监测点预警方法混淆矩阵对比}{Confusion Matrix Comparison of Warning Methods at MJ1 Monitoring Point}
 \label{tab:confusion_matrix}
 \begin{tabular}{cccc}
 \toprule
@@ -1297,7 +1311,7 @@ V_t = \frac{D_t - D_{t-1}}{\Delta t}
 
 \begin{table}[htbp]
 \centering
-\caption{MJ1监测点预警方法性能指标对比}
+\tabcaption{MJ1监测点预警方法性能指标对比}{Performance Metrics Comparison of Warning Methods at MJ1 Monitoring Point}
 \label{tab:performance_metrics}
 \begin{tabular}{ccccc}
 \toprule
