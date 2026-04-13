@@ -23,7 +23,9 @@
 }
 
 % 设置字体：中文使用SimSun（宋体），加粗使用SimHei（黑体），英文使用Times New Roman
-\setCJKmainfont{SimSun}[BoldFont=SimHei]
+\setCJKmainfont{simsun.ttc}[Path=/usr/share/fonts/winfonts/, BoldFont=simhei.ttf]
+\setCJKfamilyfont{heiti}{simhei.ttf}[Path=/usr/share/fonts/winfonts/, AutoFakeBold=2]
+\renewcommand{\heiti}{\CJKfamily{heiti}}
 \setmainfont{Times New Roman}
 
 \geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
