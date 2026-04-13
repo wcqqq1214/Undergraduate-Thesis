@@ -146,4 +146,51 @@ print(f"PNG版本已保存到: {output_path_png}")
 
 plt.close()
 
+# ── 新增：点预测对比图（训练集 + 测试集）────────────────────────────────────────
+train_stats_df = pd.read_csv('../outputs/tables/lstm_trend_50runs_train_statistics.csv')
+
+# 训练集日期
+train_dates = data['Date'].iloc[time_steps:time_steps + len(train_stats_df)]
+
+fig, ax = plt.subplots(figsize=(12, 5))
+
+# 实测值：蓝色实线（训练集 + 测试集连续）
+all_actual_dates = list(train_dates) + list(test_dates)
+all_actual_values = list(train_stats_df['actual']) + list(stats_df['actual'])
+ax.plot(all_actual_dates, all_actual_values, color='#1f77b4', linewidth=1.5,
+        label='实测位移')
+
+# 预测均值：红色虚线（训练集 + 测试集连续）
+all_pred_dates = list(train_dates) + list(test_dates)
+all_pred_values = list(train_stats_df['mean']) + list(stats_df['mean'])
+ax.plot(all_pred_dates, all_pred_values, color='#d62728', linewidth=1.5,
+        linestyle='--', label='LSTM预测值（50次运行均值）')
+
+# 训练/测试分割线
+split_date = test_dates.iloc[0]
+ax.axvline(x=split_date, color='gray', linestyle=':', linewidth=1.2)
+ax.text(split_date, ax.get_ylim()[0], ' Test', fontsize=9, color='gray', va='bottom')
+
+ax.set_xlabel('日期', fontsize=12)
+ax.set_ylabel('累计位移 (mm)', fontsize=12)
+ax.legend(loc='upper left', fontsize=10)
+ax.grid(True, alpha=0.3)
+
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+ax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))
+plt.xticks(rotation=45)
+
+plt.tight_layout()
+
+output_path = '../outputs/figures/lstm_fitting.pdf'
+plt.savefig(output_path, dpi=300, bbox_inches='tight')
+print(f"拟合对比图已保存到: {output_path}")
+
+output_path_png = '../outputs/figures/lstm_fitting.png'
+plt.savefig(output_path_png, dpi=300, bbox_inches='tight')
+print(f"PNG版本已保存到: {output_path_png}")
+
+plt.close()
+# ─────────────────────────────────────────────────────────────────────────────
+
 print("\n所有图表生成完成！")

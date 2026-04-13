@@ -60,6 +60,7 @@ X_test, y_test = create_sequences(test_data, time_steps)
 # 存储50次运行的结果
 results_summary = []
 all_predictions = []
+all_train_predictions = []
 
 print("开始运行LSTM模型50次...")
 print(f"开始时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -127,13 +128,22 @@ for run_id in range(1, 51):
         'val_loss': history.history['val_loss'][-1]
     })
 
-    # 记录本次运行的所有预测值
+    # 记录本次运行的所有预测值（测试集）
     for i, pred in enumerate(test_predict):
         all_predictions.append({
             'run_id': run_id,
             'time_index': i,
             'prediction': pred,
             'actual': y_test_actual[i]
+        })
+
+    # 记录本次运行的所有预测值（训练集）
+    for i, pred in enumerate(train_predict):
+        all_train_predictions.append({
+            'run_id': run_id,
+            'time_index': i,
+            'prediction': pred,
+            'actual': y_train_actual[i]
         })
 
     print(f"  训练集 R²: {train_r2:.4f}, RMSE: {train_rmse:.4f}")
@@ -149,11 +159,17 @@ summary_output_path = os.path.join(output_dir, 'lstm_trend_50runs_summary.csv')
 summary_df.to_csv(summary_output_path, index=False)
 print(f"\n汇总结果已保存到: {summary_output_path}")
 
-# 保存所有预测值
+# 保存所有预测值（测试集）
 predictions_df = pd.DataFrame(all_predictions)
 predictions_output_path = os.path.join(output_dir, 'lstm_trend_50runs_predictions.csv')
 predictions_df.to_csv(predictions_output_path, index=False)
 print(f"所有预测值已保存到: {predictions_output_path}")
+
+# 保存所有预测值（训练集）
+train_predictions_df = pd.DataFrame(all_train_predictions)
+train_predictions_output_path = os.path.join(output_dir, 'lstm_trend_50runs_train_predictions.csv')
+train_predictions_df.to_csv(train_predictions_output_path, index=False)
+print(f"训练集预测值已保存到: {train_predictions_output_path}")
 
 # 计算统计量
 print("\n" + "=" * 80)
@@ -164,7 +180,7 @@ print(f"测试集 RMSE - 均值: {summary_df['test_rmse'].mean():.4f}, 标准差
 print(f"训练集 R² - 均值: {summary_df['train_r2'].mean():.4f}, 标准差: {summary_df['train_r2'].std():.4f}")
 print(f"训练集 RMSE - 均值: {summary_df['train_rmse'].mean():.4f}, 标准差: {summary_df['train_rmse'].std():.4f}")
 
-# 计算每个时间点的统计量
+# 计算每个时间点的统计量（测试集）
 time_stats = predictions_df.groupby('time_index').agg({
     'prediction': ['mean', 'std', lambda x: np.percentile(x, 5), lambda x: np.percentile(x, 25),
                    lambda x: np.percentile(x, 50), lambda x: np.percentile(x, 75), lambda x: np.percentile(x, 95)],
@@ -175,5 +191,17 @@ time_stats.columns = ['time_index', 'mean', 'std', 'p05', 'p25', 'p50', 'p75', '
 time_stats_output_path = os.path.join(output_dir, 'lstm_trend_50runs_statistics.csv')
 time_stats.to_csv(time_stats_output_path, index=False)
 print(f"\n时间序列统计量已保存到: {time_stats_output_path}")
+
+# 计算每个时间点的统计量（训练集）
+train_time_stats = train_predictions_df.groupby('time_index').agg({
+    'prediction': ['mean', 'std', lambda x: np.percentile(x, 5), lambda x: np.percentile(x, 25),
+                   lambda x: np.percentile(x, 50), lambda x: np.percentile(x, 75), lambda x: np.percentile(x, 95)],
+    'actual': 'first'
+}).reset_index()
+
+train_time_stats.columns = ['time_index', 'mean', 'std', 'p05', 'p25', 'p50', 'p75', 'p95', 'actual']
+train_time_stats_output_path = os.path.join(output_dir, 'lstm_trend_50runs_train_statistics.csv')
+train_time_stats.to_csv(train_time_stats_output_path, index=False)
+print(f"训练集时间序列统计量已保存到: {train_time_stats_output_path}")
 
 print("\n完成！")
