@@ -244,6 +244,73 @@
     \item 综合评估预警体系的误报率与漏报率，为防灾减灾决策提供可量化的风险概率依据。
 \end{enumerate}
 
+\begin{figure}[H]
+\centering
+\scalebox{0.90}{%
+\begin{tikzpicture}[
+    node distance=0cm,
+    every node/.style={font=\small},
+    titlebox/.style={rectangle, draw=black, fill=blue!25, rounded corners=4pt,
+                     text centered, minimum width=10cm, minimum height=0.8cm,
+                     font=\small\bfseries, text width=9.5cm, inner sep=5pt},
+    phasebox/.style={rectangle, draw=black!80, fill=blue!12, rounded corners=3pt,
+                     text centered, minimum width=10cm, minimum height=0.75cm,
+                     font=\small\bfseries, text width=9.5cm, inner sep=5pt},
+    stepbox/.style={rectangle, draw=black!40, fill=gray!8, rounded corners=2pt,
+                    text centered, minimum width=9cm, minimum height=0.65cm,
+                    font=\small, text width=8.5cm, inner sep=4pt},
+    resultbox/.style={rectangle, draw=black, fill=green!20, rounded corners=4pt,
+                      text centered, minimum width=10cm, minimum height=0.8cm,
+                      font=\small\bfseries, text width=9.5cm, inner sep=5pt},
+    arr/.style={->, >=stealth, thick, draw=black!60},
+]
+
+\node[titlebox] (goal) {基于机器学习的滑坡位移预测与概率预警};
+
+\node[phasebox, below=0.5cm of goal]  (p1)  {第一阶段：数据收集与预处理};
+\node[stepbox,  below=0.2cm of p1]   (s11) {收集地表位移、库水位、降雨量等长时序监测数据};
+\node[stepbox,  below=0.15cm of s11] (s12) {数据清洗、缺失值插补与归一化处理};
+\node[stepbox,  below=0.15cm of s12] (s13) {滑动时间窗口构建监督学习样本集，初步筛选候选特征};
+
+\node[phasebox, below=0.5cm of s13]  (p2)  {第二阶段：可解释机器学习特征分析};
+\node[stepbox,  below=0.2cm of p2]   (s21) {LightGBM模型训练与5折时序交叉验证};
+\node[stepbox,  below=0.15cm of s21] (s22) {SHAP可解释性分析（贡献图、依赖图、交互图）};
+\node[stepbox,  below=0.15cm of s22] (s23) {主控特征筛选，验证库水位—降雨耦合驱动机制};
+
+\node[phasebox, below=0.5cm of s23]  (p3)  {第三阶段：LSTM位移预测与概率区间估计};
+\node[stepbox,  below=0.2cm of p3]   (s31) {多监测点空间运动学输入，构建LSTM时序预测模型};
+\node[stepbox,  below=0.15cm of s31] (s32) {多次独立运行构建分位数概率预测区间};
+\node[stepbox,  below=0.15cm of s32] (s33) {点预测与区间预测质量综合评估与模型对比};
+
+\node[phasebox, below=0.5cm of s33]  (p4)  {第四阶段：滑坡分级预警体系构建};
+\node[stepbox,  below=0.2cm of p4]   (s41) {基于概率区间与变形速率阈值制定分级预警判据};
+\node[stepbox,  below=0.15cm of s41] (s42) {综合评估预警体系误报率与漏报率};
+
+\node[resultbox, below=0.5cm of s42] (res) {高精度位移预测模型与可靠概率预警体系};
+
+\draw[arr] (goal) -- (p1);
+\draw[arr] (p1)   -- (s11);
+\draw[arr] (s11)  -- (s12);
+\draw[arr] (s12)  -- (s13);
+\draw[arr] (s13)  -- (p2);
+\draw[arr] (p2)   -- (s21);
+\draw[arr] (s21)  -- (s22);
+\draw[arr] (s22)  -- (s23);
+\draw[arr] (s23)  -- (p3);
+\draw[arr] (p3)   -- (s31);
+\draw[arr] (s31)  -- (s32);
+\draw[arr] (s32)  -- (s33);
+\draw[arr] (s33)  -- (p4);
+\draw[arr] (p4)   -- (s41);
+\draw[arr] (s41)  -- (s42);
+\draw[arr] (s42)  -- (res);
+
+\end{tikzpicture}%
+}
+\figcaption{技术路线图}{Technical Roadmap}
+\label{fig:tech_roadmap}
+\end{figure}
+
 
 \section{基于可解释机器学习的滑坡位移特征提取与贡献度分析}
 
