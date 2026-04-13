@@ -10,6 +10,9 @@
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,positioning,fit,backgrounds,shapes.geometric}
 \usepackage{float}
+\usepackage{tocloft}
+\setlength{\cftsecindent}{0em}
+\setlength{\cftsecnumwidth}{3.5em}   % 刚好容纳"第一章"
 \usepackage{hyperref}
 \hypersetup{
     hidelinks  % 隐藏所有链接的边框
@@ -23,8 +26,12 @@
 \onehalfspacing
 
 % 设置章节格式
-\renewcommand{\thesection}{\chinese{section}}
+\renewcommand{\thesection}{第\chinese{section}章}
 \renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+
+% 每个大章节另起一页
+\let\oldsection\section
+\renewcommand{\section}{\clearpage\oldsection}
 
 % 设置图表按章节编号
 \usepackage{chngcntr}
