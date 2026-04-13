@@ -10,6 +10,9 @@
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,positioning,fit,backgrounds,shapes.geometric}
 \usepackage{float}
+\usepackage{enumitem}
+\setlist[enumerate]{label=（\arabic*）}
+\renewenvironment{itemize}{\begin{enumerate}[label=（\arabic*）]}{\end{enumerate}}
 \usepackage{tocloft}
 \setlength{\cftsecindent}{0em}
 \setlength{\cftsecnumwidth}{3.5em}   % 刚好容纳"第一章"
