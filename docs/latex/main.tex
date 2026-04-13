@@ -21,8 +21,35 @@
 \setlist[enumerate]{label=（\arabic*）}
 \renewenvironment{itemize}{\begin{enumerate}[label=（\arabic*）]}{\end{enumerate}}
 \usepackage{tocloft}
+% 目录标题："目 录"，三号黑体加粗，段前后1行
+\renewcommand{\contentsname}{\heiti\bfseries\fontsize{16pt}{20pt}\selectfont 目\hspace{1em}录}
+\setlength{\cftbeforetoctitleskip}{\baselineskip}
+\setlength{\cftaftertoctitleskip}{\baselineskip}
+% 目录内容：小四号(12pt)，1.25倍行距
+\renewcommand{\cfttoctitlefont}{\relax}   % 不让 tocloft 再套字体
+\setlength{\cftbeforesecskip}{0pt}
+\setlength{\cftbeforesubsecskip}{0pt}
+\setlength{\cftbeforesubsubsecskip}{0pt}
+% 一级：顶格，编号宽度容纳"第一章"
 \setlength{\cftsecindent}{0em}
-\setlength{\cftsecnumwidth}{3.5em}   % 刚好容纳"第一章"
+\setlength{\cftsecnumwidth}{3.5em}
+% 二级：左缩进2字符（2×12pt=24pt≈2em）
+\setlength{\cftsubsecindent}{2em}
+\setlength{\cftsubsecnumwidth}{2.5em}
+% 三级：左缩进4字符
+\setlength{\cftsubsubsecindent}{4em}
+\setlength{\cftsubsubsecnumwidth}{3em}
+% 目录内容字体：小四号宋体
+\renewcommand{\cftsecfont}{\fontsize{12pt}{15pt}\selectfont}
+\renewcommand{\cftsubsecfont}{\fontsize{12pt}{15pt}\selectfont}
+\renewcommand{\cftsubsubsecfont}{\fontsize{12pt}{15pt}\selectfont}
+\renewcommand{\cftsecpagefont}{\fontsize{12pt}{15pt}\selectfont}
+\renewcommand{\cftsubsecpagefont}{\fontsize{12pt}{15pt}\selectfont}
+\renewcommand{\cftsubsubsecpagefont}{\fontsize{12pt}{15pt}\selectfont}
+% 页码居中：用引导点填充后居中对齐
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsubsubsecleader}{\cftdotfill{\cftdotsep}}
 \usepackage{gbt7714}
 \bibliographystyle{gbt7714-numerical}
 \usepackage{hyperref}
@@ -92,7 +119,7 @@
 \begin{document}
 
 \maketitle
-\tableofcontents
+{\setstretch{1.25}\fontsize{12pt}{15pt}\selectfont\tableofcontents}
 \newpage
 
 \section{绪论}
