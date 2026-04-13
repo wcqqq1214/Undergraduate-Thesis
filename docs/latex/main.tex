@@ -20,14 +20,12 @@
 \usepackage{enumitem}
 \setlist[enumerate]{label=（\arabic*）}
 \renewenvironment{itemize}{\begin{enumerate}[label=（\arabic*）]}{\end{enumerate}}
-\usepackage{tocloft}
-% 目录标题："目 录"，三号黑体加粗，段前后1行
-\renewcommand{\contentsname}{{\heiti\bfseries\fontsize{16pt}{20pt}\selectfont 目\hspace{1em}录}}
-\setlength{\cftbeforetoctitleskip}{\baselineskip}
-\setlength{\cftaftertoctitleskip}{\baselineskip}
-% 目录内容：小四号(12pt)，1.25倍行距
-\renewcommand{\cfttoctitlefont}{\hfill}
-\renewcommand{\cftaftertoctitle}{\hfill}
+\usepackage[titles]{tocloft}
+% 目录标题文字，格式由 titlesec 的 \section 样式统一接管
+\renewcommand{\contentsname}{目\hspace{1em}录}
+% 段前后间距交给 titlesec，这里清零避免双重叠加
+\setlength{\cftbeforetoctitleskip}{0pt}
+\setlength{\cftaftertoctitleskip}{0pt}
 \setlength{\cftbeforesecskip}{0pt}
 \setlength{\cftbeforesubsecskip}{0pt}
 \setlength{\cftbeforesubsubsecskip}{0pt}
@@ -47,7 +45,6 @@
 \renewcommand{\cftsecpagefont}{\fontsize{12pt}{15pt}\selectfont}
 \renewcommand{\cftsubsecpagefont}{\fontsize{12pt}{15pt}\selectfont}
 \renewcommand{\cftsubsubsecpagefont}{\fontsize{12pt}{15pt}\selectfont}
-% 页码居中：用引导点填充后居中对齐
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
 \renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}}
 \renewcommand{\cftsubsubsecleader}{\cftdotfill{\cftdotsep}}
@@ -120,6 +117,7 @@
 \begin{document}
 
 \maketitle
+\newpage
 {\setstretch{1.25}\fontsize{12pt}{15pt}\selectfont\tableofcontents}
 \newpage
 
