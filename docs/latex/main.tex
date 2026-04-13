@@ -212,6 +212,13 @@
     \label{fig:profile}
 \end{figure}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/chapter2/monitoring_data_overview.pdf}
+    \caption{藕塘滑坡监测数据概览（2016年7月—2020年6月）}
+    \label{fig:monitoring_overview_ch2}
+\end{figure}
+
 \subsection{研究方法}
 
 在明确了滑坡变形的潜在触发因子后，本文采用LightGBM模型探索藕塘滑坡时空位移变形与降雨、库水位、地下水位及温度等相关特征之间的关系。为了进一步提高模型的透明度和可解释性，本文结合SHAP方法对LightGBM模型进行了解释。通过对历史监测数据的分析，识别出可能导致滑坡变形的关键因素，其主要流程如下：
@@ -791,6 +798,13 @@ $\mu$为目标覆盖率（通常设为0.95），$\eta$为惩罚系数（通常�
 
 模型输入的时间序列窗口大小（Time Steps）设为2，即使用过去2天的历史数据；单时间步的特征维度（Input Dim）为4，即四个监测点（MJ9、MJ1、MJ3、ATU4）的同期累积位移值。输出目标为MJ1监测点未来1天的趋势项位移（mm）。该趋势项通过时间序列分解方法从原始累积位移中提取，剔除了高频噪声和季节性波动，保留了滑坡位移的长期演化趋势。
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/chapter3/monitoring_data_overview.pdf}
+    \caption{藕塘滑坡监测数据概览（2016年7月—2020年6月）}
+    \label{fig:monitoring_overview_ch3}
+\end{figure}
+
 数据预处理主要包括以下步骤：
 \begin{enumerate}
 \item 缺失值处理：采用线性插值方法填补少量缺失数据；
@@ -1076,6 +1090,13 @@ MJ1监测点位于滑坡体的中前部，该区域地形坡度较大，受库�
 预警实施流程如下：首先，利用第三章构建的LSTM时空位移预测模型，对每个监测点进行50次独立训练，获得未来时间步的预测位移分布。其次，基于预测分布计算5\%、25\%、50\%、75\%和95\%五个分位数，并根据这些分位数与安全阈值（0.3 mm）的关系，计算越限概率$P_{\text{exceed},t}$。最后，根据越限概率的大小，确定相应的预警等级，并结合SHAP归因分析方法，解释触发预警的环境驱动因素。
 
 本研究选取2016年7月至2023年12月的监测数据进行预警验证，重点分析两类典型时段：一是平稳期，即滑坡体处于相对稳定状态，位移增量较小的时段；二是阶跃变形期，即库水位快速下降或强降雨事件发生后，滑坡体出现明显加速变形的时段。通过对比这两类时段的预警结果，评估本方法在不同变形阶段的适用性和有效性。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/chapter4/monitoring_data_overview.pdf}
+    \caption{藕塘滑坡监测数据概览（2016年7月—2020年6月）}
+    \label{fig:monitoring_overview_ch4}
+\end{figure}
 
 \subsubsection{MJ1监测点预警结果分析}
 
