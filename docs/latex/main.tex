@@ -31,28 +31,29 @@
 
 % 章节标题格式（titlesec）
 % 一级标题：三号(16pt)黑体加粗，居中，段前后1行
-\newcommand{\sectionbreak}{\clearpage}   % 每章另起一页
+\newcommand{\sectionbreak}{\clearpage}
 \titleformat{\section}[block]
   {\centering\fontsize{16pt}{20pt}\selectfont\heiti\bfseries}
   {\thesection}{1em}{}
 \titlespacing*{\section}{0pt}{\baselineskip}{\baselineskip}
 
-% 二级标题：四号(14pt)黑体加粗，段前后0.5行
+% 二级标题：四号(14pt)黑体加粗，顶格，段前后0.5行
 \titleformat{\subsection}[block]
   {\fontsize{14pt}{18pt}\selectfont\heiti\bfseries}
   {\thesubsection}{1em}{}
 \titlespacing*{\subsection}{0pt}{0.5\baselineskip}{0.5\baselineskip}
 
-% 三级标题：小四号(12pt)黑体加粗
+% 三级标题：小四号(12pt)黑体加粗，顶格
 \titleformat{\subsubsection}[block]
   {\fontsize{12pt}{16pt}\selectfont\heiti\bfseries}
   {\thesubsubsection}{1em}{}
 \titlespacing*{\subsubsection}{0pt}{0.3\baselineskip}{0.3\baselineskip}
 
-% 四级标题：小四号(12pt)宋体不加粗
+% 四级标题：小四号(12pt)宋体不加粗，顶格，有编号
+\renewcommand{\theparagraph}{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}.\arabic{paragraph}}
 \titleformat{\paragraph}[block]
   {\fontsize{12pt}{16pt}\selectfont\songti\mdseries}
-  {}{0pt}{}
+  {\theparagraph}{1em}{}
 \titlespacing*{\paragraph}{0pt}{0.3\baselineskip}{0.3\baselineskip}
 
 \renewcommand{\thesection}{第\chinese{section}章}
