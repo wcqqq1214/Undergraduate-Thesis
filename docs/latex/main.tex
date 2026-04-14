@@ -119,49 +119,9 @@
 \renewcommand{\thefigure}{\arabic{section}-\arabic{figure}}
 \renewcommand{\thetable}{\arabic{section}-\arabic{table}}
 
-% ===== 封面信息（直接使用仓库 gxufrontmatter.tex）=====
-\usepackage{etoolbox}   % \ifdefempty
-% 隶书：字体文件在 fonts/ 目录下，直接按文件名加载
-\newif\ifgxulishufound
-\gxulishufoundfalse
-\IfFileExists{fonts/simli.ttf}{%
-    \setCJKfamilyfont{lishu}{simli.ttf}[Path=fonts/]%
-    \gxulishufoundtrue%
-}{}
-\ifgxulishufound
-    \newcommand{\lishu}{\CJKfamily{lishu}}%
-\else
-    \newcommand{\lishu}{\bfseries\heiti}%
-\fi
-
+% ===== 封面（导入外部 PDF）=====
 \begin{document}
-
-% ===== 封面（直接调用仓库 gxufrontmatter.tex）=====
-% 先 input，\providecommand 定义好所有变量和开关，再 \renewcommand 覆盖
-\input{gxufrontmatter}
-
-% —— 填写论文信息 ——
-\renewcommand{\degree}{本科}
-\renewcommand{\cntitle}{基于机器学习方法的水库滑坡位移预测及预警研究——以藕塘滑坡为例}
-\renewcommand{\entitle}{Research on Reservoir Landslide Displacement Prediction and Early Warning Based on Machine Learning Methods}
-\renewcommand{\thesisauthor}{韦承谦}
-\renewcommand{\id}{2203110625}
-\renewcommand{\category}{P642.22}
-\renewcommand{\schoolcode}{10593}
-\renewcommand{\level}{公开}
-\renewcommand{\major}{土木工程}
-\renewcommand{\classname}{岩土与地下工程222班}
-\renewcommand{\college}{土木建筑工程学院}
-\renewcommand{\supervisor}{陈铭熙}
-\renewcommand{\pubyear}{2026}
-\renewcommand{\pubmonth}{6}
-% 书脊标题去掉副标题
-\renewcommand{\cntitlespine}{基于机器学习方法的水库滑坡位移预测及预警研究}
-% 不生成声明页
-\gxustatementfalse
-\gxuspinetrue
-
-\makeugcover
+\includepdf{thesis_cover_page.pdf}
 
 
 % ===== 前置部分：罗马数字页码 =====
