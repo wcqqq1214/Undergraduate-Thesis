@@ -25,6 +25,7 @@
 \providecommand{\defensedate}{} % 论文答辩日期
 \providecommand{\degreedate}{} % 学位授予日期
 \providecommand{\defensechair}{} % 答辩委员会主席
+\providecommand{\classname}{} % 班级
 \providecommand{\infotableskip}{4em}
 \providecommand{\thesisauthor}{}
 \providecommand{\supervisor}{}
@@ -294,24 +295,24 @@
 % 上方信息表格，随文字流动（怕有人标题太长了）
 \begin{center}
 \begin{tabular}{@{}r@{\hspace{1em}}l@{}}
+    \ifdefempty{\college}{}{%
+    \zihao{-3}\bfseries 学院：&
+    \zihao{-3}\underline{\makebox[11em][c]{\college}} \\[10.2pt]}
+    \ifdefempty{\major}{}{%
+    \zihao{-3}\bfseries 专业：&
+    \zihao{-3}\underline{\makebox[11em][c]{\major}} \\[10.2pt]}
+    \ifdefempty{\classname}{}{%
+    \zihao{-3}\bfseries 班级：&
+    \zihao{-3}\underline{\makebox[11em][c]{\classname}} \\[10.2pt]}
+    \ifdefempty{\id}{}{%
+    \zihao{-3}\bfseries 学号：&
+    \zihao{-3}\underline{\makebox[11em][c]{\id}} \\[10.2pt]}
     \ifdefempty{\thesisauthor}{}{%
-    \zihao{-3}\bfseries 作者姓名：&
+    \zihao{-3}\bfseries 姓名：&
     \zihao{-3}\underline{\makebox[11em][c]{\thesisauthor}} \\[10.2pt]}
     \ifdefempty{\supervisor}{}{%
-    \zihao{-3}\bfseries 指导教师：&
+    \zihao{-3}\bfseries 指导老师：&
     \zihao{-3}\underline{\makebox[11em][c]{\supervisor}} \\[10.2pt]}
-    \ifdefempty{\cosupervisor}{}{%
-    \zihao{-3}\bfseries 合作导师：&
-    \zihao{-3}\underline{\makebox[11em][c]{\cosupervisor}} \\[10.2pt]}
-    \ifdefempty{\major}{}{%
-    \zihao{-3}\bfseries 专业名称：&
-    \zihao{-3}\underline{\makebox[11em][c]{\major}} \\[10.2pt]}
-    \ifdefempty{\research}{}{%
-    \zihao{-3}\bfseries 研究方向：&
-    \zihao{-3}\underline{\makebox[11em][c]{\research}} \\[10.2pt]}
-    \ifdefempty{\college}{}{%
-    \zihao{-3}\bfseries 所在学院：&
-    \zihao{-3}\underline{\makebox[11em][c]{\college}} \\[10.2pt]}
 \end{tabular}
 \end{center}
 
