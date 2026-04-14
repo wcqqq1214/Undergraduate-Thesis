@@ -15,17 +15,14 @@
 ## 项目结构
 
 ```
-├── docs/latex/              # 论文 LaTeX 源文件
-│   ├── main.tex            # 主文档
-│   ├── gxufrontmatter.tex   # 封面和前置页面模板
-│   ├── gxuthesis.cls        # 论文类文件
-│   ├── gxu_name.png         # 学校名称题字
-│   ├── gxu_emblem.png       # 学校校徽
-│   └── fonts/               # 字体文件
-├── code/                    # 实验代码
-│   ├── chapter2/            # 第二章：特征提取与贡献度分析
-│   ├── chapter3/            # 第三章：LSTM 位移预测
-│   └── chapter4/            # 第四章：概率预测与预警
+├── docs/latex/                  # 论文 LaTeX 源文件
+│   ├── main.tex                # 主文档
+│   ├── thesis_cover_page.pdf   # 封面（外部 PDF 导入）
+│   └── fonts/                  # 字体文件
+├── code/                        # 实验代码
+│   ├── chapter2/                # 第二章：特征提取与贡献度分析
+│   ├── chapter3/                # 第三章：LSTM 位移预测
+│   └── chapter4/                # 第四章：概率预测与预警
 └── README.md
 ```
 
@@ -49,6 +46,7 @@ latexmk -xelatex main.tex
 
 ## 注意事项
 
+- 封面为外部 PDF（`thesis_cover_page.pdf`），通过 `\includepdf` 导入
 - 字体文件已包含在 `fonts/` 目录中，编译时会自动加载
 - 编译生成的中间文件（`.xdv`, `.aux`, `.log` 等）已添加到 `.gitignore`
 - 仅保留最终的 PDF 文件在版本控制中
