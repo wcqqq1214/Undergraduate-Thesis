@@ -58,6 +58,7 @@ Thumbs.db
 *.log
 *.out
 *.toc
+*.xdv
 *.synctex(busy)
 *.synctex.gz
 *.fdb_latexmk
