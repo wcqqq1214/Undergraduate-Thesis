@@ -169,7 +169,7 @@ ax.plot(all_pred_dates, all_pred_values, color='#d62728', linewidth=1.5,
 # 训练/测试分割线
 split_date = test_dates.iloc[0]
 ax.axvline(x=split_date, color='gray', linestyle=':', linewidth=1.2)
-ax.text(split_date, ax.get_ylim()[0], ' Test', fontsize=9, color='gray', va='bottom')
+ax.text(split_date, ax.get_ylim()[0], ' 测试集', fontsize=9, color='gray', va='bottom')
 
 ax.set_xlabel('日期', fontsize=12)
 ax.set_ylabel('累计位移 (mm)', fontsize=12)
