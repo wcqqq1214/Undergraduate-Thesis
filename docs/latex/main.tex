@@ -1,5 +1,5 @@
 \documentclass[12pt,a4paper]{article}
-\usepackage[UTF8]{ctex}
+\usepackage[UTF8, fontset=none]{ctex}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -15,6 +15,8 @@
 \captionsetup[table]{position=above}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,positioning,fit,backgrounds,shapes.geometric}
+\usepackage{ulem}       % \uline 下划线
+\usepackage{pdfpages}   % 封面页面控制
 \usepackage{float}
 \usepackage{titlesec}
 \usepackage{enumitem}
@@ -55,12 +57,19 @@
     hidelinks  % 隐藏所有链接的边框
 }
 
-% 设置字体：中文使用SimSun（宋体），加粗使用SimHei（黑体），英文使用Times New Roman
-\setCJKmainfont{simsun.ttc}[Path=/usr/share/fonts/winfonts/, BoldFont=simhei.ttf]
-\setCJKfamilyfont{heiti}{simhei.ttf}[Path=/usr/share/fonts/winfonts/, AutoFakeBold=2]
-\setCJKfamilyfont{songbold}{simsun.ttc}[Path=/usr/share/fonts/winfonts/, AutoFakeBold=2]
-\renewcommand{\heiti}{\CJKfamily{heiti}}
-\setmainfont{Times New Roman}
+% 设置字体（统一使用 fonts/ 目录）
+\setCJKmainfont{simsun.ttc}[Path=fonts/, AutoFakeBold=3, BoldFont=simhei.ttf]
+\setCJKsansfont{simhei.ttf}[Path=fonts/, AutoFakeBold=3]
+\setCJKmonofont{simsun.ttc}[Path=fonts/]
+\setCJKfamilyfont{heiti}{simhei.ttf}[Path=fonts/, AutoFakeBold=2]
+\setCJKfamilyfont{songbold}{simsun.ttc}[Path=fonts/, AutoFakeBold=2]
+\setCJKfamilyfont{zhfs}{fangsong.ttf}[Path=fonts/]
+\newcommand{\heiti}{\CJKfamily{heiti}}
+\newcommand{\songti}{\CJKfamily{\CJKrmdefault}}
+\newcommand{\fangsong}{\CJKfamily{zhfs}}
+\setmainfont{times.ttf}[
+    BoldFont=timesbd.ttf, ItalicFont=timesi.ttf, BoldItalicFont=timesbi.ttf,
+    Path=fonts/]
 
 % 双语图表标题命令（中文在上，英文在下）
 % \figcaption{中文}{English}  \tabcaption{中文}{English}
@@ -110,15 +119,119 @@
 \renewcommand{\thefigure}{\arabic{section}-\arabic{figure}}
 \renewcommand{\thetable}{\arabic{section}-\arabic{table}}
 
-\title{基于机器学习方法的水库滑坡位移预测及预警研究——以藕塘滑坡为例}
-\author{韦承谦}
-\date{\today}
+% ===== 封面信息（直接使用仓库 gxufrontmatter.tex）=====
+\usepackage{etoolbox}   % \ifdefempty
+% 隶书：字体文件在 fonts/ 目录下，直接按文件名加载
+\newif\ifgxulishufound
+\gxulishufoundfalse
+\IfFileExists{fonts/simli.ttf}{%
+    \setCJKfamilyfont{lishu}{simli.ttf}[Path=fonts/]%
+    \gxulishufoundtrue%
+}{}
+\ifgxulishufound
+    \newcommand{\lishu}{\CJKfamily{lishu}}%
+\else
+    \newcommand{\lishu}{\bfseries\heiti}%
+\fi
 
 \begin{document}
 
-\maketitle
+% ===== 封面（直接调用仓库 gxufrontmatter.tex）=====
+% 先 input，\providecommand 定义好所有变量和开关，再 \renewcommand 覆盖
+\input{gxufrontmatter}
+
+% —— 填写论文信息 ——
+\renewcommand{\degree}{本科}
+\renewcommand{\cntitle}{基于机器学习方法的水库滑坡位移预测及预警研究——以藕塘滑坡为例}
+\renewcommand{\entitle}{Research on Reservoir Landslide Displacement Prediction and Early Warning Based on Machine Learning Methods}
+\renewcommand{\thesisauthor}{韦承谦}
+\renewcommand{\id}{2203110625}
+\renewcommand{\major}{岩土与地下工程}
+\renewcommand{\college}{土木建筑工程学院}
+\renewcommand{\supervisor}{陈铭熙}
+\renewcommand{\pubyear}{2026}
+\renewcommand{\pubmonth}{6}
+% 书脊标题去掉副标题
+\renewcommand{\cntitlespine}{基于机器学习方法的水库滑坡位移预测及预警研究}
+% 不生成声明页
+\gxustatementfalse
+\gxuspinetrue
+
+\makecover
+
+
+% ===== 中文摘要页 =====
+\thispagestyle{empty}
+\begin{center}
+  {\setstretch{1.25}\fontsize{16pt}{20pt}\selectfont\heiti\bfseries
+  基于机器学习方法的水库滑坡位移预测及预警研究——以藕塘滑坡为例}
+\end{center}
+
+\vspace{\baselineskip}
+
+\begin{center}
+  {\fontsize{16pt}{20pt}\selectfont\heiti\bfseries 摘\hspace{0.6em}要}
+\end{center}
+
+\vspace{\baselineskip}
+
+{\fontsize{14pt}{17.5pt}\selectfont\songti\rmfamily
+三峡库区水库滑坡受库水位周期性涨落与季节性降雨的耦合驱动，呈现出典型的阶跃型变形特征，其位移预测与预警研究对防灾减灾具有重要意义。本文以三峡库区典型阶跃型滑坡——藕塘滑坡为研究对象，构建了一套"特征分析—位移预测—概率预警"的机器学习研究框架。
+
+首先，采用LightGBM结合SHAP可解释性方法，对库水位、降雨量、地下水位等多源监测数据进行特征重要性分析，定量揭示了库水位急降（贡献度45\%）与强降雨（贡献度30\%）对滑坡位移的主控作用及其滞后效应，验证了"库水位—降雨耦合驱动"的变形机制假设。
+
+其次，基于多监测点空间运动学输入，构建了长短期记忆网络（LSTM）时序预测模型，并与GRU等基准模型进行对比。测试集结果表明，LSTM模型决定系数$R^2=0.7916$，均方根误差RMSE=5.55 mm，相对误差仅0.56\%，达到工程应用精度要求。
+
+最后，采用50次独立训练的分位数统计方法构建概率预测区间，并基于变形速率阈值制定了三级预警判据。预警体系准确率达95.2\%，召回率88.9\%，F1分数87.3\%，平均预警提前量达2.3天，显著优于传统速率法，实现了从确定性点预测向概率区间预报的转变，为库区滑坡防灾减灾提供了科学决策依据。
+}
+
+\vspace{\baselineskip}
+
+{\fontsize{14pt}{17.5pt}\selectfont\rmfamily
+\noindent{\heiti\bfseries 关键词}{\songti ：水库滑坡\hspace{1.2em}位移预测\hspace{1.2em}机器学习\hspace{1.2em}LSTM\hspace{1.2em}预警}
+}
+
 \newpage
-{\setstretch{1.25}\fontsize{12pt}{15pt}\selectfont\tableofcontents}
+
+% ===== 英文摘要页 =====
+\thispagestyle{empty}
+
+% 题目全大写，居中，左右各留5个字符空格
+\begin{center}
+  \hspace*{5em}%
+  {\setstretch{1.25}\fontsize{16pt}{20pt}\selectfont\rmfamily\bfseries
+  \parbox{0.75\textwidth}{\centering
+  RESEARCH ON RESERVOIR LANDSLIDE DISPLACEMENT PREDICTION AND EARLY WARNING BASED ON MACHINE LEARNING METHODS}}%
+  \hspace*{5em}
+\end{center}
+
+\vspace{\baselineskip}
+
+\begin{center}
+  {\fontsize{16pt}{20pt}\selectfont\rmfamily\bfseries ABSTRACT}
+\end{center}
+
+\vspace{\baselineskip}
+
+% 摘要正文，五号(10.5pt)，每段开头4个字符空格，Times New Roman
+{\fontsize{10.5pt}{15pt}\selectfont\rmfamily
+\noindent\hspace{2em}Reservoir landslides in the Three Gorges Reservoir area are driven by the coupled effects of periodic fluctuations in reservoir water level and seasonal rainfall, exhibiting typical step-like deformation characteristics. Research on displacement prediction and early warning for such landslides is of great significance for disaster prevention and mitigation. Taking the Outang landslide---a typical step-like landslide in the Three Gorges Reservoir area---as the research subject, this study constructs a machine learning framework of ``feature analysis---displacement prediction---probabilistic early warning''.
+
+\noindent\hspace{2em}First, LightGBM combined with the SHAP interpretability method is employed to analyze feature importance using multi-source monitoring data including reservoir water level, rainfall, and groundwater level. The results quantitatively reveal that rapid drawdown of reservoir water level (contribution rate 45\%) and heavy rainfall (contribution rate 30\%) are the dominant controlling factors of landslide displacement, and their lag effects are characterized, validating the hypothesis of ``reservoir water level--rainfall coupled driving'' deformation mechanism.
+
+\noindent\hspace{2em}Second, a Long Short-Term Memory (LSTM) time-series prediction model is constructed based on multi-monitoring-point spatial kinematic inputs and compared with benchmark models such as GRU. Test set results show that the LSTM model achieves a coefficient of determination $R^2 = 0.7916$, a root mean square error RMSE of 5.55~mm, and a relative error of only 0.56\%, meeting engineering application accuracy requirements.
+
+\noindent\hspace{2em}Finally, a probabilistic prediction interval is constructed using quantile statistics from 50 independent training runs, and a three-level early warning criterion is established based on deformation rate thresholds. The early warning system achieves an accuracy of 95.2\%, a recall of 88.9\%, an F1 score of 87.3\%, and an average lead time of 2.3 days, significantly outperforming traditional rate-based methods. This realizes the transition from deterministic point prediction to probabilistic interval forecasting, providing a scientific decision-making basis for landslide disaster prevention and mitigation in the reservoir area.
+}
+
+% 摘要内容和KEYWORDS之间空两行
+\vspace{2\baselineskip}
+
+{\fontsize{14pt}{20pt}\selectfont\rmfamily
+\noindent\textbf{KEYWORDS}: reservoir landslide; displacement prediction; machine learning; LSTM; early warning
+}
+
+\newpage
 \newpage
 
 \section{绪论}
@@ -1497,5 +1610,11 @@ V_t = \frac{D_t - D_{t-1}}{\Delta t}
 \nocite{*}
 \bibliography{references}
 }
+
+% —— 致谢 ——
+\clearpage
+\section*{致谢}
+\addcontentsline{toc}{section}{致谢}
+\fangsong % 致谢用仿宋字体，注释/删掉则使用宋体
 
 \end{document}
