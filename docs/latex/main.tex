@@ -163,8 +163,13 @@
 \makecover
 
 
+% ===== 前置部分：罗马数字页码 =====
+\pagenumbering{Roman}
+\setcounter{page}{1}
+
 % ===== 中文摘要页 =====
-\thispagestyle{empty}
+\addcontentsline{toc}{section}{摘要}
+\thispagestyle{plain}
 \begin{center}
   {\setstretch{1.25}\fontsize{16pt}{20pt}\selectfont\heiti\bfseries
   基于机器学习方法的水库滑坡位移预测及预警研究——以藕塘滑坡为例}
@@ -197,7 +202,8 @@
 \newpage
 
 % ===== 英文摘要页 =====
-\thispagestyle{empty}
+\addcontentsline{toc}{section}{ABSTRACT}
+\thispagestyle{plain}
 
 % 题目全大写，居中，左右各留5个字符空格
 \begin{center}
@@ -235,7 +241,14 @@
 }
 
 \newpage
+
+{\setstretch{1.25}\fontsize{12pt}{15pt}\selectfont\tableofcontents}
+
 \newpage
+
+% ===== 正文：阿拉伯数字页码从1开始 =====
+\pagenumbering{arabic}
+\setcounter{page}{1}
 
 \section{绪论}
 
