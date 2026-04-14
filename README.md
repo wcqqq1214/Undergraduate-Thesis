@@ -21,14 +21,6 @@
 │   ├── gxuthesis.cls        # 论文类文件
 │   ├── gxulogo.png          # 学校logo
 │   └── fonts/               # 字体文件
-│       ├── simsun.ttc       # 宋体
-│       ├── simhei.ttf       # 黑体
-│       ├── simli.ttf        # 隶书
-│       ├── fangsong.ttf     # 仿宋
-│       ├── times.ttf        # Times New Roman
-│       ├── timesbd.ttf      # Times New Roman Bold
-│       ├── timesi.ttf       # Times New Roman Italic
-│       └── timesbi.ttf      # Times New Roman Bold Italic
 ├── code/                    # 实验代码
 │   ├── chapter2/            # 第二章：特征提取与贡献度分析
 │   ├── chapter3/            # 第三章：LSTM 位移预测
