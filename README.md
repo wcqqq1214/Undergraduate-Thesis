@@ -19,7 +19,8 @@
 │   ├── main.tex            # 主文档
 │   ├── gxufrontmatter.tex   # 封面和前置页面模板
 │   ├── gxuthesis.cls        # 论文类文件
-│   ├── gxulogo.png          # 学校logo
+│   ├── gxu_name.png         # 学校名称题字
+│   ├── gxu_emblem.png       # 学校校徽
 │   └── fonts/               # 字体文件
 ├── code/                    # 实验代码
 │   ├── chapter2/            # 第二章：特征提取与贡献度分析
