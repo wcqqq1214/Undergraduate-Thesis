@@ -549,7 +549,7 @@
 \end{frame}
 
 % ============================================================
-\section{结论与展望}
+\section{结论}
 % ============================================================
 
 \begin{frame}{主要结论}
@@ -563,29 +563,6 @@
   \begin{alertblock}{核心贡献}
     \small 实现从\textbf{确定性点预测}向\textbf{概率区间预报}的转变，从\textbf{滞后性预警}向\textbf{前瞻性预警}的跨越
   \end{alertblock}
-\end{frame}
-
-\begin{frame}{不足与展望}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \textbf{现有局限}
-      \begin{itemize}
-        \item 需要较长历史监测数据，新建监测点适用性受限
-        \item 主要针对藕塘滑坡，跨场地泛化能力待验证
-        \item 尚未将物理力学模型与数据驱动模型深度融合
-        \item 预警阈值仍依赖工程经验，需动态优化
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \textbf{未来方向}
-      \begin{itemize}
-        \item 探索\textbf{迁移学习/小样本学习}，提升数据稀缺条件下的泛化能力
-        \item 引入\textbf{物理信息神经网络（PINN）}，将滑坡物理约束嵌入模型
-        \item 扩展至更多库区滑坡，建立通用预测预警框架
-        \item 结合 InSAR 等遥感数据，实现区域尺度预警
-      \end{itemize}
-    \end{column}
-  \end{columns}
 \end{frame}
 
 % ============================================================
