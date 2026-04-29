@@ -67,6 +67,9 @@ Thumbs.db
 *.blg
 *.bcf
 *.run.xml
+*.nav
+*.snm
+*.vrb
 
 # Project-specific
 /原始监测数据/

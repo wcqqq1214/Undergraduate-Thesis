@@ -1,0 +1,645 @@
+\documentclass[aspectratio=169,12pt]{beamer}
+
+% ===== 主题 =====
+\usetheme{metropolis}
+\usepackage[UTF8, fontset=none]{ctex}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning}
+\usepackage{caption}
+\usepackage{appendixnumberbeamer}
+
+% ===== 字体（与论文一致）=====
+\setCJKmainfont{simsun.ttc}[Path=fonts/, AutoFakeBold=3, BoldFont=simhei.ttf]
+\setCJKsansfont{simhei.ttf}[Path=fonts/, AutoFakeBold=3]
+\setCJKmonofont{simsun.ttc}[Path=fonts/]
+\setCJKfamilyfont{heiti}{simhei.ttf}[Path=fonts/, AutoFakeBold=2]
+\setCJKfamilyfont{songbold}{simsun.ttc}[Path=fonts/, AutoFakeBold=2]
+\newcommand{\heiti}{\CJKfamily{heiti}}
+\newcommand{\songti}{\CJKfamily{\CJKrmdefault}}
+\setmainfont{times.ttf}[
+    BoldFont=timesbd.ttf, ItalicFont=timesi.ttf, BoldItalicFont=timesbi.ttf,
+    Path=fonts/]
+
+% ===== 配色（metropolis 微调）=====
+\definecolor{mDarkTeal}{HTML}{23373b}
+\definecolor{mLightBrown}{HTML}{EB811B}
+\definecolor{mLightGreen}{HTML}{14B03D}
+\setbeamercolor{frametitle}{bg=mDarkTeal}
+\setbeamercolor{progress bar}{fg=mLightBrown}
+\setbeamercolor{alerted text}{fg=mLightBrown}
+
+% ===== 图表标题 =====
+\captionsetup{font=small, labelfont=bf, labelsep=space, justification=centering, skip=4pt}
+
+% ===== 元信息 =====
+\title{基于机器学习方法的水库滑坡位移预测及预警研究}
+\subtitle{——以藕塘滑坡为例}
+\author{答辩人：韦承谦}
+\institute{指导教师：陈铭熙 \quad 专业：土木工程}
+\date{2026年5月}
+
+% ===== 进度条在节标题页 =====
+\makeatletter
+\setlength{\metropolis@titleseparator@linewidth}{1pt}
+\setlength{\metropolis@progressonsectionpage@linewidth}{1.5pt}
+\makeatother
+
+\begin{document}
+
+% ============================================================
+% 封面
+% ============================================================
+\maketitle
+
+% ============================================================
+% 目录
+% ============================================================
+\begin{frame}{目录}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+% ============================================================
+\section{绪论}
+% ============================================================
+
+\begin{frame}{研究背景与意义}
+  \begin{columns}[T]
+    \begin{column}{0.55\textwidth}
+      \textbf{问题背景}
+      \begin{itemize}
+        \item 三峡库区水库滑坡受\alert{库水位周期涨落}与\alert{季节性降雨}耦合驱动
+        \item 呈现典型\textbf{阶跃型}变形特征，防灾减灾需求迫切
+        \item 传统单点确定性预测难以量化风险可信度
+      \end{itemize}
+      \vspace{0.8em}
+      \textbf{研究目标}
+      \begin{itemize}
+        \item 构建"特征分析—位移预测—概率预警"机器学习框架
+        \item 以藕塘滑坡为典型案例进行系统验证
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/chapter2/Panoramic_map_of_Outang_landslide.pdf}
+        \caption{藕塘滑坡全景图}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{藕塘滑坡概况}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{基本特征}
+      \begin{itemize}
+        \item 位于重庆市奉节县，长江南岸
+        \item 体积约 $9\times10^7\,\text{m}^3$，最大厚度 114\,m
+        \item 划分为三个子区（O1、O2、O3），多期次复合滑动
+        \item 软弱夹层（WI）控制变形，遇水软化显著
+      \end{itemize}
+      \vspace{0.5em}
+      \textbf{监测数据}
+      \begin{itemize}
+        \item 时间跨度：2016年7月—2020年6月
+        \item 监测点：MJ1、MJ3、MJ9（GNSS）、ATU4（地下水）
+        \item 日尺度：位移、库水位、降雨、气象要素
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/chapter2/Geological_map_of_Outang_landslide.pdf}
+        \caption{藕塘滑坡地质图}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{研究框架与技术路线}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.72\textwidth]{figures/chapter2/monitoring_data_overview.pdf}
+    \caption{监测数据概览（2016年7月—2020年6月）}
+  \end{figure}
+  \vspace{-0.5em}
+  \begin{block}{三阶段研究框架}
+    \centering
+    \textbf{特征分析（LightGBM+SHAP）}
+    $\;\Rightarrow\;$
+    \textbf{位移预测（LSTM）}
+    $\;\Rightarrow\;$
+    \textbf{概率预警（越限概率）}
+  \end{block}
+\end{frame}
+
+% ============================================================
+\section{可解释机器学习特征分析}
+% ============================================================
+
+\begin{frame}{研究方法：LightGBM + SHAP}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \textbf{LightGBM 核心优化}
+      \begin{itemize}
+        \item 直方图算法：连续特征离散化，降低计算量
+        \item 叶子优先生长策略（Leaf-wise）
+        \item 基于梯度的单边抽样（GOSS）
+        \item 互斥特征捆绑（EFB）
+      \end{itemize}
+      \vspace{0.5em}
+      迭代更新公式：
+      \begin{equation*}
+        F_t(x) = F_{t-1}(x) + \eta f_t(x)
+      \end{equation*}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \textbf{SHAP 可解释性}
+
+      特征 $j$ 的 Shapley 值：
+      \begin{equation*}
+        \varphi_j = \sum_{S \subseteq N\setminus\{j\}}
+          \frac{|S|!(N-|S|-1)!}{N!}
+          \bigl[f(S\cup\{j\})-f(S)\bigr]
+      \end{equation*}
+
+      \vspace{0.3em}
+      交互值（$j\neq k$）：
+      \begin{equation*}
+        \varphi_{j,k} = \sum_{S \subseteq N\setminus\{j,k\}}
+          \frac{|S|!(N-|S|-2)!}{2(N-1)!}
+          \nabla_{jk}(S)
+      \end{equation*}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{候选特征与验证策略}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \textbf{候选特征（5天滑动窗口）}
+      \begin{itemize}
+        \item 历史位移：$\text{disp}(t-5)$ 至 $\text{disp}(t-1)$
+        \item 库水位：$\text{RWL}(t-5)$ 至 $\text{RWL}(t-1)$
+        \item 日降雨量：$\text{Rainfall}(t-5)$ 至 $\text{Rainfall}(t-1)$
+        \item 地下水位：$\text{GWT}(t-5)$ 至 $\text{GWT}(t-1)$
+        \item 气象要素：温度、露点、相对湿度
+        \item 监测点 one-hot 编码（MJ9/MJ1/MJ3）
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \textbf{验证策略}
+      \begin{itemize}
+        \item \textbf{5折时序交叉验证}（TimeSeriesSplit）
+        \item 严格保持时间顺序，避免数据泄漏
+        \item 训练集内 SMOTE 过采样处理类别不平衡
+        \item 预警阈值 0.3\,mm 仅基于训练集统计确定
+      \end{itemize}
+      \vspace{0.5em}
+      \begin{block}{任务设置}
+        \small
+        \textbf{回归}：预测位移增量 $\Delta u = u_t - u_{t-1}$\\
+        \textbf{分类}：判定是否进入预警状态
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{SHAP 特征重要性分析结果}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/chapter2/shap_summary_regression.pdf}
+        \caption{SHAP 特征重要性（回归模型）}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/chapter2/shap_summary_classification.pdf}
+        \caption{SHAP 特征重要性（分类模型）}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{特征分析主要结论}
+  \begin{enumerate}
+    \item \textbf{主控因子}：历史位移 $>$ 库水位 $>$ 降雨量 $>$ 地下水位，验证了"库水位—降雨耦合驱动"假设
+    \item \textbf{非线性阈值效应}：库水位低于临界值或下降速率超阈值时，位移显著加剧
+    \item \textbf{耦合协同效应}：库水位下降与强降雨同时发生时，进入预警状态的概率显著增加
+    \item \textbf{空间差异性}：不同监测点对外部触发因素的响应敏感性存在差异
+  \end{enumerate}
+  \vspace{0.5em}
+  \begin{alertblock}{模型性能}
+    回归模型测试集 MSE：$0.0780 \pm 0.0641$；
+    分类模型测试集 AUC：$0.6795 \pm 0.1181$，召回率 76.23\%
+  \end{alertblock}
+\end{frame}
+
+% ============================================================
+\section{基于 LSTM 的位移预测模型}
+% ============================================================
+
+\begin{frame}{LSTM 网络原理}
+  LSTM 通过门控机制捕捉长期依赖关系，核心计算如下：
+
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{遗忘门}
+      \begin{equation*}
+        \mathbf{f}_t = \sigma(\mathbf{W}_f \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_f)
+      \end{equation*}
+      \textbf{输入门}
+      \begin{equation*}
+        \mathbf{i}_t = \sigma(\mathbf{W}_i \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_i)
+      \end{equation*}
+      \begin{equation*}
+        \tilde{\mathbf{C}}_t = \tanh(\mathbf{W}_C \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_C)
+      \end{equation*}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{记忆单元更新}
+      \begin{equation*}
+        \mathbf{C}_t = \mathbf{f}_t \odot \mathbf{C}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{C}}_t
+      \end{equation*}
+      \textbf{输出门}
+      \begin{equation*}
+        \mathbf{o}_t = \sigma(\mathbf{W}_o \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_o)
+      \end{equation*}
+      \begin{equation*}
+        \mathbf{h}_t = \mathbf{o}_t \odot \tanh(\mathbf{C}_t)
+      \end{equation*}
+    \end{column}
+  \end{columns}
+  \vspace{0.5em}
+  \begin{block}{输入设计}
+    MJ9、MJ1、MJ3、ATU4 四点历史累积位移序列（时间窗口 2 天，特征维度 4）$\;\to\;$ 预测 MJ1 趋势项位移
+  \end{block}
+\end{frame}
+
+\begin{frame}{基于多次运行的概率预测框架}
+  \textbf{方法}：对 LSTM 进行 \alert{50 次独立训练}（不同随机种子），收集预测分布
+
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \textbf{统计量计算}
+
+      均值预测：
+      \begin{equation*}
+        \bar{y}_t = \frac{1}{50}\sum_{i=1}^{50}\hat{y}_t^{(i)}
+      \end{equation*}
+
+      分位数预测区间：
+      \begin{equation*}
+        \hat{y}_t^{(p)} = \text{Percentile}\!\left(\{\hat{y}_t^{(i)}\},\, p\right)
+      \end{equation*}
+      构建 50\% 区间（25\%–75\%）和 90\% 区间（5\%–95\%）
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \textbf{区间评价指标}
+
+      覆盖概率（PICP）：
+      \begin{equation*}
+        \text{PICP} = \frac{1}{n}\sum_{i=1}^{n} \mathbb{I}(L_i \leq y_i \leq U_i)
+      \end{equation*}
+
+      归一化区间宽度（NMPIW）：
+      \begin{equation*}
+        \text{NMPIW} = \frac{1}{n \cdot R}\sum_{i=1}^{n}(U_i - L_i)
+      \end{equation*}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{网络结构与超参数}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \textbf{模型结构}
+      \begin{itemize}
+        \item LSTM 层 1：25 个隐藏单元，return\_sequences=True
+        \item Dropout：0.3
+        \item LSTM 层 2：15 个隐藏单元，L2 正则化（0.002）
+        \item Dropout：0.3
+        \item 全连接层：15 → 1（输出位移预测值）
+        \item 总参数量：5,716
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \textbf{训练设置}
+      \begin{itemize}
+        \item 优化器：Adam，学习率 0.0005
+        \item 损失函数：MSE
+        \item 批大小：64，训练轮数：40
+        \item 数据划分：训练集 80\% / 测试集 20\%
+        \item 归一化：MinMaxScaler $[0,1]$
+      \end{itemize}
+      \vspace{0.5em}
+      \begin{block}{硬件}
+        NVIDIA GeForce RTX 3060 Laptop GPU\\
+        单次训练约 1.5 分钟
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{点预测结果}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \begin{table}
+        \centering
+        \caption{LSTM 点预测性能（50次运行均值）}
+        \begin{tabular}{lcc}
+          \toprule
+          数据集 & $R^2$ & RMSE (mm) \\
+          \midrule
+          训练集 & 0.9883 & 11.02 \\
+          测试集 & \alert{0.7916} & \alert{5.55} \\
+          \bottomrule
+        \end{tabular}
+      \end{table}
+      \vspace{0.5em}
+      \begin{itemize}
+        \item 测试集相对误差仅 \alert{0.56\%}，达工程应用精度
+        \item 训练/测试差距适中，无明显过拟合
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/chapter3/lstm_fitting.pdf}
+        \caption{预测值与实测值对比}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{概率预测结果}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/chapter3/lstm_prediction.pdf}
+        \caption{LSTM 概率预测结果（含置信区间）}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/chapter3/lstm_uncertainty.pdf}
+        \caption{预测不确定性时变特征}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{不确定性分析}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/chapter3/lstm_std_distribution.pdf}
+        \caption{预测标准差分布直方图}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \textbf{主要结论}
+      \begin{itemize}
+        \item 平均标准差 5.41\,mm，变异系数 \alert{0.55\%}
+        \item 标准差范围 4.65–6.64\,mm，分布集中
+        \item 位移突变期标准差略增，反映预测难度自适应识别
+        \item 模型具有高稳定性与可重复性
+      \end{itemize}
+      \vspace{0.5em}
+      \begin{alertblock}{意义}
+        多次运行集成成功量化认知不确定性，为风险评估提供置信区间依据
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ============================================================
+\section{基于概率预测的滑坡预警方法}
+% ============================================================
+
+\begin{frame}{传统预警方法的局限性}
+  \begin{enumerate}
+    \item \textbf{忽略预测不确定性}：基于点预测判断，预测值接近阈值时易误报或漏报
+    \item \textbf{响应时效性不足}：速率/切线角指标属"滞后性指标"，预警窗口极短
+    \item \textbf{单一阈值缺乏适应性}：固定阈值难以适应不同变形阶段的动态变化
+  \end{enumerate}
+  \vspace{0.8em}
+  \begin{block}{本章解决方案}
+    基于 LSTM 输出的\textbf{概率分布}，计算预测位移超过安全阈值的\alert{越限概率}，建立五级动态预警体系
+  \end{block}
+\end{frame}
+
+\begin{frame}{越限概率计算方法}
+  \textbf{经验累积分布函数（ECDF）}：
+  \begin{equation*}
+    F_t(d) = \frac{1}{50} \sum_{i=1}^{50} \mathbb{I}\!\left(\hat{D}_t^{(i)} \leq d\right)
+  \end{equation*}
+
+  \textbf{越限概率}（预测位移超过安全阈值 $D_\text{threshold}$ 的概率）：
+  \begin{equation*}
+    P_{\text{exceed},t} = 1 - F_t(D_{\text{threshold}})
+    = \frac{1}{50} \sum_{i=1}^{50} \mathbb{I}\!\left(\hat{D}_t^{(i)} > D_{\text{threshold}}\right)
+  \end{equation*}
+
+  \begin{block}{基准阈值设定依据}
+    \begin{itemize}
+      \item 参考《地质灾害气象风险预警判据》及三峡库区规范
+      \item 经 LightGBM 分类任务数据驱动验证：$D_\text{threshold} = 0.3\,\text{mm}$
+      \item 接近 MJ9 训练集 95\% 分位数，处于 MJ1/MJ3 的 75\%–90\% 分位数之间
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{五级预警体系}
+  \begin{table}
+    \centering
+    \caption{基于越限概率的滑坡预警等级划分标准}
+    \begin{tabular}{cccl}
+      \toprule
+      预警等级 & 颜色 & 越限概率范围 & 响应措施 \\
+      \midrule
+      I 级 & 绿色 & $P < 5\%$ & 常规监测，每月 1 次 \\
+      II 级 & 蓝色 & $5\% \leq P < 20\%$ & 加密监测，每周 1 次 \\
+      III 级 & 黄色 & $20\% \leq P < 50\%$ & 现场巡查，每日 1 次 \\
+      IV 级 & 橙色 & $50\% \leq P < 80\%$ & 启动应急预案，实时监测 \\
+      V 级 & 红色 & $P \geq 80\%$ & 人员撤离，封闭区域 \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  \vspace{0.3em}
+  \small 阈值（5\%/20\%/50\%/80\%）综合考虑统计学显著性水平、工程实践经验与应急响应能力
+\end{frame}
+
+\begin{frame}{预警时序结果——MJ1 监测点}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{figures/chapter4/warning_timeseries.pdf}
+    \caption{基于概率预测的滑坡预警时间序列（MJ1）}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{阶跃变形期预警细节}
+  \begin{columns}[T]
+    \begin{column}{0.55\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/chapter4/mj1_active_period.pdf}
+        \caption{MJ1 阶跃变形期预警细节（2019年3月18日—4月30日）}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \textbf{典型事件（2019年3月）}
+      \begin{itemize}
+        \item 3月20日：75\% 分位数接近阈值，$P=22\%$，触发\textbf{黄色预警}
+        \item 3月22日：50\% 分位数超阈值，$P=58\%$，升级\textbf{橙色预警}
+        \item 3月24日：实测位移才突破 0.17\,mm
+      \end{itemize}
+      \vspace{0.3em}
+      \begin{alertblock}{提前量}
+        实现提前 \alert{2–4 天}预警，为应急响应争取宝贵时间
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{预警提前时间统计}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \begin{table}
+        \centering
+        \caption{MJ1 监测点预警提前时间统计}
+        \begin{tabular}{lccc}
+          \toprule
+          预警等级 & 事件数 & 平均（天） & 最大（天） \\
+          \midrule
+          黄色 & 28 & \alert{2.3} & 5 \\
+          橙色 & 15 & 1.8 & 4 \\
+          红色 & 6  & 1.2 & 3 \\
+          \bottomrule
+        \end{tabular}
+      \end{table}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \textbf{规律分析}
+      \begin{itemize}
+        \item 预警等级越高，提前时间越短——符合滑坡演化物理规律
+        \item 即使红色预警，平均仍提前 1.2 天
+        \item 传统速率法提前时间接近 0（$\leq 0.5$ 天）
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{SHAP 归因解释——典型预警事件}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/chapter4/shap_explanation.pdf}
+        \caption{2019年3月22日橙色预警事件 SHAP 归因}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \textbf{主要驱动因素}
+      \begin{itemize}
+        \item \alert{库水位上升}（266.0→268.3\,m）：贡献约 \textbf{45\%}
+        \item \alert{累计降雨}（65.6\,mm，含单日 54.6\,mm）：贡献约 \textbf{30\%}
+        \item 历史位移累积效应：贡献约 \textbf{20\%}
+        \item 其他因素（地下水、温度）：约 5\%
+      \end{itemize}
+      \vspace{0.3em}
+      \begin{block}{结论}
+        "双重不利工况"（库水位变化 + 强降雨）是触发高等级预警的主要机制
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{与传统速率预警方法对比}
+  \begin{columns}[T]
+    \begin{column}{0.55\textwidth}
+      \begin{table}
+        \centering
+        \caption{MJ1 监测点预警性能指标对比}
+        \begin{tabular}{lcccc}
+          \toprule
+          方法 & 准确率 & 召回率 & 精确率 & F1 \\
+          \midrule
+          传统速率预警 & 89.7\% & 77.8\% & 70.0\% & 73.7\% \\
+          \textbf{本文方法} & \alert{95.2\%} & \alert{88.9\%} & \alert{85.7\%} & \alert{87.3\%} \\
+          \bottomrule
+        \end{tabular}
+      \end{table}
+    \end{column}
+    \begin{column}{0.41\textwidth}
+      \textbf{提升幅度}
+      \begin{itemize}
+        \item 准确率 $+5.5$ 个百分点
+        \item 召回率 $+11.1$ 个百分点（漏报率从 22.2\% 降至 11.1\%）
+        \item 精确率 $+15.7$ 个百分点（误报率从 30.0\% 降至 14.3\%）
+        \item F1 分数 $+13.6$ 个百分点
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ============================================================
+\section{结论与展望}
+% ============================================================
+
+\begin{frame}{主要结论}
+  \begin{enumerate}
+    \item \textbf{特征分析}：LightGBM+SHAP 定量揭示库水位急降（贡献 45\%）与强降雨（贡献 30\%）为主控因子，验证"库水位—降雨耦合驱动"机制
+    \item \textbf{位移预测}：LSTM 模型测试集 $R^2=0.7916$，RMSE=5.55\,mm，相对误差 0.56\%，达工程应用精度；50次运行集成成功量化认知不确定性（变异系数 0.55\%）
+    \item \textbf{概率预警}：基于越限概率的五级预警体系准确率 95.2\%，召回率 88.9\%，F1 分数 87.3\%，平均预警提前量 2.3 天，显著优于传统速率法
+  \end{enumerate}
+  \vspace{0.3em}
+  \begin{alertblock}{核心贡献}
+    实现从\textbf{确定性点预测}向\textbf{概率区间预报}的转变，从\textbf{滞后性预警}向\textbf{前瞻性预警}的跨越
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{不足与展望}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{现有局限}
+      \begin{itemize}
+        \item 需要较长历史监测数据，新建监测点适用性受限
+        \item 主要针对藕塘滑坡，跨场地泛化能力待验证
+        \item 尚未将物理力学模型与数据驱动模型深度融合
+        \item 预警阈值仍依赖工程经验，需动态优化
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{未来方向}
+      \begin{itemize}
+        \item 探索\textbf{迁移学习/小样本学习}，提升数据稀缺条件下的泛化能力
+        \item 引入\textbf{物理信息神经网络（PINN）}，将滑坡物理约束嵌入模型
+        \item 扩展至更多库区滑坡，建立通用预测预警框架
+        \item 结合 InSAR 等遥感数据，实现区域尺度预警
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% 致谢
+% ============================================================
+\begin{frame}[standout]
+  \Huge 感谢各位老师的聆听！\\[0.8em]
+  \large 敬请批评指正
+\end{frame}
+
+\end{document}
