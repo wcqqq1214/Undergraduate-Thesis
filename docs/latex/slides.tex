@@ -69,29 +69,23 @@
 % ============================================================
 
 \begin{frame}{研究背景与意义}
-  \begin{columns}[T]
-    \begin{column}{0.55\textwidth}
-      \textbf{问题背景}
-      \begin{itemize}
-        \item 三峡库区水库滑坡受\alert{库水位周期涨落}与\alert{季节性降雨}耦合驱动
-        \item 呈现典型\textbf{阶跃型}变形特征，防灾减灾需求迫切
-        \item 传统单点确定性预测难以量化风险可信度
-      \end{itemize}
-      \vspace{0.8em}
-      \textbf{研究目标}
-      \begin{itemize}
-        \item 构建"特征分析—位移预测—概率预警"机器学习框架
-        \item 以藕塘滑坡为典型案例进行系统验证
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.42\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{figures/chapter2/Panoramic_map_of_Outang_landslide.pdf}
-        \caption{藕塘滑坡全景图}
-      \end{figure}
-    \end{column}
-  \end{columns}
+  \textbf{问题背景}
+  \begin{itemize}
+    \item 三峡库区水库滑坡受\alert{库水位周期涨落}与\alert{季节性降雨}耦合驱动
+    \item 呈现典型\textbf{阶跃型}变形特征，防灾减灾需求迫切
+    \item 传统单点确定性预测难以量化风险可信度
+  \end{itemize}
+  \vspace{0.8em}
+  \textbf{研究目标}
+  \begin{itemize}
+    \item 构建"特征分析—位移预测—概率预警"机器学习框架
+    \item 以藕塘滑坡为典型案例进行系统验证
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{藕塘滑坡全景图}
+  \centering
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{figures/chapter2/Panoramic_map_of_Outang_landslide.pdf}
 \end{frame}
 
 \begin{frame}{藕塘滑坡概况}
@@ -104,7 +98,8 @@
         \item 划分为三个子区（O1、O2、O3），多期次复合滑动
         \item 软弱夹层（WI）控制变形，遇水软化显著
       \end{itemize}
-      \vspace{0.5em}
+    \end{column}
+    \begin{column}{0.48\textwidth}
       \textbf{监测数据}
       \begin{itemize}
         \item 时间跨度：2016年7月—2020年6月
@@ -112,23 +107,15 @@
         \item 日尺度：位移、库水位、降雨、气象要素
       \end{itemize}
     \end{column}
-    \begin{column}{0.48\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{figures/chapter2/Geological_map_of_Outang_landslide.pdf}
-        \caption{藕塘滑坡地质图}
-      \end{figure}
-    \end{column}
   \end{columns}
 \end{frame}
 
+\begin{frame}{藕塘滑坡地质图}
+  \centering
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{figures/chapter2/Geological_map_of_Outang_landslide.pdf}
+\end{frame}
+
 \begin{frame}{研究框架与技术路线}
-  \begin{figure}
-    \centering
-    \includegraphics[width=0.72\textwidth]{figures/chapter2/monitoring_data_overview.pdf}
-    \caption{监测数据概览（2016年7月—2020年6月）}
-  \end{figure}
-  \vspace{-0.5em}
   \begin{block}{三阶段研究框架}
     \centering
     \textbf{特征分析（LightGBM+SHAP）}
@@ -137,6 +124,11 @@
     $\;\Rightarrow\;$
     \textbf{概率预警（越限概率）}
   \end{block}
+\end{frame}
+
+\begin{frame}{监测数据概览}
+  \centering
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{figures/chapter2/monitoring_data_overview.pdf}
 \end{frame}
 
 % ============================================================
@@ -213,23 +205,14 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{SHAP 特征重要性分析结果}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{figures/chapter2/shap_summary_regression.pdf}
-        \caption{SHAP 特征重要性（回归模型）}
-      \end{figure}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{figures/chapter2/shap_summary_classification.pdf}
-        \caption{SHAP 特征重要性（分类模型）}
-      \end{figure}
-    \end{column}
-  \end{columns}
+\begin{frame}{SHAP 特征重要性——回归模型}
+  \centering
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{figures/chapter2/shap_summary_regression.pdf}
+\end{frame}
+
+\begin{frame}{SHAP 特征重要性——分类模型}
+  \centering
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{figures/chapter2/shap_summary_classification.pdf}
 \end{frame}
 
 \begin{frame}{特征分析主要结论}
@@ -355,78 +338,57 @@
 \end{frame}
 
 \begin{frame}{点预测结果}
-  \begin{columns}[T]
-    \begin{column}{0.50\textwidth}
-      \begin{table}
-        \centering
-        \caption{LSTM 点预测性能（50次运行均值）}
-        \begin{tabular}{lcc}
-          \toprule
-          数据集 & $R^2$ & RMSE (mm) \\
-          \midrule
-          训练集 & 0.9883 & 11.02 \\
-          测试集 & \alert{0.7916} & \alert{5.55} \\
-          \bottomrule
-        \end{tabular}
-      \end{table}
-      \vspace{0.5em}
-      \begin{itemize}
-        \item 测试集相对误差仅 \alert{0.56\%}，达工程应用精度
-        \item 训练/测试差距适中，无明显过拟合
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.46\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{figures/chapter3/lstm_fitting.pdf}
-        \caption{预测值与实测值对比}
-      \end{figure}
-    \end{column}
-  \end{columns}
+  \begin{table}
+    \centering
+    \caption{LSTM 点预测性能（50次运行均值）}
+    \begin{tabular}{lcc}
+      \toprule
+      数据集 & $R^2$ & RMSE (mm) \\
+      \midrule
+      训练集 & 0.9883 & 11.02 \\
+      测试集 & \alert{0.7916} & \alert{5.55} \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  \vspace{0.5em}
+  \begin{itemize}
+    \item 测试集相对误差仅 \alert{0.56\%}，达工程应用精度
+    \item 训练/测试差距适中，无明显过拟合
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{概率预测结果}
-  \begin{columns}[T]
-    \begin{column}{0.50\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{figures/chapter3/lstm_prediction.pdf}
-        \caption{LSTM 概率预测结果（含置信区间）}
-      \end{figure}
-    \end{column}
-    \begin{column}{0.46\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{figures/chapter3/lstm_uncertainty.pdf}
-        \caption{预测不确定性时变特征}
-      \end{figure}
-    \end{column}
-  \end{columns}
+\begin{frame}{预测值与实测值对比}
+  \centering
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{figures/chapter3/lstm_fitting.pdf}
+\end{frame}
+
+\begin{frame}{LSTM 概率预测结果}
+  \centering
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{figures/chapter3/lstm_prediction.pdf}
+\end{frame}
+
+\begin{frame}{预测不确定性时变特征}
+  \centering
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{figures/chapter3/lstm_uncertainty.pdf}
 \end{frame}
 
 \begin{frame}{不确定性分析}
-  \begin{columns}[T]
-    \begin{column}{0.50\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{figures/chapter3/lstm_std_distribution.pdf}
-        \caption{预测标准差分布直方图}
-      \end{figure}
-    \end{column}
-    \begin{column}{0.46\textwidth}
-      \textbf{主要结论}
-      \begin{itemize}
-        \item 平均标准差 5.41\,mm，变异系数 \alert{0.55\%}
-        \item 标准差范围 4.65–6.64\,mm，分布集中
-        \item 位移突变期标准差略增，反映预测难度自适应识别
-        \item 模型具有高稳定性与可重复性
-      \end{itemize}
-      \vspace{0.5em}
-      \begin{alertblock}{意义}
-        多次运行集成成功量化认知不确定性，为风险评估提供置信区间依据
-      \end{alertblock}
-    \end{column}
-  \end{columns}
+  \textbf{主要结论}
+  \begin{itemize}
+    \item 平均标准差 5.41\,mm，变异系数 \alert{0.55\%}
+    \item 标准差范围 4.65–6.64\,mm，分布集中
+    \item 位移突变期标准差略增，反映预测难度自适应识别
+    \item 模型具有高稳定性与可重复性
+  \end{itemize}
+  \vspace{0.5em}
+  \begin{alertblock}{意义}
+    多次运行集成成功量化认知不确定性，为风险评估提供置信区间依据
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{预测标准差分布}
+  \centering
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{figures/chapter3/lstm_std_distribution.pdf}
 \end{frame}
 
 % ============================================================
@@ -489,35 +451,26 @@
 \end{frame}
 
 \begin{frame}{预警时序结果——MJ1 监测点}
-  \begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/chapter4/warning_timeseries.pdf}
-    \caption{基于概率预测的滑坡预警时间序列（MJ1）}
-  \end{figure}
+  \centering
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{figures/chapter4/warning_timeseries.pdf}
 \end{frame}
 
 \begin{frame}{阶跃变形期预警细节}
-  \begin{columns}[T]
-    \begin{column}{0.55\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{figures/chapter4/mj1_active_period.pdf}
-        \caption{MJ1 阶跃变形期预警细节（2019年3月18日—4月30日）}
-      \end{figure}
-    \end{column}
-    \begin{column}{0.42\textwidth}
-      \textbf{典型事件（2019年3月）}
-      \begin{itemize}
-        \item 3月20日：75\% 分位数接近阈值，$P=22\%$，触发\textbf{黄色预警}
-        \item 3月22日：50\% 分位数超阈值，$P=58\%$，升级\textbf{橙色预警}
-        \item 3月24日：实测位移才突破 0.17\,mm
-      \end{itemize}
-      \vspace{0.3em}
-      \begin{alertblock}{提前量}
-        实现提前 \alert{2–4 天}预警，为应急响应争取宝贵时间
-      \end{alertblock}
-    \end{column}
-  \end{columns}
+  \textbf{典型事件（2019年3月）}
+  \begin{itemize}
+    \item 3月20日：75\% 分位数接近阈值，$P=22\%$，触发\textbf{黄色预警}
+    \item 3月22日：50\% 分位数超阈值，$P=58\%$，升级\textbf{橙色预警}
+    \item 3月24日：实测位移才突破 0.17\,mm
+  \end{itemize}
+  \vspace{0.3em}
+  \begin{alertblock}{提前量}
+    实现提前 \alert{2–4 天}预警，为应急响应争取宝贵时间
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{MJ1 阶跃变形期预警细节}
+  \centering
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{figures/chapter4/mj1_active_period.pdf}
 \end{frame}
 
 \begin{frame}{预警提前时间统计}
@@ -549,28 +502,22 @@
 \end{frame}
 
 \begin{frame}{SHAP 归因解释——典型预警事件}
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{figures/chapter4/shap_explanation.pdf}
-        \caption{2019年3月22日橙色预警事件 SHAP 归因}
-      \end{figure}
-    \end{column}
-    \begin{column}{0.44\textwidth}
-      \textbf{主要驱动因素}
-      \begin{itemize}
-        \item \alert{库水位上升}（266.0→268.3\,m）：贡献约 \textbf{45\%}
-        \item \alert{累计降雨}（65.6\,mm，含单日 54.6\,mm）：贡献约 \textbf{30\%}
-        \item 历史位移累积效应：贡献约 \textbf{20\%}
-        \item 其他因素（地下水、温度）：约 5\%
-      \end{itemize}
-      \vspace{0.3em}
-      \begin{block}{结论}
-        "双重不利工况"（库水位变化 + 强降雨）是触发高等级预警的主要机制
-      \end{block}
-    \end{column}
-  \end{columns}
+  \textbf{主要驱动因素}
+  \begin{itemize}
+    \item \alert{库水位上升}（266.0→268.3\,m）：贡献约 \textbf{45\%}
+    \item \alert{累计降雨}（65.6\,mm，含单日 54.6\,mm）：贡献约 \textbf{30\%}
+    \item 历史位移累积效应：贡献约 \textbf{20\%}
+    \item 其他因素（地下水、温度）：约 5\%
+  \end{itemize}
+  \vspace{0.3em}
+  \begin{block}{结论}
+    "双重不利工况"（库水位变化 + 强降雨）是触发高等级预警的主要机制
+  \end{block}
+\end{frame}
+
+\begin{frame}{SHAP 归因——橙色预警事件}
+  \centering
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{figures/chapter4/shap_explanation.pdf}
 \end{frame}
 
 \begin{frame}{与传统速率预警方法对比}
