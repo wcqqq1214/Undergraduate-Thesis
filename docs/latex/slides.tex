@@ -174,7 +174,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{候选特征与验证策略}
+\begin{frame}[shrink=20]{候选特征与验证策略}
   \begin{columns}[T]
     \begin{column}{0.52\textwidth}
       \small\textbf{候选特征（5天滑动窗口）}
@@ -195,14 +195,14 @@
         \item 训练集内 SMOTE 过采样处理类别不平衡
         \item 预警阈值 0.3\,mm 仅基于训练集统计确定
       \end{itemize}
-      \vspace{0.3em}
-      \begin{block}{任务设置}
-        \small
-        \textbf{回归}：预测位移增量 $\Delta u = u_t - u_{t-1}$\\
-        \textbf{分类}：判定是否进入预警状态
-      \end{block}
     \end{column}
   \end{columns}
+  \vspace{-0.3em}
+  \begin{block}{任务设置}
+    \small
+    \textbf{回归}：预测位移增量 $\Delta u = u_t - u_{t-1}$\quad
+    \textbf{分类}：判定是否进入预警状态
+  \end{block}
 \end{frame}
 
 \begin{frame}{SHAP 特征重要性——回归模型}
