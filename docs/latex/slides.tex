@@ -112,7 +112,7 @@
 
 \begin{frame}{藕塘滑坡地质图}
   \centering
-  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{figures/chapter2/Geological_map_of_Outang_landslide.pdf}
+  \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/chapter2/Geological_map_of_Outang_landslide.pdf}
 \end{frame}
 
 \begin{frame}{研究框架与技术路线}
@@ -174,10 +174,10 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}[shrink=20]{候选特征与验证策略}
+\begin{frame}[shrink=10]{候选特征与验证策略}
   \begin{columns}[T]
     \begin{column}{0.52\textwidth}
-      \small\textbf{候选特征（5天滑动窗口）}
+      \textbf{候选特征（5天滑动窗口）}
       \begin{itemize}
         \item 历史位移：$\text{disp}(t{-}5)$ 至 $\text{disp}(t{-}1)$
         \item 库水位：$\text{RWL}(t{-}5)$ 至 $\text{RWL}(t{-}1)$
@@ -188,7 +188,7 @@
       \end{itemize}
     \end{column}
     \begin{column}{0.44\textwidth}
-      \small\textbf{验证策略}
+      \textbf{验证策略}
       \begin{itemize}
         \item \textbf{5折时序交叉验证}
         \item 严格保持时间顺序，避免数据泄漏
@@ -197,9 +197,8 @@
       \end{itemize}
     \end{column}
   \end{columns}
-  \vspace{-0.3em}
+  \vspace{0.2em}
   \begin{block}{任务设置}
-    \small
     \textbf{回归}：预测位移增量 $\Delta u = u_t - u_{t-1}$\quad
     \textbf{分类}：判定是否进入预警状态
   \end{block}
