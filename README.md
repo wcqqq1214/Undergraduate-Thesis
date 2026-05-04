@@ -37,11 +37,12 @@
 
 ## 论文编译
 
-使用 latexmk 编译论文：
+使用 latexmk + XeLaTeX 编译：
 
 ```bash
 cd docs/latex
-latexmk -xelatex main.tex
+latexmk -xelatex main.tex    # 论文正文
+latexmk -xelatex slides.tex  # 答辩幻灯片 (beamer)
 ```
 
 ## 注意事项
