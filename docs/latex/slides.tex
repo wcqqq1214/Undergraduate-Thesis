@@ -455,11 +455,13 @@
 \end{frame}
 
 \begin{frame}{阶跃变形期预警细节}
-  \textbf{典型事件（2019年3月）}
+  \textbf{典型事件（2020年3月）}
   \begin{itemize}
-    \item 3月20日：75\% 分位数接近阈值，$P=22\%$，触发\textbf{黄色预警}
-    \item 3月22日：50\% 分位数超阈值，$P=58\%$，升级\textbf{橙色预警}
-    \item 3月24日：实测位移才突破 0.17\,mm
+    \item 3月12日：$P=6\%$，触发\textbf{蓝色预警}
+    \item 3月14日：$P=40\%$，升级\textbf{黄色预警}
+    \item 3月15日：$P=62\%$，升级\textbf{橙色预警}
+    \item 3月16日：$P=86\%$，升级\textbf{红色预警}（5天内完成四级跃升）
+    \item 红色预警持续34天，早于4月连续暴雨约一个月
   \end{itemize}
   \vspace{0.3em}
   \begin{alertblock}{提前量}
@@ -502,16 +504,16 @@
 \end{frame}
 
 \begin{frame}{SHAP 归因解释——典型预警事件}
-  \textbf{主要驱动因素}
+  \textbf{主要驱动因素（2020年3月15日橙色预警，$P=62\%$）}
   \begin{itemize}
-    \item \alert{库水位上升}（266.0→268.3\,m）：贡献约 \textbf{45\%}
-    \item \alert{累计降雨}（65.6\,mm，含单日 54.6\,mm）：贡献约 \textbf{30\%}
-    \item 历史位移累积效应：贡献约 \textbf{20\%}
-    \item 其他因素（地下水、温度）：约 5\%
+    \item \alert{库水位消落}（167.5→166.6\,m，30天消落1.0\,m）：贡献约 \textbf{39.5\%}
+    \item \alert{历史位移累积}（30天累计5.5\,mm）：贡献约 \textbf{34.2\%}
+    \item 气温变化（最低温4.7→9.9\,℃）：贡献约 \textbf{21.1\%}
+    \item 地下水位等其他因素：约 5.2\%
   \end{itemize}
   \vspace{0.3em}
   \begin{block}{结论}
-    "双重不利工况"（库水位变化 + 强降雨）是触发高等级预警的主要机制
+    库水位消落与位移累积效应是触发预警的主要机制（合计73.7\%），降雨直接贡献仅0.1\%
   \end{block}
 \end{frame}
 
