@@ -84,12 +84,12 @@ ax.fill_between(test_dates, 0, stats_df['std'], alpha=0.3, color='blue')
 # 添加平均标准差线
 mean_std = stats_df['std'].mean()
 ax.axhline(y=mean_std, color='r', linestyle='--', linewidth=1.5,
-          label=f'Mean Std = {mean_std:.2f} mm')
+          label=f'平均标准差 = {mean_std:.2f} mm')
 
 # 设置标签和标题
-ax.set_xlabel('Date', fontsize=12)
-ax.set_ylabel('Standard Deviation (mm)', fontsize=12)
-ax.set_title('Temporal Variation of Prediction Uncertainty', fontsize=14, fontweight='bold')
+ax.set_xlabel('日期', fontsize=12)
+ax.set_ylabel('标准差 (mm)', fontsize=12)
+ax.set_title('预测不确定性随时间变化', fontsize=14, fontweight='bold')
 ax.legend(loc='upper right', fontsize=10)
 ax.grid(True, alpha=0.3)
 
@@ -121,14 +121,14 @@ n, bins, patches = ax.hist(stats_df['std'], bins=30, color='skyblue',
 
 # 添加统计信息
 ax.axvline(stats_df['std'].mean(), color='red', linestyle='--',
-          linewidth=2, label=f'Mean = {stats_df["std"].mean():.2f} mm')
+          linewidth=2, label=f'均值 = {stats_df["std"].mean():.2f} mm')
 ax.axvline(stats_df['std'].median(), color='green', linestyle='--',
-          linewidth=2, label=f'Median = {stats_df["std"].median():.2f} mm')
+          linewidth=2, label=f'中位数 = {stats_df["std"].median():.2f} mm')
 
 # 设置标签和标题
-ax.set_xlabel('Standard Deviation (mm)', fontsize=12)
-ax.set_ylabel('Frequency', fontsize=12)
-ax.set_title('Distribution of Prediction Standard Deviation', fontsize=14, fontweight='bold')
+ax.set_xlabel('标准差 (mm)', fontsize=12)
+ax.set_ylabel('频数', fontsize=12)
+ax.set_title('预测标准差分布', fontsize=14, fontweight='bold')
 ax.legend(fontsize=10)
 ax.grid(True, alpha=0.3, axis='y')
 
