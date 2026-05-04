@@ -23,13 +23,20 @@ INTERMEDIATE_DIR = TABLES_DIR / 'intermediate_data'
 FIGURES_DIR = BASE_DIR / 'outputs' / 'figures'
 FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
-# 预警等级颜色映射
+# 预警等级颜色映射（与论文五级预警体系一致）
 WARNING_COLORS = {
-    0: '#2ecc71',  # 绿色
-    1: '#3498db',  # 蓝色
-    2: '#f1c40f',  # 黄色
-    3: '#e67e22',  # 橙色
-    4: '#e74c3c'   # 红色
+    0: '#2ecc71',  # 安全（绿）
+    1: '#3498db',  # 低风险（蓝）
+    2: '#f1c40f',  # 中等风险（黄）
+    3: '#e67e22',  # 高风险（橙）
+    4: '#e74c3c'   # 极高风险（红）
+}
+WARNING_LABELS = {
+    0: '安全',
+    1: '低风险',
+    2: '中等风险',
+    3: '高风险',
+    4: '极高风险'
 }
 
 def load_data():
@@ -130,11 +137,11 @@ def plot_detailed_period(prob_warning, trad_warning, actual_disp, start_date, en
             ax2.scatter(prob_period.loc[mask, 'date'],
                        prob_period.loc[mask, 'warning_level'],
                        c=WARNING_COLORS[level], s=50, alpha=0.8,
-                       label=f'Level {level}', marker='o')
+                       label=WARNING_LABELS[level], marker='o')
     ax2.set_ylabel('概率预警等级', fontsize=11)
     ax2.set_yticks([0, 1, 2, 3, 4])
-    ax2.set_yticklabels(['绿', '蓝', '黄', '橙', '红'])
-    ax2.legend(loc='upper left', fontsize=8, ncol=5)
+    ax2.set_yticklabels(['安全', '低风险', '中等风险', '高风险', '极高风险'])
+    ax2.legend(loc='upper left', fontsize=8)
     ax2.grid(True, alpha=0.3)
 
     # 子图3: 传统预警等级
@@ -145,11 +152,11 @@ def plot_detailed_period(prob_warning, trad_warning, actual_disp, start_date, en
             ax3.scatter(trad_period.loc[mask, 'date'],
                        trad_period.loc[mask, 'warning_level'],
                        c=WARNING_COLORS[level], s=50, alpha=0.8,
-                       label=f'Level {level}', marker='s')
+                       label=WARNING_LABELS[level], marker='s')
     ax3.set_ylabel('传统预警等级', fontsize=11)
     ax3.set_yticks([0, 1, 2, 3, 4])
-    ax3.set_yticklabels(['绿', '蓝', '黄', '橙', '红'])
-    ax3.legend(loc='upper left', fontsize=8, ncol=5)
+    ax3.set_yticklabels(['安全', '低风险', '中等风险', '高风险', '极高风险'])
+    ax3.legend(loc='upper left', fontsize=8)
     ax3.grid(True, alpha=0.3)
 
     # 子图4: 日位移增量

@@ -151,8 +151,8 @@ def plot_active_period():
     ax2.set_ylabel('预警等级', fontsize=13, fontweight='bold')
     ax2.set_xlabel('日期', fontsize=13, fontweight='bold')
     ax2.set_yticks([0, 1, 2, 3, 4])
-    ax2.set_yticklabels(['0-绿色', '1-蓝色', '2-黄色', '3-橙色', '4-红色'], fontsize=11)
-    ax2.legend(loc='upper left', fontsize=10, ncol=5, framealpha=0.95)
+    ax2.set_yticklabels(['安全', '低风险', '中等风险', '高风险', '极高风险'], fontsize=11)
+    ax2.legend(loc='upper left', fontsize=10, framealpha=0.95)
     ax2.grid(True, alpha=0.3, linestyle='--')
     ax2.set_ylim(-0.5, 4.5)
 
