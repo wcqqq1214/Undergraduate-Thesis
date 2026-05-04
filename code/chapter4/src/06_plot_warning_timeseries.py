@@ -22,13 +22,20 @@ INTERMEDIATE_DIR = TABLES_DIR / 'intermediate_data'
 FIGURES_DIR = BASE_DIR / 'outputs' / 'figures'
 FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
-# 预警等级颜色映射
+# 预警等级颜色映射（与论文五级预警体系一致）
 WARNING_COLORS = {
-    0: '#2ecc71',  # 绿色
-    1: '#3498db',  # 蓝色
-    2: '#f1c40f',  # 黄色
-    3: '#e67e22',  # 橙色
-    4: '#e74c3c'   # 红色
+    0: '#2ecc71',  # 安全（绿）
+    1: '#3498db',  # 低风险（蓝）
+    2: '#f1c40f',  # 中等风险（黄）
+    3: '#e67e22',  # 高风险（橙）
+    4: '#e74c3c'   # 极高风险（红）
+}
+WARNING_LABELS = {
+    0: '安全',
+    1: '低风险',
+    2: '中等风险',
+    3: '高风险',
+    4: '极高风险'
 }
 
 def load_data():
@@ -63,10 +70,10 @@ def plot_warning_timeseries():
             ax1.scatter(prob_warning.loc[mask, 'date'],
                        prob_warning.loc[mask, 'warning_level'],
                        c=WARNING_COLORS[level], s=20, alpha=0.7,
-                       label=f'Level {level}')
+                       label=WARNING_LABELS[level])
     ax1.set_ylabel('概率预警等级', fontsize=12)
     ax1.set_yticks([0, 1, 2, 3, 4])
-    ax1.set_yticklabels(['绿', '蓝', '黄', '橙', '红'])
+    ax1.set_yticklabels(['安全', '低风险', '中等风险', '高风险', '极高风险'])
     ax1.legend(loc='upper left', fontsize=9)
     ax1.grid(True, alpha=0.3)
     ax1.set_title('基于概率预测的滑坡预警时间序列', fontsize=14, fontweight='bold')
@@ -79,10 +86,10 @@ def plot_warning_timeseries():
             ax2.scatter(trad_warning.loc[mask, 'date'],
                        trad_warning.loc[mask, 'warning_level'],
                        c=WARNING_COLORS[level], s=20, alpha=0.7,
-                       label=f'Level {level}')
+                       label=WARNING_LABELS[level])
     ax2.set_ylabel('传统预警等级', fontsize=12)
     ax2.set_yticks([0, 1, 2, 3, 4])
-    ax2.set_yticklabels(['绿', '蓝', '黄', '橙', '红'])
+    ax2.set_yticklabels(['安全', '低风险', '中等风险', '高风险', '极高风险'])
     ax2.legend(loc='upper left', fontsize=9)
     ax2.grid(True, alpha=0.3)
 
