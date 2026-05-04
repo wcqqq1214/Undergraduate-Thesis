@@ -35,23 +35,23 @@ fig, ax = plt.subplots(figsize=(12, 6))
 
 # 绘制90%置信区间（浅色）
 ax.fill_between(test_dates, stats_df['p05'], stats_df['p95'],
-                alpha=0.2, color='blue', label='90% Confidence Interval (5%-95%)')
+                alpha=0.2, color='blue', label='90% 置信区间 (5%-95%)')
 
 # 绘制50%置信区间（深色）
 ax.fill_between(test_dates, stats_df['p25'], stats_df['p75'],
-                alpha=0.4, color='blue', label='50% Confidence Interval (25%-75%)')
+                alpha=0.4, color='blue', label='50% 置信区间 (25%-75%)')
 
 # 绘制均值预测（蓝色实线）
-ax.plot(test_dates, stats_df['mean'], 'b-', linewidth=2, label='Mean Prediction (50 runs)')
+ax.plot(test_dates, stats_df['mean'], 'b-', linewidth=2, label='均值预测 (50次运行)')
 
 # 绘制真实值（红色散点）
 ax.scatter(test_dates, stats_df['actual'], c='red', s=20, alpha=0.6,
-          label='Actual Observations', zorder=5)
+          label='实际观测值', zorder=5)
 
 # 设置标签和标题
-ax.set_xlabel('Date', fontsize=12)
-ax.set_ylabel('Displacement (mm)', fontsize=12)
-ax.set_title('LSTM Probabilistic Prediction Results', fontsize=14, fontweight='bold')
+ax.set_xlabel('日期', fontsize=12)
+ax.set_ylabel('位移 (mm)', fontsize=12)
+ax.set_title('LSTM 概率预测结果', fontsize=14, fontweight='bold')
 ax.legend(loc='upper left', fontsize=10)
 ax.grid(True, alpha=0.3)
 
