@@ -150,11 +150,11 @@
 {\fontsize{14pt}{17.5pt}\selectfont\songti\rmfamily
 三峡库区水库滑坡受库水位周期性涨落与季节性降雨的耦合驱动，呈现出典型的阶跃型变形特征，其位移预测与预警研究对防灾减灾具有重要意义。本文以三峡库区典型阶跃型滑坡——藕塘滑坡为研究对象，构建了一套"特征分析—位移预测—概率预警"的机器学习研究框架。
 
-首先，采用LightGBM结合SHAP可解释性方法，对库水位、降雨量、地下水位等多源监测数据进行特征重要性分析，定量揭示了库水位急降（贡献度45\%）与强降雨（贡献度30\%）对滑坡位移的主控作用及其滞后效应，验证了"库水位—降雨耦合驱动"的变形机制假设。
+首先，采用LightGBM结合SHAP可解释性方法，对库水位、降雨量、地下水位等多源监测数据进行特征重要性分析，定量揭示了库水位消落（贡献度39.5\%）与历史位移累积效应（贡献度34.2\%）对滑坡位移的主控作用，以及气温变化（21.1\%）和地下水位（5.1\%）的次要影响，验证了滑坡变形的累积驱动机制假设。
 
 其次，基于多监测点空间运动学输入，构建了长短期记忆网络（LSTM）时序预测模型，并与GRU等基准模型进行对比。测试集结果表明，LSTM模型决定系数$R^2=0.7916$，均方根误差RMSE=5.55 mm，相对误差仅0.56\%，达到工程应用精度要求。
 
-最后，采用50次独立训练的分位数统计方法构建概率预测区间，并基于变形速率阈值制定了五级预警体系。预警体系准确率达95.2\%，召回率88.9\%，F1分数87.3\%，平均预警提前量达2.3天，显著优于传统速率法，实现了从确定性点预测向概率区间预报的转变，为库区滑坡防灾减灾提供了科学决策依据。
+最后，采用50次独立训练的分位数统计方法构建概率预测区间，并基于变形速率阈值制定了五级预警体系。预警体系准确率达95.2\%，召回率88.9\%，F1分数87.3\%，预警提前量达1--3天，显著优于传统速率法，实现了从确定性点预测向概率区间预报的转变，为库区滑坡防灾减灾提供了科学决策依据。
 }
 
 \vspace{\baselineskip}
@@ -190,11 +190,11 @@
 {\fontsize{10.5pt}{15pt}\selectfont\rmfamily
 \noindent\hspace{2em}Reservoir landslides in the Three Gorges Reservoir area are driven by the coupled effects of periodic fluctuations in reservoir water level and seasonal rainfall, exhibiting typical step-like deformation characteristics. Research on displacement prediction and early warning for such landslides is of great significance for disaster prevention and mitigation. Taking the Outang landslide---a typical step-like landslide in the Three Gorges Reservoir area---as the research subject, this study constructs a machine learning framework of ``feature analysis---displacement prediction---probabilistic early warning''.
 
-\noindent\hspace{2em}First, LightGBM combined with the SHAP interpretability method is employed to analyze feature importance using multi-source monitoring data including reservoir water level, rainfall, and groundwater level. The results quantitatively reveal that rapid drawdown of reservoir water level (contribution rate 45\%) and heavy rainfall (contribution rate 30\%) are the dominant controlling factors of landslide displacement, and their lag effects are characterized, validating the hypothesis of ``reservoir water level--rainfall coupled driving'' deformation mechanism.
+\noindent\hspace{2em}First, LightGBM combined with the SHAP interpretability method is employed to analyze feature importance using multi-source monitoring data including reservoir water level, rainfall, and groundwater level. The results quantitatively reveal that reservoir water level drawdown (contribution rate 39.5\%) and cumulative historical displacement (contribution rate 34.2\%) are the dominant controlling factors of landslide displacement, followed by temperature variation (21.1\%) and groundwater level fluctuation (5.1\%), validating the cumulative driving mechanism hypothesis of landslide deformation.
 
 \noindent\hspace{2em}Second, a Long Short-Term Memory (LSTM) time-series prediction model is constructed based on multi-monitoring-point spatial kinematic inputs and compared with benchmark models such as GRU. Test set results show that the LSTM model achieves a coefficient of determination $R^2 = 0.7916$, a root mean square error RMSE of 5.55~mm, and a relative error of only 0.56\%, meeting engineering application accuracy requirements.
 
-\noindent\hspace{2em}Finally, a probabilistic prediction interval is constructed using quantile statistics from 50 independent training runs, and a five-level early warning system is established based on deformation rate thresholds. The early warning system achieves an accuracy of 95.2\%, a recall of 88.9\%, an F1 score of 87.3\%, and an average lead time of 2.3 days, significantly outperforming traditional rate-based methods. This realizes the transition from deterministic point prediction to probabilistic interval forecasting, providing a scientific decision-making basis for landslide disaster prevention and mitigation in the reservoir area.
+\noindent\hspace{2em}Finally, a probabilistic prediction interval is constructed using quantile statistics from 50 independent training runs, and a five-level early warning system is established based on deformation rate thresholds. The early warning system achieves an accuracy of 95.2\%, a recall of 88.9\%, an F1 score of 87.3\%, and an average lead time of 1--3 days, significantly outperforming traditional rate-based methods. This realizes the transition from deterministic point prediction to probabilistic interval forecasting, providing a scientific decision-making basis for landslide disaster prevention and mitigation in the reservoir area.
 }
 
 % 摘要内容和KEYWORDS之间空两行
@@ -327,7 +327,7 @@
 \begin{enumerate}
     \item 以LightGBM为基础模型，分别构建位移增量回归模型与预警状态分类模型，采用5折时序交叉验证评估模型性能，并引入SMOTE过采样技术处理类别不平衡问题；
     \item 引入SHAP（Shapley Additive Explanations）方法对模型进行可解释性分析，通过特征贡献图、依赖图和交互图，定量揭示库水位、降雨、地下水位等触发因子对滑坡位移的贡献度、非线性响应规律及耦合效应；
-    \item 基于SHAP分析结果，筛选主控特征，为后续预测模型提供高质量输入变量，并从数据层面验证"库水位-降雨耦合驱动"的变形机制假设。
+    \item 基于SHAP分析结果，筛选主控特征，为后续预测模型提供高质量输入变量，并从数据层面验证滑坡变形的多因子累积驱动机制假设。
 \end{enumerate}
 
 \paragraph{三、基于LSTM的位移预测与概率区间估计}
@@ -376,7 +376,7 @@
 \node[phasebox, below=0.5cm of s13]  (p2)  {第二阶段：可解释机器学习特征分析};
 \node[stepbox,  below=0.2cm of p2]   (s21) {LightGBM模型训练与5折时序交叉验证};
 \node[stepbox,  below=0.15cm of s21] (s22) {SHAP可解释性分析（贡献图、依赖图、交互图）};
-\node[stepbox,  below=0.15cm of s22] (s23) {主控特征筛选，验证库水位—降雨耦合驱动机制};
+\node[stepbox,  below=0.15cm of s22] (s23) {主控特征筛选，验证库水位消落与位移累积驱动机制};
 
 \node[phasebox, below=0.5cm of s23]  (p3)  {第三阶段：LSTM位移预测与概率区间估计};
 \node[stepbox,  below=0.2cm of p3]   (s31) {多监测点空间运动学输入，构建LSTM时序预测模型};
@@ -754,7 +754,7 @@ g(x') = \varphi_0 + \sum_{j=1}^{N} \varphi_j x'_j
 
 \paragraph{\textbf{（1）特征重要性与物理机制的一致性}}
 
-SHAP分析结果与藕塘滑坡的物理变形机制高度一致。库水位变化和降雨量作为最重要的触发因子，在SHAP贡献图中占据主导地位，这验证了"库水位-降雨耦合驱动"的变形机制假设。历史位移特征的高重要性则反映了滑坡变形的时序连续性和累积效应。地下水位作为连接外部触发因素（降雨、库水位）与滑坡内部响应的桥梁，其重要性也得到了SHAP分析的支持。
+SHAP分析结果与藕塘滑坡的物理变形机制高度一致。库水位变化和历史位移累积效应作为最重要的触发因子，在SHAP贡献图中占据主导地位，这验证了滑坡变形的累积驱动机制假设。气温变化的较高贡献则反映了环境温度对滑坡稳定性的间接影响。地下水位作为连接外部触发因素（降雨、库水位）与滑坡内部响应的桥梁，其重要性也得到了SHAP分析的支持。
 
 \paragraph{\textbf{（2）非线性响应特征}}
 
@@ -779,7 +779,7 @@ SHAP依赖图揭示了滑坡对触发因素的非线性响应。例如，库水�
 \begin{enumerate}
     \item 构建了基于LightGBM的藕塘滑坡时空位移预测模型和预警判定模型，并采用严格的5折时序交叉验证结合SMOTE过采样技术进行模型评估。回归模型在测试集上的MSE为$0.0780 \pm 0.0641$，能够有效预测滑坡的位移增量；分类模型在测试集上的AUC为$0.6795 \pm 0.1181$，召回率达到76.23\%，能够识别大部分真实预警事件。时序验证策略严格避免了数据泄漏，所得结果真实反映了模型在实际预测场景中的性能，为滑坡监测预警系统的构建提供了可靠的技术支撑。
 
-    \item SHAP贡献图识别了影响滑坡位移预测的核心特征，直观展示了不同触发因子的特征值对模型预测的影响。对于藕塘滑坡，影响位移预测最大的特征包括：历史位移值（disp$(t-1)$至disp$(t-5)$）、库水位（RWL$(t-1)$至RWL$(t-5)$）、降雨量（Rainfall$(t-1)$至Rainfall$(t-5)$）以及地下水位（GWT$(t-1)$至GWT$(t-5)$）。这些主控因子与阶跃型滑坡的变形机理基本吻合，验证了"库水位-降雨耦合驱动"的变形机制假设。
+    \item SHAP贡献图识别了影响滑坡位移预测的核心特征，直观展示了不同触发因子的特征值对模型预测的影响。对于藕塘滑坡，影响位移预测最大的特征包括：历史位移值（disp$(t-1)$至disp$(t-5)$）、库水位（RWL$(t-1)$至RWL$(t-5)$）、降雨量（Rainfall$(t-1)$至Rainfall$(t-5)$）以及地下水位（GWT$(t-1)$至GWT$(t-5)$）。这些主控因子与阶跃型滑坡的变形机理基本吻合，验证了滑坡变形的累积驱动机制假设。
 
     \item SHAP依赖图进一步揭示了单个影响因子对预测结果的具体影响模式，展现了特征值变化对滑坡位移的非线性作用及潜在的阈值效应。研究发现，库水位较低或快速下降、降雨量超过特定阈值、地下水位快速上升等条件会显著加剧滑坡位移的发生。这些发现为建立基于多因子联合判定的预警准则提供了定量依据。
 
@@ -1600,7 +1600,7 @@ V_t = \frac{D_t - D_{t-1}}{\Delta t}
     
     \item 验证了方法在藕塘滑坡的有效性。以MJ1、MJ9、MJ3三个监测点为例，分析了平稳期和阶跃变形期的预警结果。结果表明，本方法在平稳期能够准确识别低风险状态，有效避免误报；在阶跃变形期能够提前1-3天发出预警，为应急响应争取宝贵时间。
     
-    \item 引入了SHAP归因分析方法。对典型预警事件进行事后解释，揭示了库水位快速下降和强降雨叠加是触发高等级预警的主要驱动因素。这种可解释性增强了预警系统的可信度，为决策者提供了科学依据。
+    \item 引入了SHAP归因分析方法。对典型预警事件进行事后解释，揭示了库水位持续消落与历史位移累积效应是触发高等级预警的主要驱动因素。这种可解释性增强了预警系统的可信度，为决策者提供了科学依据。
     
     \item 对比了传统速率预警方法。定量评估结果表明，本方法在准确率、召回率、精确率和F1分数等指标上均显著优于传统方法，同时具有明显的预警提前时间优势。
 \end{enumerate}
@@ -1610,7 +1610,7 @@ V_t = \frac{D_t - D_{t-1}}{\Delta t}
 
 本研究以三峡库区典型阶跃型滑坡——藕塘滑坡为研究对象，针对水库滑坡位移预测与预警中存在的多源诱发因子时滞效应难以量化、阶跃变形期预测精度不足、预警不确定性量化缺失等关键科学问题，系统开展了基于机器学习方法的水库滑坡位移预测及预警研究。通过构建多源特征工程、建立时空位移预测模型、引入概率预警体系，实现了从传统确定性预警向概率预警的转变，从滞后性预警向前瞻性预警的跨越，为水库滑坡的实时监测预警提供了新的技术途径。
 
-在多源特征工程构建方面，本研究基于LightGBM+SHAP可解释性机器学习方法，系统分析了库水位、降雨、地下水位等诱发因子对滑坡位移的影响规律。通过特征重要性分析、局部依赖图和特征交互效应图等多维度可视化手段，定量揭示了库水位快速下降和强降雨叠加是触发滑坡阶跃变形的主要驱动因素，明确了不同诱发因子的最佳时滞窗口（库水位滞后7-14天，降雨滞后3-7天）。这种数据驱动的特征工程方法不仅提高了模型输入变量的物理相关性，还为揭示"水-土"相互作用下阶跃型滑坡的成因机理提供了可量化的数据支撑。
+在多源特征工程构建方面，本研究基于LightGBM+SHAP可解释性机器学习方法，系统分析了库水位、降雨、地下水位等诱发因子对滑坡位移的影响规律。通过特征重要性分析、局部依赖图和特征交互效应图等多维度可视化手段，定量揭示了库水位快速下降与历史位移累积效应是触发滑坡阶跃变形的主要驱动因素，明确了不同诱发因子的最佳时滞窗口（库水位滞后7-14天，降雨滞后3-7天）。这种数据驱动的特征工程方法不仅提高了模型输入变量的物理相关性，还为揭示"水-土"相互作用下阶跃型滑坡的成因机理提供了可量化的数据支撑。
 
 在位移预测模型构建方面，本研究基于PyTorch框架搭建了LSTM时空位移预测模型，有效解决了传统单点预测模型割裂滑坡体时空联系的局限性。通过引入多测点时空信息融合机制，模型能够同时捕捉滑坡不同部位之间的协同演化规律和长时序依赖关系。在藕塘滑坡的实际应用中，模型在测试集上的平均RMSE为2.3mm，MAE为1.8mm，R²达到0.96，显著优于传统时间序列方法。特别是在阶跃变形期，模型对位移突变的捕捉能力明显增强，有效缓解了传统方法存在的"削峰"和相位滞后问题，为滑坡灾变趋势的精准预测提供了技术支撑。
 
