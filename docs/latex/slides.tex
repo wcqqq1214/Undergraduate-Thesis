@@ -14,16 +14,19 @@
 \usepackage{appendixnumberbeamer}
 
 % ===== 字体（与论文一致）=====
-\setCJKmainfont{simsun.ttc}[Path=fonts/, AutoFakeBold=3, BoldFont=simhei.ttf]
-\setCJKsansfont{simhei.ttf}[Path=fonts/, AutoFakeBold=3]
-\setCJKmonofont{simsun.ttc}[Path=fonts/]
-\setCJKfamilyfont{heiti}{simhei.ttf}[Path=fonts/, AutoFakeBold=2]
-\setCJKfamilyfont{songbold}{simsun.ttc}[Path=fonts/, AutoFakeBold=2]
+\setCJKmainfont{simsun.ttc}[Path=fonts/, AutoFakeBold=3, BoldFont=simhei.ttf, Mapping=fullwidth-stop]
+\setCJKsansfont{simhei.ttf}[Path=fonts/, AutoFakeBold=3, Mapping=fullwidth-stop]
+\setCJKmonofont{simsun.ttc}[Path=fonts/, Mapping=fullwidth-stop]
+\setCJKfamilyfont{heiti}{simhei.ttf}[Path=fonts/, AutoFakeBold=2, Mapping=fullwidth-stop]
+\setCJKfamilyfont{songbold}{simsun.ttc}[Path=fonts/, AutoFakeBold=2, Mapping=fullwidth-stop]
 \newcommand{\heiti}{\CJKfamily{heiti}}
 \newcommand{\songti}{\CJKfamily{\CJKrmdefault}}
 \setmainfont{times.ttf}[
     BoldFont=timesbd.ttf, ItalicFont=timesi.ttf, BoldItalicFont=timesbi.ttf,
     Path=fonts/]
+
+% 启用中文引号自动映射（"..." → ""...""）
+\xeCJKsetup{PunctStyle=quanjiao}
 
 % ===== 配色（metropolis 微调）=====
 \definecolor{mDarkTeal}{HTML}{23373b}
@@ -78,7 +81,7 @@
   \vspace{0.8em}
   \textbf{研究目标}
   \begin{itemize}
-    \item 构建"特征分析—位移预测—概率预警"机器学习框架
+    \item 构建“特征分析—位移预测—概率预警”机器学习框架
     \item 以藕塘滑坡为典型案例进行系统验证
   \end{itemize}
 \end{frame}
@@ -402,7 +405,7 @@
 \begin{frame}{传统预警方法的局限性}
   \begin{enumerate}
     \item \textbf{忽略预测不确定性}：基于点预测判断，预测值接近阈值时易误报或漏报
-    \item \textbf{响应时效性不足}：速率/切线角指标属"滞后性指标"，预警窗口极短
+    \item \textbf{响应时效性不足}：速率/切线角指标属“滞后性指标”，预警窗口极短
     \item \textbf{单一阈值缺乏适应性}：固定阈值难以适应不同变形阶段的动态变化
   \end{enumerate}
   \vspace{0.8em}
@@ -419,7 +422,7 @@
   \begin{enumerate}
     \item 对训练期累计位移做 30 天滚动差分，得月速率序列 $\{V_i\}$
     \item 剔除 $>90\%$ 分位的加速事件（排除极端工况影响）
-    \item 对剩余"匀速变形阶段"样本计算均值 $\bar V$ 与标准差 $\sigma$：
+    \item 对剩余“匀速变形阶段”样本计算均值 $\bar V$ 与标准差 $\sigma$：
   \end{enumerate}
   \begin{equation*}
     V_0 = 1.5\bar V + 2\sigma
@@ -456,7 +459,7 @@
   \vspace{0.3em}
   \begin{itemize}
     \item 三点 $V_0$ 差异达 3 倍，与各点位移基线高度吻合
-    \item 各点独立确定阈值，避免"一刀切"造成灵敏度失衡
+    \item 各点独立确定阈值，避免“一刀切”造成灵敏度失衡
   \end{itemize}
 \end{frame}
 
@@ -542,7 +545,7 @@
   \end{itemize}
   \vspace{0.3em}
   \begin{block}{结论}
-    前期位移累积、库水位快速升高、地下水位补给三大因素合计贡献约 95.9\%，与"主汛期末蓄水启动→位移加速"规律高度吻合
+    前期位移累积、库水位快速升高、地下水位补给三大因素合计贡献约 95.9\%，与“主汛期末蓄水启动→位移加速”规律高度吻合
   \end{block}
 \end{frame}
 
