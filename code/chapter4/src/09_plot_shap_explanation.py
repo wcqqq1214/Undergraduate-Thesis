@@ -1,6 +1,7 @@
 """
 图4-4: 基于真实SHAP值的预警事件归因分析
-针对2020年3月15日MJ1橙色预警事件（越限概率62%），使用LightGBM分类模型计算SHAP归因
+针对 2017-09-28 MJ1 训练期阶跃段黄色预警事件（in-sample 演示），使用LightGBM分类模型计算SHAP归因。
+注：第四章采用 V0 阈值体系下的 4 级预警；原 2020-03-15 橙色事件不适用于新体系。
 """
 import sys
 from pathlib import Path
@@ -193,7 +194,7 @@ def plot_shap_waterfall(shap_values, base_value, sample_idx: int,
     ax.set_yticklabels(labels + ['最终预测\nf(x)'], fontsize=10)
     ax.axvline(x=base_value, color='gray', linestyle='--', linewidth=1, alpha=0.5)
     ax.set_xlabel('模型输出值 (log-odds)', fontsize=12, fontweight='bold')
-    ax.set_title(f'SHAP瀑布图 — 预警事件归因分析\n({event_date} MJ1橙色预警, 越限概率62%)',
+    ax.set_title(f'SHAP瀑布图 — 预警事件归因分析\n({event_date} MJ1黄色预警)',
                  fontsize=13, fontweight='bold', pad=15)
     ax.grid(axis='x', alpha=0.3)
     plt.tight_layout()
@@ -292,7 +293,7 @@ def plot_shap_bar_aggregated(category_pct: dict, event_date: str):
     )
     ax2.set_title('SHAP归因分析 — 因子占比', fontsize=14, fontweight='bold', pad=12)
 
-    fig.suptitle(f'预警事件SHAP归因分析\n({event_date} MJ1橙色预警, 越限概率62%)',
+    fig.suptitle(f'预警事件SHAP归因分析\n({event_date} MJ1黄色预警)',
                  fontsize=15, fontweight='bold', y=1.02)
 
     plt.tight_layout(rect=[0, 0, 0.88, 0.92])
@@ -355,8 +356,8 @@ def main():
 
     print(f"   模型训练完成, 最佳迭代: {cls_model.best_iteration}")
 
-    # 4. 定位2020年3月15日 MJ1 样本
-    event_date = pd.Timestamp('2020-03-15')
+    # 4. 定位 2017-09-28 MJ1 黄色预警事件样本（V0 体系下训练期 in-sample 演示的典型峰值日）
+    event_date = pd.Timestamp('2017-09-28')
     mask = (meta['date'] == event_date) & (meta['point'] == 'MJ1/mm')
     sample_idx = np.where(mask)[0]
     if len(sample_idx) == 0:
@@ -402,7 +403,7 @@ def main():
         print(f"   {cat}: {pct:.1f}%")
 
     # 绘制图表
-    event_date_str = "2020年3月15日"
+    event_date_str = "2017年9月28日"
     plot_shap_waterfall(shap_values_pos, base_value, sample_idx, feat_names_cn, event_date_str)
     plot_shap_bar_aggregated(category_pct, event_date_str)
 
