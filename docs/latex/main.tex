@@ -1030,7 +1030,7 @@ R^2 = 1 - \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}{\sum_{i=1}^{n}(y_i - \bar{y})
 
 \subsubsection{网络结构和超参数设置}
 
-LSTM模型采用TensorFlow/Keras深度学习框架实现。三个目标点（MJ9、MJ1、MJ3）共享完全相同的网络结构，以保证模型容量与学习机制在点与点之间可比。网络结构设计如下：
+LSTM模型采用PyTorch深度学习框架实现。三个目标点（MJ9、MJ1、MJ3）共享完全相同的网络结构，以保证模型容量与学习机制在点与点之间可比。网络结构设计如下：
 
 \begin{itemize}
 \item 第一层：LSTM层，25个隐藏单元，return\_sequences=True，接收时间序列输入
