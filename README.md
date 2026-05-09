@@ -32,7 +32,7 @@
 ## 技术栈
 
 - **编程语言**：Python 3.x
-- **深度学习框架**：TensorFlow/Keras
+- **深度学习框架**：Pytorch
 - **机器学习库**：scikit-learn, LightGBM
 - **可解释性分析**：SHAP
 - **时序预测**：LSTM（长短期记忆网络）
