@@ -1,176 +1,130 @@
 """
-模块3：传统速率预警方法
-实现基于日位移增量的传统速率预警方法作为对比基准
+模块 3: 传统速率预警方法
+
+与 V0 概率预警进行公平对比：
+  - 使用同一 V0/5V0/10V0 阈值体系（4 级：绿/黄/橙/红）
+  - V 使用实测累计位移的 30 天滚动月速率（不使用 LSTM 预测）
+
+这样传统方法与概率方法的差异仅在于"速率来源"：
+  - 传统：实测（后验，无前瞻性）
+  - 概率：LSTM 集成预测（前瞻 + 不确定性）
 """
+
+import json
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from pathlib import Path
 
 
-def traditional_velocity_warning(displacement_series):
-    """
-    传统速率预警方法（基于日位移增量）
+MONTH_WINDOW_DAYS = 30
+LEVEL_COLORS_EN = ['green', 'yellow', 'orange', 'red']
+LEVEL_COLORS_ZH = ['绿色', '黄色', '橙色', '红色']
 
-    速率阈值（mm/天）:
-        绿色(0): V < 0.1
-        蓝色(1): 0.1 <= V < 0.2
-        黄色(2): 0.2 <= V < 0.3
-        橙色(3): 0.3 <= V < 0.5
-        红色(4): V >= 0.5
 
-    参数:
-        displacement_series: (T,) - 累计位移序列
+def classify(v_series, v0, v0_orange, v0_red):
+    levels = np.zeros(len(v_series), dtype=int)
+    levels[(v_series >= v0) & (v_series < v0_orange)] = 1
+    levels[(v_series >= v0_orange) & (v_series < v0_red)] = 2
+    levels[v_series >= v0_red] = 3
+    return levels
 
-    返回:
-        warning_levels: (T-1,) - 预警等级
-        warning_colors: list - 预警颜色
-        daily_velocity: (T-1,) - 日位移增量
-        statistics: dict - 统计信息
-    """
-    # 计算日位移增量（速率）
-    daily_velocity = np.diff(displacement_series)  # (T-1,)
 
-    warning_levels = np.zeros(len(daily_velocity), dtype=int)
-    warning_colors = []
+def traditional_velocity_warning(displacement_series, v0, v0_orange, v0_red,
+                                 window=MONTH_WINDOW_DAYS):
+    """基于实测累计位移做 30 天滚动月速率，用 V0 阈值体系分级"""
+    daily_inc = np.diff(displacement_series)  # (T-1,)
+    # 30 天滚动求和 → 月速率
+    monthly = pd.Series(daily_inc).rolling(window=window, min_periods=window).sum().to_numpy()
+    # 前 window-1 个值是 NaN，保留结构方便后续按时间轴对齐
+    valid_mask = ~np.isnan(monthly)
+    levels = np.full(len(monthly), -1, dtype=int)
+    levels[valid_mask] = classify(monthly[valid_mask], v0, v0_orange, v0_red)
+    colors = [LEVEL_COLORS_EN[lv] if lv >= 0 else 'n/a' for lv in levels]
 
-    # 定义速率阈值
-    thresholds = [0.1, 0.2, 0.3, 0.5]
-    color_names = ['green', 'blue', 'yellow', 'orange', 'red']
-    color_chinese = ['绿色', '蓝色', '黄色', '橙色', '红色']
+    level_counts = {zh: int(((levels == i) & valid_mask).sum())
+                    for i, zh in enumerate(LEVEL_COLORS_ZH)}
+    valid_days = int(valid_mask.sum())
 
-    for i, v in enumerate(daily_velocity):
-        if v < thresholds[0]:
-            level = 0
-        elif v < thresholds[1]:
-            level = 1
-        elif v < thresholds[2]:
-            level = 2
-        elif v < thresholds[3]:
-            level = 3
-        else:
-            level = 4
-
-        warning_levels[i] = level
-        warning_colors.append(color_names[level])
-
-    # 统计各等级的天数
-    level_counts = {}
-    for level in range(5):
-        count = (warning_levels == level).sum()
-        level_counts[color_chinese[level]] = int(count)
-
-    statistics = {
-        'total_days': len(daily_velocity),
+    stats = {
+        'total_days': len(daily_inc),
+        'valid_days': valid_days,
         'level_distribution': level_counts,
-        'high_risk_days': int((warning_levels >= 3).sum()),
-        'warning_days': int((warning_levels >= 2).sum()),
-        'mean_velocity': float(np.mean(daily_velocity)),
-        'max_velocity': float(np.max(daily_velocity)),
-        'min_velocity': float(np.min(daily_velocity)),
-        'std_velocity': float(np.std(daily_velocity))
+        'warning_days_yellow_or_above': int(((levels >= 1) & valid_mask).sum()),
+        'high_risk_days_orange_or_above': int(((levels >= 2) & valid_mask).sum()),
+        'mean_monthly_rate': float(np.nanmean(monthly)),
+        'max_monthly_rate': float(np.nanmax(monthly)),
+        'min_monthly_rate': float(np.nanmin(monthly)),
     }
 
-    print(f"传统速率预警统计:")
-    print(f"  总天数: {statistics['total_days']}")
-    print(f"  平均速率: {statistics['mean_velocity']:.3f} mm/天")
-    print(f"  速率范围: [{statistics['min_velocity']:.3f}, {statistics['max_velocity']:.3f}] mm/天")
-    for color, count in level_counts.items():
-        percentage = count / statistics['total_days'] * 100
-        print(f"  {color}: {count} 天 ({percentage:.1f}%)")
-    print(f"  预警天数(黄色及以上): {statistics['warning_days']} 天")
+    print('传统速率预警统计 (V0 体系, 月口径):')
+    print(f'  有效天数: {valid_days} (前 {window - 1} 天因滚动窗口无值)')
+    print(f'  月速率范围: [{stats["min_monthly_rate"]:.3f}, {stats["max_monthly_rate"]:.3f}] mm/M')
+    for zh in LEVEL_COLORS_ZH:
+        pct = level_counts[zh] / valid_days * 100 if valid_days else 0
+        print(f'  {zh}: {level_counts[zh]} 天 ({pct:.1f}%)')
+    print(f'  预警天数 (黄色及以上): {stats["warning_days_yellow_or_above"]}')
+    print(f'  高风险 (橙色及以上): {stats["high_risk_days_orange_or_above"]}')
 
-    return warning_levels, warning_colors, daily_velocity, statistics
+    return levels, colors, monthly, stats
 
 
-def load_actual_displacement(data_file, monitoring_point='MJ1/mm'):
-    """
-    加载实际监测位移数据
-
-    参数:
-        data_file: 监测数据文件路径
-        monitoring_point: 监测点列名
-
-    返回:
-        displacement: (T,) - 累计位移序列
-        dates: (T,) - 日期序列
-    """
-    print(f"加载实际监测数据: {data_file}")
+def load_actual_displacement(data_file, monitoring_point):
     df = pd.read_excel(data_file)
-
-    print(f"数据列: {df.columns.tolist()}")
-    print(f"数据形状: {df.shape}")
-
-    # 提取指定监测点的位移数据
-    displacement = df[monitoring_point].values
+    displacement = df[monitoring_point].to_numpy()
     dates = pd.to_datetime(df['Date'])
-
-    print(f"监测点: {monitoring_point}")
-    print(f"数据时间范围: {dates.min()} 至 {dates.max()}")
-    print(f"位移范围: [{displacement.min():.2f}, {displacement.max():.2f}] mm")
-
+    print(f'数据时间范围: {dates.min()} 至 {dates.max()}')
+    print(f'位移范围: [{displacement.min():.2f}, {displacement.max():.2f}] mm')
     return displacement, dates
 
 
-def main():
-    """主函数"""
-    # 设置路径
+def main(target='MJ1'):
     base_dir = Path(__file__).parent.parent.parent.parent
-    data_dir = base_dir / "data"
-    chapter4_output = base_dir / "code" / "chapter4" / "outputs" / "tables"
-
-    monitoring_data_file = data_dir / "monitoring data.xlsx"
-
-    print("="*60)
-    print("模块3: 传统速率预警方法")
-    print("="*60)
-
-    # 1. 加载实际监测数据
-    displacement, dates = load_actual_displacement(
-        monitoring_data_file,
-        monitoring_point='MJ1/mm'
-    )
-
-    # 2. 计算传统速率预警
-    print("\n计算传统速率预警...")
-    warning_levels, warning_colors, daily_velocity, statistics = \
-        traditional_velocity_warning(displacement)
-
-    # 3. 保存结果
-    intermediate_dir = chapter4_output / "intermediate_data"
-    statistics_dir = chapter4_output / "statistics"
+    data_file = base_dir / 'data' / 'monitoring data.xlsx'
+    chapter4_out = base_dir / 'code' / 'chapter4' / 'outputs' / 'tables'
+    intermediate_dir = chapter4_out / 'intermediate_data' / target
+    stats_dir = chapter4_out / 'statistics' / target
     intermediate_dir.mkdir(parents=True, exist_ok=True)
-    statistics_dir.mkdir(parents=True, exist_ok=True)
+    stats_dir.mkdir(parents=True, exist_ok=True)
 
-    output_file = intermediate_dir / "traditional_warning_levels.csv"
-    result_df = pd.DataFrame({
-        'date': dates[1:],  # 差分后少一个时间步
-        'daily_velocity': daily_velocity,
-        'warning_level': warning_levels,
-        'warning_color': warning_colors
+    print('=' * 60)
+    print(f'模块 3: 传统速率预警 (V0 体系) [{target}]')
+    print('=' * 60)
+
+    v0_conf = json.loads((intermediate_dir / 'v0.json').read_text())
+    v0 = v0_conf['v0_mm_per_month']
+    v0_orange = v0_conf['v0_orange_threshold']
+    v0_red = v0_conf['v0_red_threshold']
+    print(f'V0={v0:.3f}  5V0={v0_orange:.3f}  10V0={v0_red:.3f} mm/M')
+
+    displacement, dates = load_actual_displacement(data_file, f'{target}/mm')
+
+    levels, colors, monthly_rate, stats = traditional_velocity_warning(
+        displacement, v0, v0_orange, v0_red)
+
+    out_df = pd.DataFrame({
+        'date': dates[1:],             # 差分后少一天
+        'monthly_rate': monthly_rate,  # 30 天滚动月速率 (mm/M)，前 29 天为 NaN
+        'warning_level': levels,
+        'warning_color': colors,
     })
-    result_df.to_csv(output_file, index=False)
-    print(f"\n传统预警结果已保存至: {output_file}")
+    out_file = intermediate_dir / 'traditional_warning_levels.csv'
+    out_df.to_csv(out_file, index=False)
+    print(f'\n传统预警结果已保存: {out_file}')
 
-    # 4. 保存统计信息
-    stats_file = statistics_dir / "traditional_warning_statistics.json"
-    import json
-    with open(stats_file, 'w') as f:
-        json.dump(statistics, f, indent=2, ensure_ascii=False)
-    print(f"统计信息已保存至: {stats_file}")
+    (stats_dir / 'traditional_warning_statistics.json').write_text(
+        json.dumps(stats, indent=2, ensure_ascii=False))
 
-    # 5. 保存实际位移数据（用于后续分析）
-    displacement_file = intermediate_dir / "actual_displacement_MJ1.csv"
-    pd.DataFrame({
-        'date': dates,
-        'displacement': displacement
-    }).to_csv(displacement_file, index=False)
-    print(f"实际位移数据已保存至: {displacement_file}")
+    # 保存实测位移（与原脚本兼容）
+    pd.DataFrame({'date': dates, 'displacement': displacement}).to_csv(
+        intermediate_dir / f'actual_displacement_{target}.csv', index=False)
 
-    print("\n" + "="*60)
-    print("模块3 完成！")
-    print("="*60)
+    print('\n' + '=' * 60)
+    print(f'模块 3 完成！[{target}]')
+    print('=' * 60)
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    import sys
+    tgt = sys.argv[1] if len(sys.argv) > 1 else 'MJ1'
+    main(tgt)

@@ -1,192 +1,186 @@
 """
-图4-3: MJ1监测点阶跃变形期预警细节（2020年3-4月）
-展示预测位移的不同分位数、安全阈值、实际监测位移、预警等级
+图 4-3: 阶跃变形期预警细节 (V0 体系)
+
+两张子图：
+  1) LSTM 预测的月速率：50 次集成的 50%/75%/95% 分位数 + 实测月速率 + V0/5V0/10V0
+  2) 每日预警等级（概率 / 传统 并排）
 """
 
-import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
+import json
 from pathlib import Path
 
-# 设置字体
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+
 plt.rcParams['font.serif'] = ['SimSun', 'Times New Roman']
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.size'] = 10
 
-# 路径配置
 BASE_DIR = Path(__file__).parent.parent
 TABLES_DIR = BASE_DIR / 'outputs' / 'tables'
-INTERMEDIATE_DIR = TABLES_DIR / 'intermediate_data'
+CHAPTER3_TABLES = Path('/home/wcqqq21/Undergraduate-Thesis/code/chapter3/outputs/tables')
 FIGURES_DIR = BASE_DIR / 'outputs' / 'figures'
 FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
-# 预警等级颜色映射
-WARNING_COLORS = {
-    0: '#2ecc71',  # 绿色
-    1: '#3498db',  # 蓝色
-    2: '#f1c40f',  # 黄色
-    3: '#e67e22',  # 橙色
-    4: '#e74c3c'   # 红色
-}
+WARNING_COLORS = {0: '#2ecc71', 1: '#f1c40f', 2: '#e67e22', 3: '#e74c3c'}
+LEVEL_NAMES = ['绿色', '黄色', '橙色', '红色']
+MONTH_WINDOW_DAYS = 30
 
-def load_data():
-    """加载数据"""
-    # 加载chapter3的完整预测结果
-    pred_data = pd.read_csv('/home/wcqqq21/Undergraduate-Thesis/code/chapter3/outputs/tables/lstm_trend_50runs_predictions.csv')
 
-    # 加载实际位移
-    actual_disp = pd.read_csv(INTERMEDIATE_DIR / 'actual_displacement_MJ1.csv')
+def load_inputs(target):
+    intermediate_dir = TABLES_DIR / 'intermediate_data' / target
+
+    v0_conf = json.loads((intermediate_dir / 'v0.json').read_text())
+    v0 = v0_conf['v0_mm_per_month']
+    v0_orange = v0_conf['v0_orange_threshold']
+    v0_red = v0_conf['v0_red_threshold']
+
+    pred_df = pd.read_csv(CHAPTER3_TABLES / f'lstm_trend_50runs_predictions_{target}.csv')
+    pred_pivot = pred_df.pivot(index='time_index', columns='run_id', values='prediction').sort_index()
+    predictions = pred_pivot.to_numpy()  # (T, n_runs)
+
+    # 测试集月速率 = 30 天滚动差分
+    n_days, n_runs = predictions.shape
+    monthly_rate_pred = predictions[MONTH_WINDOW_DAYS:] - predictions[:-MONTH_WINDOW_DAYS]
+
+    actual_disp = pd.read_csv(intermediate_dir / f'actual_displacement_{target}.csv')
     actual_disp['date'] = pd.to_datetime(actual_disp['date'])
 
-    # 加载预警等级
-    warning_levels = pd.read_csv(INTERMEDIATE_DIR / 'warning_levels.csv')
+    test_dates_full = actual_disp['date'].iloc[-n_days:].reset_index(drop=True)
+    test_dates = test_dates_full.iloc[MONTH_WINDOW_DAYS:].reset_index(drop=True)
 
-    return pred_data, actual_disp, warning_levels
+    daily_inc = pd.concat([pd.Series([0.0]),
+                           actual_disp['displacement'].diff().iloc[1:]])
+    actual_monthly = daily_inc.rolling(MONTH_WINDOW_DAYS,
+                                       min_periods=MONTH_WINDOW_DAYS).sum().to_numpy()
+    # 只取测试集 & 滚动后
+    actual_monthly_test = actual_monthly[-len(test_dates):]
 
-def calculate_quantile_predictions(pred_data):
-    """
-    从50次运行的预测结果计算分位数
-    """
-    # 重塑数据：从长格式转为宽格式
-    n_runs = pred_data['run_id'].max()
-    n_timesteps = pred_data['time_index'].max() + 1
+    prob_warning = pd.read_csv(intermediate_dir / 'warning_levels.csv')
+    prob_warning['date'] = test_dates
 
-    predictions = np.zeros((n_timesteps, n_runs))
+    trad_warning = pd.read_csv(intermediate_dir / 'traditional_warning_levels.csv')
+    trad_warning['date'] = pd.to_datetime(trad_warning['date'])
+    trad_warning = trad_warning[trad_warning['warning_level'] >= 0].reset_index(drop=True)
 
-    for run_id in range(1, n_runs + 1):
-        run_data = pred_data[pred_data['run_id'] == run_id].sort_values('time_index')
-        predictions[:, run_id - 1] = run_data['prediction'].values
+    return {
+        'v0': v0, 'v0_orange': v0_orange, 'v0_red': v0_red,
+        'test_dates': test_dates,
+        'monthly_rate_pred': monthly_rate_pred,
+        'actual_monthly': actual_monthly_test,
+        'prob_warning': prob_warning,
+        'trad_warning': trad_warning,
+    }
 
-    # 计算分位数
-    q50 = np.percentile(predictions, 50, axis=1)
-    q75 = np.percentile(predictions, 75, axis=1)
-    q95 = np.percentile(predictions, 95, axis=1)
 
-    # 获取实际值
-    actual = pred_data[pred_data['run_id'] == 1].sort_values('time_index')['actual'].values
+def plot_active_period(target='MJ1', start_date=None, end_date=None):
+    if start_date is None:
+        start_date = pd.Timestamp('2020-03-18')
+    if end_date is None:
+        end_date = pd.Timestamp('2020-04-30')
 
-    return q50, q75, q95, actual
-
-def plot_active_period():
-    """绘制阶跃变形期预警细节"""
-    # 加载数据
-    pred_data, actual_disp, warning_levels = load_data()
-
-    # 计算分位数预测
-    q50, q75, q95, actual = calculate_quantile_predictions(pred_data)
-
-    # 预测数据对应的日期范围（测试集）
-    test_size = len(q50)
-    test_dates = actual_disp['date'].iloc[-test_size:].reset_index(drop=True)
-
-    # 筛选2020年3月18日-4月30日数据（阶跃变形期）
-    start_date = pd.Timestamp('2020-03-18')
-    end_date = pd.Timestamp('2020-04-30')
+    data = load_inputs(target)
+    test_dates = data['test_dates']
+    mr_pred = data['monthly_rate_pred']
+    actual_mr = data['actual_monthly']
 
     mask = (test_dates >= start_date) & (test_dates <= end_date)
-    period_dates = test_dates[mask]
-    period_indices = np.where(mask)[0]
+    if not mask.any():
+        print(f'  [{target}] 时段 {start_date.date()} ~ {end_date.date()} 内无预测数据，跳过')
+        return
+    idx = np.where(mask)[0]
+    dates = test_dates[mask].reset_index(drop=True)
 
-    period_q50 = q50[period_indices]
-    period_q75 = q75[period_indices]
-    period_q95 = q95[period_indices]
-    period_actual = actual[period_indices]
-    period_warning = warning_levels.iloc[period_indices].reset_index(drop=True)
+    q50 = np.percentile(mr_pred[idx], 50, axis=1)
+    q75 = np.percentile(mr_pred[idx], 75, axis=1)
+    q95 = np.percentile(mr_pred[idx], 95, axis=1)
+    actual_slice = actual_mr[idx]
 
-    # 创建图形
-    fig, axes = plt.subplots(2, 1, figsize=(14, 10), sharex=True)
+    prob_slice = data['prob_warning'][mask].reset_index(drop=True)
+    mt = (data['trad_warning']['date'] >= start_date) & (data['trad_warning']['date'] <= end_date)
+    trad_slice = data['trad_warning'][mt].reset_index(drop=True)
 
-    # 子图1: 位移预测与实际位移
+    v0 = data['v0']; v0o = data['v0_orange']; v0r = data['v0_red']
+
+    fig, axes = plt.subplots(2, 1, figsize=(14, 9), sharex=True)
+
     ax1 = axes[0]
-
-    # 绘制分位数预测
-    ax1.plot(period_dates, period_q50, 'b-', linewidth=2.5, label='预测位移 (50%分位数)', alpha=0.9)
-    ax1.plot(period_dates, period_q75, 'g--', linewidth=2, label='预测位移 (75%分位数)', alpha=0.8)
-    ax1.plot(period_dates, period_q95, 'r:', linewidth=2, label='预测位移 (95%分位数)', alpha=0.8)
-
-    # 绘制实际位移
-    ax1.plot(period_dates, period_actual, 'ko-',
-             linewidth=2, markersize=5, label='实际监测位移', alpha=0.7)
-
-    # 安全阈值（使用实际位移的均值 + 0.5倍标准差作为示例）
-    threshold = period_actual.mean() + 0.5 * period_actual.std()
-    ax1.axhline(y=threshold, color='red', linestyle='--', linewidth=2.5,
-                label=f'安全阈值 ({threshold:.1f} mm)', alpha=0.9)
-
-    ax1.set_ylabel('累积位移 (mm)', fontsize=13, fontweight='bold')
-    ax1.legend(loc='upper left', fontsize=11, framealpha=0.95, ncol=2)
+    ax1.plot(dates, q50, 'b-', linewidth=2.5, label='LSTM 50% 分位月速率')
+    ax1.plot(dates, q75, 'g--', linewidth=2, label='LSTM 75% 分位月速率')
+    ax1.plot(dates, q95, 'r:', linewidth=2, label='LSTM 95% 分位月速率')
+    ax1.plot(dates, actual_slice, 'ko-', linewidth=2, markersize=4,
+             label='实测月速率', alpha=0.75)
+    ax1.axhline(y=v0, color=WARNING_COLORS[1], linestyle='--', linewidth=1.8,
+                label=f'V0 = {v0:.2f}')
+    ax1.axhline(y=v0o, color=WARNING_COLORS[2], linestyle='--', linewidth=1.8,
+                label=f'5V0 = {v0o:.2f}')
+    ax1.axhline(y=v0r, color=WARNING_COLORS[3], linestyle='--', linewidth=1.8,
+                label=f'10V0 = {v0r:.2f}')
+    ax1.set_ylabel('月速率 (mm/M)', fontsize=13, fontweight='bold')
+    ax1.legend(loc='upper left', fontsize=10, framealpha=0.9, ncol=2)
     ax1.grid(True, alpha=0.3, linestyle='--')
-    ax1.set_title('MJ1监测点阶跃变形期预警细节 (2020年3月18日-4月30日)',
-                  fontsize=14, fontweight='bold', pad=15)
+    ax1.set_title(
+        f'{target} 监测点阶跃变形期预警细节 '
+        f'({start_date.strftime("%Y-%m-%d")} ~ {end_date.strftime("%Y-%m-%d")})',
+        fontsize=14, fontweight='bold', pad=15)
 
-    # 添加y轴范围
-    y_min = min(period_actual.min(), period_q50.min()) - 5
-    y_max = max(period_actual.max(), period_q95.max()) + 5
-    ax1.set_ylim(y_min, y_max)
-
-    # 子图2: 预警等级
     ax2 = axes[1]
-
-    # 绘制预警等级背景色
-    for i in range(len(period_warning)):
-        level = period_warning.loc[i, 'warning_level']
-        if i < len(period_dates) - 1:
-            ax2.axvspan(period_dates.iloc[i],
-                       period_dates.iloc[i+1],
-                       facecolor=WARNING_COLORS[level], alpha=0.4)
-
-    # 绘制预警等级散点
-    level_names = ['绿色', '蓝色', '黄色', '橙色', '红色']
-    for level in range(5):
-        mask_level = period_warning['warning_level'] == level
-        if mask_level.any():
-            indices = period_warning[mask_level].index
-            ax2.scatter(period_dates.iloc[indices],
-                       period_warning.loc[mask_level, 'warning_level'],
-                       c=WARNING_COLORS[level], s=100, alpha=0.95,
-                       label=f'{level_names[level]}预警', marker='o',
-                       edgecolors='black', linewidths=1)
-
-    ax2.set_ylabel('预警等级', fontsize=13, fontweight='bold')
+    for level in range(4):
+        m_lv = prob_slice['warning_level'] == level
+        if m_lv.any():
+            ax2.scatter(prob_slice.loc[m_lv, 'date'],
+                        [level + 0.1] * int(m_lv.sum()),
+                        c=WARNING_COLORS[level], s=90, alpha=0.95,
+                        label=f'概率-{LEVEL_NAMES[level]}', marker='o',
+                        edgecolors='black', linewidths=0.8)
+    for level in range(4):
+        m_lv = trad_slice['warning_level'] == level
+        if m_lv.any():
+            ax2.scatter(trad_slice.loc[m_lv, 'date'],
+                        [level - 0.1] * int(m_lv.sum()),
+                        c=WARNING_COLORS[level], s=90, alpha=0.95,
+                        label=f'传统-{LEVEL_NAMES[level]}', marker='s',
+                        edgecolors='black', linewidths=0.8)
+    ax2.set_ylabel('预警等级 (概率↑ / 传统↓)', fontsize=13, fontweight='bold')
     ax2.set_xlabel('日期', fontsize=13, fontweight='bold')
-    ax2.set_yticks([0, 1, 2, 3, 4])
-    ax2.set_yticklabels(['安全', '低风险', '中等风险', '高风险', '极高风险'], fontsize=11)
-    ax2.legend(loc='upper left', fontsize=10, framealpha=0.95)
+    ax2.set_yticks(list(range(4)))
+    ax2.set_yticklabels(['安全', '警示', '警戒', '警报'], fontsize=11)
+    ax2.legend(loc='upper left', fontsize=9, ncol=2, framealpha=0.9)
     ax2.grid(True, alpha=0.3, linestyle='--')
-    ax2.set_ylim(-0.5, 4.5)
+    ax2.set_ylim(-0.6, 3.6)
 
-    # 旋转x轴标签
     plt.setp(ax2.xaxis.get_majorticklabels(), rotation=45, ha='right')
-
     plt.tight_layout()
 
-    # 保存图片
-    output_png = FIGURES_DIR / 'mj1_active_period.png'
-    output_pdf = FIGURES_DIR / 'mj1_active_period.pdf'
-    plt.savefig(output_png, dpi=300, bbox_inches='tight')
-    plt.savefig(output_pdf, dpi=300, bbox_inches='tight', format='pdf')
-    print(f"✓ 图4-3已保存: {output_png}")
-    print(f"✓ 图4-3已保存: {output_pdf}")
+    out_png = FIGURES_DIR / f'{target.lower()}_active_period.png'
+    out_pdf = FIGURES_DIR / f'{target.lower()}_active_period.pdf'
+    plt.savefig(out_png, dpi=300, bbox_inches='tight')
+    plt.savefig(out_pdf, dpi=300, bbox_inches='tight', format='pdf')
+    print(f'✓ 已保存: {out_png}')
 
-    # 打印一些统计信息
-    print(f"\n统计信息:")
-    print(f"  时间范围: {start_date.strftime('%Y-%m-%d')} 至 {end_date.strftime('%Y-%m-%d')}")
-    print(f"  实际位移范围: {period_actual.min():.2f} - {period_actual.max():.2f} mm")
-    print(f"  预测位移范围 (50%): {period_q50.min():.2f} - {period_q50.max():.2f} mm")
-    print(f"  安全阈值: {threshold:.2f} mm")
-    print(f"  预警等级分布:")
-    for level in range(5):
-        count = (period_warning['warning_level'] == level).sum()
-        print(f"    {level_names[level]}: {count} 天")
+    print(f'\n统计 [{target}] {start_date.date()} ~ {end_date.date()}')
+    print(f'  实测月速率范围 {actual_slice.min():.2f} ~ {actual_slice.max():.2f} mm/M')
+    print(f'  预测月速率 50% 分位 {q50.min():.2f} ~ {q50.max():.2f}, '
+          f'95% 分位 {q95.min():.2f} ~ {q95.max():.2f}')
+    print(f'  V0={v0:.2f}  5V0={v0o:.2f}  10V0={v0r:.2f}')
+    for lv in range(4):
+        cnt = int((prob_slice['warning_level'] == lv).sum())
+        print(f'  概率预警 {LEVEL_NAMES[lv]}: {cnt} 天')
 
     plt.close()
 
+
+def main(target='MJ1'):
+    print('=' * 60)
+    print(f'生成阶跃变形期预警细节图 [{target}]')
+    print('=' * 60)
+    plot_active_period(target)
+
+
 if __name__ == '__main__':
-    print("=" * 60)
-    print("生成图4-3: MJ1监测点阶跃变形期预警细节")
-    print("=" * 60)
-
-    plot_active_period()
-
-    print("\n✓ 图表生成完成!")
+    import sys
+    tgt = sys.argv[1] if len(sys.argv) > 1 else 'MJ1'
+    main(tgt)

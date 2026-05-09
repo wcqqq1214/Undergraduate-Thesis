@@ -1,0 +1,15 @@
+{
+  "target": "MJ1",
+  "v0_mm_per_month": 20.501755526727393,
+  "v0_orange": 102.50877763363697,
+  "v0_red": 205.01755526727393,
+  "n_days": 261,
+  "n_runs": 50,
+  "mean_rate_mm_per_month": 5.62066654559387,
+  "max_rate_mm_per_month": 10.23015379999999,
+  "days_exceed_v0": 0,
+  "days_any_yellow_or_above": 0,
+  "mean_p_yellow": 0.0,
+  "mean_p_orange": 0.0,
+  "mean_p_red": 0.0
+}

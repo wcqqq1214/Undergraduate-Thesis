@@ -1,0 +1,15 @@
+{
+  "total_days": 1460,
+  "valid_days": 1431,
+  "level_distribution": {
+    "绿色": 1368,
+    "黄色": 63,
+    "橙色": 0,
+    "红色": 0
+  },
+  "warning_days_yellow_or_above": 63,
+  "high_risk_days_orange_or_above": 0,
+  "mean_monthly_rate": 7.094701148665321,
+  "max_monthly_rate": 26.967025378337325,
+  "min_monthly_rate": -0.8282413336104355
+}

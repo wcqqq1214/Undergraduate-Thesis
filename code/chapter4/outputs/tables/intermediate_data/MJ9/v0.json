@@ -1,0 +1,14 @@
+{
+  "target": "MJ9",
+  "method": "docx V0 = 1.5*V_bar + 2*sigma, 月速率层面剔除加速月 (>90%分位)",
+  "n_train_days": 1167,
+  "n_monthly_samples": 1138,
+  "n_steady_months": 1024,
+  "accel_cutoff_mm_per_month": 5.913814999999986,
+  "v_bar_mm_per_month": 1.861896708984375,
+  "sigma_mm_per_month": 2.288978905667721,
+  "v0_mm_per_month": 7.3708028748120045,
+  "v0_yellow_threshold": 7.3708028748120045,
+  "v0_orange_threshold": 36.85401437406002,
+  "v0_red_threshold": 73.70802874812004
+}

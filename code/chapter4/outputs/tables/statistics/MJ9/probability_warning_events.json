@@ -1,0 +1,506 @@
+[
+  {
+    "warning_index": null,
+    "exceed_index": 222,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.30133999999998196,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 223,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3276700000000119,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 224,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3513100000000122,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 225,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3722799999999893,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 226,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3905700000000252,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 227,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.4061699999999746,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 228,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.41910000000001446,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 229,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.42933999999996786,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 230,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.4369100000000117,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 231,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.44180000000000064,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 232,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.4440099999999916,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 233,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.44353000000000975,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 234,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.4403899999999794,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 235,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.43455000000000155,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 236,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.4260400000000004,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 237,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.4148500000000013,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 238,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.4009800000000041,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 239,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.38443000000000893,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 240,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.36520000000001573,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 241,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3432899999999677,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 242,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3187000000000353,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 243,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3053899999999885,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 244,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.305150000000026,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 245,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.30494999999996253,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 246,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.304740000000038,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 247,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.30455999999998085,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 248,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3044100000000185,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 249,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3042599999999993,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 250,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.30412999999998647,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 251,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.30403000000001157,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 252,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3039399999999546,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 253,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3038700000000176,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 254,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3038200000000302,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 255,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.30377999999996064,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 256,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.30376000000001113,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 257,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3037699999999859,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 258,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3037800000000175,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 259,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.30381999999997333,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 260,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3038800000000492,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 261,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3039499999999862,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 262,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3040399999999863,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 263,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3041499999999928,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 264,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3042700000000309,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 265,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.304429999999968,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 266,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3045799999999872,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 267,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3047700000000191,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 268,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3049700000000257,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 269,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.30518999999998186,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 270,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3054199999999696,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 271,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.30567000000002054,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 272,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3059499999999957,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 273,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.30623000000002776,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 274,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3098899999999958,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 275,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.31644000000000005,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 276,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3223199999999906,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 277,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3275499999999738,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 278,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3321000000000254,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 279,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3359800000000064,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 280,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3392000000000053,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 281,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3417599999999652,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 282,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3436399999999935,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 283,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3448500000000081,
+    "missed": true
+  },
+  {
+    "warning_index": null,
+    "exceed_index": 284,
+    "lead_time_days": null,
+    "warning_level": null,
+    "actual_increment": 0.3454100000000153,
+    "missed": true
+  }
+]

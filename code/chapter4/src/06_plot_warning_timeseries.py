@@ -18,82 +18,80 @@ plt.rcParams['font.size'] = 10
 # 路径配置
 BASE_DIR = Path(__file__).parent.parent
 TABLES_DIR = BASE_DIR / 'outputs' / 'tables'
-INTERMEDIATE_DIR = TABLES_DIR / 'intermediate_data'
 FIGURES_DIR = BASE_DIR / 'outputs' / 'figures'
 FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
-# 预警等级颜色映射（与论文五级预警体系一致）
+# 预警等级颜色映射（V0 体系 4 级，去除蓝色）
 WARNING_COLORS = {
-    0: '#2ecc71',  # 安全（绿）
-    1: '#3498db',  # 低风险（蓝）
-    2: '#f1c40f',  # 中等风险（黄）
-    3: '#e67e22',  # 高风险（橙）
-    4: '#e74c3c'   # 极高风险（红）
+    0: '#2ecc71',  # 绿色（安全）
+    1: '#f1c40f',  # 黄色（警示）
+    2: '#e67e22',  # 橙色（警戒）
+    3: '#e74c3c',  # 红色（警报）
 }
 WARNING_LABELS = {
-    0: '安全',
-    1: '低风险',
-    2: '中等风险',
-    3: '高风险',
-    4: '极高风险'
+    0: '安全 (V<V0)',
+    1: '警示 (V0<V<5V0)',
+    2: '警戒 (5V0<V<10V0)',
+    3: '警报 (V>10V0)',
 }
+N_LEVELS = 4
 
-def load_data():
+def load_data(target='MJ1'):
     """加载所有需要的数据"""
-    # 概率预警
-    prob_warning = pd.read_csv(INTERMEDIATE_DIR / 'warning_levels.csv')
+    intermediate_dir = TABLES_DIR / 'intermediate_data' / target
 
-    # 传统预警
-    trad_warning = pd.read_csv(INTERMEDIATE_DIR / 'traditional_warning_levels.csv')
+    prob_warning = pd.read_csv(intermediate_dir / 'warning_levels.csv')
+
+    trad_warning = pd.read_csv(intermediate_dir / 'traditional_warning_levels.csv')
     trad_warning['date'] = pd.to_datetime(trad_warning['date'])
+    trad_warning = trad_warning[trad_warning['warning_level'] >= 0].reset_index(drop=True)
 
-    # 实际位移
-    actual_disp = pd.read_csv(INTERMEDIATE_DIR / 'actual_displacement_MJ1.csv')
+    actual_disp = pd.read_csv(intermediate_dir / f'actual_displacement_{target}.csv')
     actual_disp['date'] = pd.to_datetime(actual_disp['date'])
 
-    # 对齐时间索引
-    prob_warning['date'] = actual_disp['date'].iloc[:len(prob_warning)]
+    # 概率预警的 time_index 对应"测试集第 time_index 天 + LSTM 滚动窗口偏移"，
+    # 这里按序贴附测试集末尾的日期
+    n_prob = len(prob_warning)
+    prob_warning['date'] = actual_disp['date'].iloc[-n_prob:].reset_index(drop=True)
 
     return prob_warning, trad_warning, actual_disp
 
-def plot_warning_timeseries():
-    """绘制完整的预警时间序列"""
-    prob_warning, trad_warning, actual_disp = load_data()
+
+def plot_warning_timeseries(target='MJ1'):
+    prob_warning, trad_warning, actual_disp = load_data(target)
 
     fig, axes = plt.subplots(3, 1, figsize=(14, 10), sharex=True)
 
-    # 子图1: 概率预警等级
     ax1 = axes[0]
-    for level in range(5):
+    for level in range(N_LEVELS):
         mask = prob_warning['warning_level'] == level
         if mask.any():
             ax1.scatter(prob_warning.loc[mask, 'date'],
-                       prob_warning.loc[mask, 'warning_level'],
-                       c=WARNING_COLORS[level], s=20, alpha=0.7,
-                       label=WARNING_LABELS[level])
+                        prob_warning.loc[mask, 'warning_level'],
+                        c=WARNING_COLORS[level], s=20, alpha=0.7,
+                        label=WARNING_LABELS[level])
     ax1.set_ylabel('概率预警等级', fontsize=12)
-    ax1.set_yticks([0, 1, 2, 3, 4])
-    ax1.set_yticklabels(['安全', '低风险', '中等风险', '高风险', '极高风险'])
+    ax1.set_yticks(list(range(N_LEVELS)))
+    ax1.set_yticklabels(['安全', '警示', '警戒', '警报'])
     ax1.legend(loc='upper left', fontsize=9)
     ax1.grid(True, alpha=0.3)
-    ax1.set_title('基于概率预测的滑坡预警时间序列', fontsize=14, fontweight='bold')
+    ax1.set_title(f'{target} 监测点：基于概率预测的滑坡预警时间序列',
+                  fontsize=14, fontweight='bold')
 
-    # 子图2: 传统预警等级
     ax2 = axes[1]
-    for level in range(5):
+    for level in range(N_LEVELS):
         mask = trad_warning['warning_level'] == level
         if mask.any():
             ax2.scatter(trad_warning.loc[mask, 'date'],
-                       trad_warning.loc[mask, 'warning_level'],
-                       c=WARNING_COLORS[level], s=20, alpha=0.7,
-                       label=WARNING_LABELS[level])
+                        trad_warning.loc[mask, 'warning_level'],
+                        c=WARNING_COLORS[level], s=20, alpha=0.7,
+                        label=WARNING_LABELS[level])
     ax2.set_ylabel('传统预警等级', fontsize=12)
-    ax2.set_yticks([0, 1, 2, 3, 4])
-    ax2.set_yticklabels(['安全', '低风险', '中等风险', '高风险', '极高风险'])
+    ax2.set_yticks(list(range(N_LEVELS)))
+    ax2.set_yticklabels(['安全', '警示', '警戒', '警报'])
     ax2.legend(loc='upper left', fontsize=9)
     ax2.grid(True, alpha=0.3)
 
-    # 子图3: 实际位移
     ax3 = axes[2]
     ax3.plot(actual_disp['date'], actual_disp['displacement'],
              'k-', linewidth=1.5, label='实际累计位移')
@@ -103,22 +101,21 @@ def plot_warning_timeseries():
     ax3.grid(True, alpha=0.3)
 
     plt.tight_layout()
-
-    # 保存图片 (PNG和PDF格式)
-    output_png = FIGURES_DIR / 'warning_timeseries.png'
-    output_pdf = FIGURES_DIR / 'warning_timeseries.pdf'
+    output_png = FIGURES_DIR / f'warning_timeseries_{target}.png'
+    output_pdf = FIGURES_DIR / f'warning_timeseries_{target}.pdf'
     plt.savefig(output_png, dpi=300, bbox_inches='tight')
     plt.savefig(output_pdf, dpi=300, bbox_inches='tight', format='pdf')
-    print(f"✓ 图4-1已保存: {output_png}")
-    print(f"✓ 图4-1已保存: {output_pdf}")
-
+    print(f"✓ 已保存: {output_png}")
+    print(f"✓ 已保存: {output_pdf}")
     plt.close()
 
+def main(target='MJ1'):
+    print("=" * 60)
+    print(f"生成图4-1: 预警时间序列图 [{target}]")
+    print("=" * 60)
+    plot_warning_timeseries(target)
+
 if __name__ == '__main__':
-    print("=" * 60)
-    print("生成图4-1: 预警时间序列图")
-    print("=" * 60)
-
-    plot_warning_timeseries()
-
-    print("\n✓ 图表生成完成!")
+    import sys
+    tgt = sys.argv[1] if len(sys.argv) > 1 else 'MJ1'
+    main(tgt)

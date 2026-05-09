@@ -1,0 +1,12 @@
+{
+  "total_days": 261,
+  "level_distribution": {
+    "绿色": 261,
+    "黄色": 0,
+    "橙色": 0,
+    "红色": 0
+  },
+  "warning_days_yellow_or_above": 0,
+  "high_risk_days_orange_or_above": 0,
+  "red_days": 0
+}

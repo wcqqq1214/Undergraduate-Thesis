@@ -1,0 +1,11 @@
+{
+  "event_count": 0,
+  "detected_count": 0,
+  "missed_count": 0,
+  "detection_rate": 0.0,
+  "mean_lead_time": 0.0,
+  "median_lead_time": 0.0,
+  "max_lead_time": 0,
+  "min_lead_time": 0,
+  "std_lead_time": 0.0
+}

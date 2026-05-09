@@ -1,196 +1,141 @@
 """
-生成LSTM概率预测图表（用于论文）
+生成LSTM概率预测图表（用于论文，MJ9/MJ1/MJ3 三点三子图布局）
 """
 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from datetime import datetime, timedelta
 
-# 设置字体：中文使用SimSun，英文使用Times New Roman
-# 注意：SimSun在前，这样中文会用SimSun，英文会fallback到Times New Roman
+# 字体：中文 SimSun，英文 Times New Roman
 plt.rcParams['font.serif'] = ['SimSun', 'Times New Roman']
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.size'] = 10
 
-# 读取统计数据
-stats_df = pd.read_csv('../outputs/tables/lstm_trend_50runs_statistics.csv')
+# 三个目标点 + 各自的 time_steps（与 run_lstm_trend_50times.py 的 TARGET_CONFIG 保持一致）
+TARGETS = ['MJ9', 'MJ1', 'MJ3']
+TIME_STEPS = {'MJ9': 7, 'MJ1': 2, 'MJ3': 2}
+
+TABLES_DIR = '../outputs/tables'
+FIG_DIR = '../outputs/figures'
 
 # 读取原始数据以获取日期
 data = pd.read_excel('../../../data/monitoring data.xlsx', sheet_name=0)
 data['Date'] = pd.to_datetime(data['Date'])
-
-# 计算测试集的起始索引
 train_size = int(len(data) * 0.8)
-time_steps = 2
-test_start_idx = train_size + time_steps
 
-# 获取测试集对应的日期
-test_dates = data['Date'].iloc[test_start_idx:test_start_idx + len(stats_df)]
 
-# 创建图表
-fig, ax = plt.subplots(figsize=(12, 6))
+def load_point(tag):
+    """读取某个目标点的统计结果及其训练/测试集对应日期"""
+    ts = TIME_STEPS[tag]
+    stats = pd.read_csv(f'{TABLES_DIR}/lstm_trend_50runs_statistics_{tag}.csv')
+    train_stats = pd.read_csv(
+        f'{TABLES_DIR}/lstm_trend_50runs_train_statistics_{tag}.csv')
+    test_start = train_size + ts
+    test_dates = data['Date'].iloc[test_start:test_start + len(stats)].reset_index(drop=True)
+    train_dates = data['Date'].iloc[ts:ts + len(train_stats)].reset_index(drop=True)
+    return stats, train_stats, test_dates, train_dates
 
-# 绘制90%置信区间（浅色）
-ax.fill_between(test_dates, stats_df['p05'], stats_df['p95'],
-                alpha=0.2, color='blue', label='90% 置信区间 (5%-95%)')
 
-# 绘制50%置信区间（深色）
-ax.fill_between(test_dates, stats_df['p25'], stats_df['p75'],
-                alpha=0.4, color='blue', label='50% 置信区间 (25%-75%)')
+def save_fig(fig, name):
+    fig.savefig(f'{FIG_DIR}/{name}.pdf', dpi=300, bbox_inches='tight')
+    fig.savefig(f'{FIG_DIR}/{name}.png', dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    print(f'已保存: {name}.pdf / {name}.png')
 
-# 绘制均值预测（蓝色实线）
-ax.plot(test_dates, stats_df['mean'], 'b-', linewidth=2, label='均值预测 (50次运行)')
 
-# 绘制真实值（红色散点）
-ax.scatter(test_dates, stats_df['actual'], c='red', s=20, alpha=0.6,
-          label='实际观测值', zorder=5)
+# 预先加载三个点的数据，避免重复 IO
+POINT_DATA = {tag: load_point(tag) for tag in TARGETS}
 
-# 设置标签和标题
-ax.set_xlabel('日期', fontsize=12)
-ax.set_ylabel('位移 (mm)', fontsize=12)
-ax.set_title('LSTM 概率预测结果', fontsize=14, fontweight='bold')
-ax.legend(loc='upper left', fontsize=10)
-ax.grid(True, alpha=0.3)
 
-# 格式化x轴日期
-ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-ax.xaxis.set_major_locator(mdates.MonthLocator(interval=2))
-plt.xticks(rotation=45)
-
+# ── 图1：点预测拟合对比（训练+测试） 3 行 × 1 列 ───────────────────────────────
+fig, axes = plt.subplots(3, 1, figsize=(12, 12), sharex=False)
+for ax, tag in zip(axes, TARGETS):
+    stats, train_stats, test_dates, train_dates = POINT_DATA[tag]
+    all_dates = list(train_dates) + list(test_dates)
+    all_actual = list(train_stats['actual']) + list(stats['actual'])
+    all_pred = list(train_stats['mean']) + list(stats['mean'])
+    ax.plot(all_dates, all_actual, color='#1f77b4', linewidth=1.5, label='实测位移')
+    ax.plot(all_dates, all_pred, color='#d62728', linewidth=1.5, linestyle='--',
+            label='LSTM预测值（50次运行均值）')
+    split_date = test_dates.iloc[0]
+    ax.axvline(x=split_date, color='gray', linestyle=':', linewidth=1.2)
+    ax.text(split_date, ax.get_ylim()[0], ' 测试集', fontsize=9, color='gray', va='bottom')
+    ax.set_title(f'{tag} 监测点', fontsize=12, fontweight='bold', loc='left')
+    ax.set_ylabel('累计位移 (mm)', fontsize=11)
+    ax.grid(True, alpha=0.3)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))
+    for lbl in ax.get_xticklabels():
+        lbl.set_rotation(45)
+axes[0].legend(loc='upper left', fontsize=10)
+axes[-1].set_xlabel('日期', fontsize=11)
 plt.tight_layout()
+save_fig(fig, 'lstm_fitting')
 
-# 保存图表
-output_path = '../outputs/figures/lstm_prediction.pdf'
-plt.savefig(output_path, dpi=300, bbox_inches='tight')
-print(f"概率预测图已保存到: {output_path}")
 
-# 同时保存PNG版本
-output_path_png = '../outputs/figures/lstm_prediction.png'
-plt.savefig(output_path_png, dpi=300, bbox_inches='tight')
-print(f"PNG版本已保存到: {output_path_png}")
-
-plt.close()
-
-# 生成不确定性分析图
-fig, ax = plt.subplots(figsize=(12, 5))
-
-# 绘制标准差随时间的变化
-ax.plot(test_dates, stats_df['std'], 'b-', linewidth=2)
-ax.fill_between(test_dates, 0, stats_df['std'], alpha=0.3, color='blue')
-
-# 添加平均标准差线
-mean_std = stats_df['std'].mean()
-ax.axhline(y=mean_std, color='r', linestyle='--', linewidth=1.5,
-          label=f'平均标准差 = {mean_std:.2f} mm')
-
-# 设置标签和标题
-ax.set_xlabel('日期', fontsize=12)
-ax.set_ylabel('标准差 (mm)', fontsize=12)
-ax.set_title('预测不确定性随时间变化', fontsize=14, fontweight='bold')
-ax.legend(loc='upper right', fontsize=10)
-ax.grid(True, alpha=0.3)
-
-# 格式化x轴日期
-ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-ax.xaxis.set_major_locator(mdates.MonthLocator(interval=2))
-plt.xticks(rotation=45)
-
+# ── 图2：概率预测结果（均值+置信区间） 3 行 × 1 列 ───────────────────────────
+fig, axes = plt.subplots(3, 1, figsize=(12, 12), sharex=False)
+for ax, tag in zip(axes, TARGETS):
+    stats, _, test_dates, _ = POINT_DATA[tag]
+    ax.fill_between(test_dates, stats['p05'], stats['p95'],
+                    alpha=0.2, color='blue', label='90% 置信区间 (5%-95%)')
+    ax.fill_between(test_dates, stats['p25'], stats['p75'],
+                    alpha=0.4, color='blue', label='50% 置信区间 (25%-75%)')
+    ax.plot(test_dates, stats['mean'], 'b-', linewidth=2, label='均值预测 (50次运行)')
+    ax.scatter(test_dates, stats['actual'], c='red', s=14, alpha=0.6,
+               label='实际观测值', zorder=5)
+    ax.set_title(f'{tag} 监测点', fontsize=12, fontweight='bold', loc='left')
+    ax.set_ylabel('位移 (mm)', fontsize=11)
+    ax.grid(True, alpha=0.3)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.xaxis.set_major_locator(mdates.MonthLocator(interval=2))
+    for lbl in ax.get_xticklabels():
+        lbl.set_rotation(45)
+axes[0].legend(loc='upper left', fontsize=9)
+axes[-1].set_xlabel('日期', fontsize=11)
 plt.tight_layout()
+save_fig(fig, 'lstm_prediction')
 
-# 保存图表
-output_path = '../outputs/figures/lstm_uncertainty.pdf'
-plt.savefig(output_path, dpi=300, bbox_inches='tight')
-print(f"不确定性分析图已保存到: {output_path}")
 
-# 同时保存PNG版本
-output_path_png = '../outputs/figures/lstm_uncertainty.png'
-plt.savefig(output_path_png, dpi=300, bbox_inches='tight')
-print(f"PNG版本已保存到: {output_path_png}")
-
-plt.close()
-
-# 生成标准差分布直方图
-fig, ax = plt.subplots(figsize=(10, 6))
-
-# 绘制直方图
-n, bins, patches = ax.hist(stats_df['std'], bins=30, color='skyblue',
-                           edgecolor='black', alpha=0.7)
-
-# 添加统计信息
-ax.axvline(stats_df['std'].mean(), color='red', linestyle='--',
-          linewidth=2, label=f'均值 = {stats_df["std"].mean():.2f} mm')
-ax.axvline(stats_df['std'].median(), color='green', linestyle='--',
-          linewidth=2, label=f'中位数 = {stats_df["std"].median():.2f} mm')
-
-# 设置标签和标题
-ax.set_xlabel('标准差 (mm)', fontsize=12)
-ax.set_ylabel('频数', fontsize=12)
-ax.set_title('预测标准差分布', fontsize=14, fontweight='bold')
-ax.legend(fontsize=10)
-ax.grid(True, alpha=0.3, axis='y')
-
+# ── 图3：预测不确定性随时间变化 3 行 × 1 列 ─────────────────────────────────
+fig, axes = plt.subplots(3, 1, figsize=(12, 9), sharex=False)
+for ax, tag in zip(axes, TARGETS):
+    stats, _, test_dates, _ = POINT_DATA[tag]
+    ax.plot(test_dates, stats['std'], 'b-', linewidth=2)
+    ax.fill_between(test_dates, 0, stats['std'], alpha=0.3, color='blue')
+    mean_std = stats['std'].mean()
+    ax.axhline(y=mean_std, color='r', linestyle='--', linewidth=1.5,
+               label=f'平均标准差 = {mean_std:.2f} mm')
+    ax.set_title(f'{tag} 监测点', fontsize=12, fontweight='bold', loc='left')
+    ax.set_ylabel('标准差 (mm)', fontsize=11)
+    ax.legend(loc='upper right', fontsize=9)
+    ax.grid(True, alpha=0.3)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.xaxis.set_major_locator(mdates.MonthLocator(interval=2))
+    for lbl in ax.get_xticklabels():
+        lbl.set_rotation(45)
+axes[-1].set_xlabel('日期', fontsize=11)
 plt.tight_layout()
+save_fig(fig, 'lstm_uncertainty')
 
-# 保存图表
-output_path = '../outputs/figures/lstm_std_distribution.pdf'
-plt.savefig(output_path, dpi=300, bbox_inches='tight')
-print(f"标准差分布图已保存到: {output_path}")
 
-# 同时保存PNG版本
-output_path_png = '../outputs/figures/lstm_std_distribution.png'
-plt.savefig(output_path_png, dpi=300, bbox_inches='tight')
-print(f"PNG版本已保存到: {output_path_png}")
-
-plt.close()
-
-# ── 新增：点预测对比图（训练集 + 测试集）────────────────────────────────────────
-train_stats_df = pd.read_csv('../outputs/tables/lstm_trend_50runs_train_statistics.csv')
-
-# 训练集日期
-train_dates = data['Date'].iloc[time_steps:time_steps + len(train_stats_df)]
-
-fig, ax = plt.subplots(figsize=(12, 5))
-
-# 实测值：蓝色实线（训练集 + 测试集连续）
-all_actual_dates = list(train_dates) + list(test_dates)
-all_actual_values = list(train_stats_df['actual']) + list(stats_df['actual'])
-ax.plot(all_actual_dates, all_actual_values, color='#1f77b4', linewidth=1.5,
-        label='实测位移')
-
-# 预测均值：红色虚线（训练集 + 测试集连续）
-all_pred_dates = list(train_dates) + list(test_dates)
-all_pred_values = list(train_stats_df['mean']) + list(stats_df['mean'])
-ax.plot(all_pred_dates, all_pred_values, color='#d62728', linewidth=1.5,
-        linestyle='--', label='LSTM预测值（50次运行均值）')
-
-# 训练/测试分割线
-split_date = test_dates.iloc[0]
-ax.axvline(x=split_date, color='gray', linestyle=':', linewidth=1.2)
-ax.text(split_date, ax.get_ylim()[0], ' 测试集', fontsize=9, color='gray', va='bottom')
-
-ax.set_xlabel('日期', fontsize=12)
-ax.set_ylabel('累计位移 (mm)', fontsize=12)
-ax.legend(loc='upper left', fontsize=10)
-ax.grid(True, alpha=0.3)
-
-ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-ax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))
-plt.xticks(rotation=45)
-
+# ── 图4：标准差分布直方图 1 行 × 3 列 ────────────────────────────────────────
+fig, axes = plt.subplots(1, 3, figsize=(15, 4.5))
+for ax, tag in zip(axes, TARGETS):
+    stats, _, _, _ = POINT_DATA[tag]
+    ax.hist(stats['std'], bins=30, color='skyblue', edgecolor='black', alpha=0.7)
+    ax.axvline(stats['std'].mean(), color='red', linestyle='--', linewidth=2,
+               label=f'均值 = {stats["std"].mean():.2f} mm')
+    ax.axvline(stats['std'].median(), color='green', linestyle='--', linewidth=2,
+               label=f'中位数 = {stats["std"].median():.2f} mm')
+    ax.set_title(f'{tag} 监测点', fontsize=12, fontweight='bold', loc='left')
+    ax.set_xlabel('标准差 (mm)', fontsize=11)
+    ax.set_ylabel('频数', fontsize=11)
+    ax.legend(fontsize=9)
+    ax.grid(True, alpha=0.3, axis='y')
 plt.tight_layout()
+save_fig(fig, 'lstm_std_distribution')
 
-output_path = '../outputs/figures/lstm_fitting.pdf'
-plt.savefig(output_path, dpi=300, bbox_inches='tight')
-print(f"拟合对比图已保存到: {output_path}")
-
-output_path_png = '../outputs/figures/lstm_fitting.png'
-plt.savefig(output_path_png, dpi=300, bbox_inches='tight')
-print(f"PNG版本已保存到: {output_path_png}")
-
-plt.close()
-# ─────────────────────────────────────────────────────────────────────────────
-
-print("\n所有图表生成完成！")
+print('\n所有图表生成完成！')

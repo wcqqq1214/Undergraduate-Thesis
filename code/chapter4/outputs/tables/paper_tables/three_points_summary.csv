@@ -1,0 +1,4 @@
+target,prob_accuracy,prob_recall,prob_precision,prob_f1,prob_TP,prob_FP,prob_FN,prob_TN,trad_accuracy,trad_recall,trad_precision,trad_f1,trad_TP,trad_FP,trad_FN,trad_TN,prob_mean_lead_time,prob_detection_rate,trad_mean_lead_time,trad_detection_rate
+MJ9,1.0,0,0,0,0,0,0,256,1.0,0,0,0,0,0,0,256,0.0,0.0,0.0,0.0
+MJ1,1.0,0,0,0,0,0,0,261,1.0,0,0,0,0,0,0,261,0.0,0.0,0.0,0.0
+MJ3,1.0,0,0,0,0,0,0,261,1.0,0,0,0,0,0,0,261,0.0,0.0,0.0,0.0

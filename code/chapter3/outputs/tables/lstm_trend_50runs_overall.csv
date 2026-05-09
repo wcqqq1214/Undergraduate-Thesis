@@ -1,0 +1,2 @@
+target,time_steps,epochs,dropout,l2,ensemble_test_r2,ensemble_test_rmse,ensemble_test_mae,ensemble_test_rel_err,ensemble_train_r2,ensemble_train_rmse,perrun_test_r2_mean,perrun_test_r2_std,perrun_test_rmse_mean,perrun_test_rmse_std
+MJ1,2,40,0.3,0.002,0.9508863611346576,3.0477945087649445,2.1332438889814043,0.003082142539428383,0.989495600844489,10.537189309767317,0.7512989735666582,0.25115559997516856,6.1163608459211085,3.134389798911829
