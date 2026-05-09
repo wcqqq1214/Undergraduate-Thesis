@@ -122,7 +122,7 @@
     $\;\Rightarrow\;$
     \textbf{位移预测（LSTM）}
     $\;\Rightarrow\;$
-    \textbf{概率预警（越限概率）}
+    \textbf{概率预警（$V_0$ 四级体系）}
   \end{block}
 \end{frame}
 
@@ -336,23 +336,27 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{点预测结果}
+\begin{frame}{点预测结果（三点）}
   \begin{table}
     \centering
     \caption{LSTM 点预测性能（50次运行均值）}
-    \begin{tabular}{lcc}
+    \begin{tabular}{lcccc}
       \toprule
-      数据集 & $R^2$ & RMSE (mm) \\
+      \multirow{2}{*}{监测点} & \multicolumn{2}{c}{训练集} & \multicolumn{2}{c}{测试集} \\
+      \cmidrule(lr){2-3}\cmidrule(lr){4-5}
+       & $R^2$ & RMSE (mm) & $R^2$ & RMSE (mm) \\
       \midrule
-      训练集 & 0.9883 & 11.02 \\
-      测试集 & \alert{0.7916} & \alert{5.55} \\
+      MJ1 & 0.9883 & 11.02 & \alert{0.7916} & \alert{5.55} \\
+      MJ9 & 0.9876 & 3.71  & $-1.38$ & 10.86 \\
+      MJ3 & 0.9846 & 12.92 & 0.1124 & 13.17 \\
       \bottomrule
     \end{tabular}
   \end{table}
-  \vspace{0.5em}
+  \vspace{0.3em}
   \begin{itemize}
-    \item 测试集相对误差仅 \alert{0.56\%}，达工程应用精度
-    \item 训练/测试差距适中，无明显过拟合
+    \item MJ1 测试集相对误差仅 \alert{0.56\%}，达工程应用精度
+    \item MJ9 $R^2$ 为负因位移基线极小（$\sim$373\,mm），相对误差 2.86\% 仍可接受
+    \item MJ3 $R^2$ 偏低源于训练/测试期节奏差异，相对误差 0.96\%
   \end{itemize}
 \end{frame}
 
@@ -374,8 +378,9 @@
 \begin{frame}{不确定性分析}
   \textbf{主要结论}
   \begin{itemize}
-    \item 平均标准差 5.41\,mm，变异系数 \alert{0.55\%}
-    \item 标准差范围 4.65–6.64\,mm，分布集中
+    \item 三点变异系数均 $<1\%$（MJ9 0.72\%、MJ1 0.62\%、MJ3 0.35\%）
+    \item 平均标准差：MJ9 2.60\,mm、MJ1 6.12\,mm、MJ3 4.36\,mm
+    \item 相对各自位移基线，不确定性占比均 $<1\%$
     \item 位移突变期标准差略增，反映预测难度自适应识别
     \item 模型具有高稳定性与可重复性
   \end{itemize}
@@ -402,51 +407,57 @@
   \end{enumerate}
   \vspace{0.8em}
   \begin{block}{本章解决方案}
-    基于 LSTM 输出的\textbf{概率分布}，计算预测位移超过安全阈值的\alert{越限概率}，建立五级动态预警体系
+    基于各监测点自身位移统计确定基准速率 $V_0$，将 LSTM \alert{50次独立预测}的月速率分布映射到四级区间，直接统计概率并取最高者为当日预警等级
   \end{block}
 \end{frame}
 
-\begin{frame}[shrink=15]{越限概率计算方法}
-  \textbf{经验累积分布函数（ECDF）}：
+\begin{frame}[shrink=10]{基准速率 $V_0$ 的确定方法}
+  \textbf{月速率定义}：累计位移的 30 天滚动增量（mm/月）
+
+  \vspace{0.5em}
+  \textbf{三步确定 $V_0$（仅用训练集数据）}：
+  \begin{enumerate}
+    \item 对训练期累计位移做 30 天滚动差分，得月速率序列 $\{V_i\}$
+    \item 剔除 $>90\%$ 分位的加速事件（排除极端工况影响）
+    \item 对剩余"匀速变形阶段"样本计算均值 $\bar V$ 与标准差 $\sigma$：
+  \end{enumerate}
   \begin{equation*}
-    F_t(d) = \frac{1}{50} \sum_{i=1}^{50} \mathbb{I}\!\left(\hat{D}_t^{(i)} \leq d\right)
+    V_0 = 1.5\bar V + 2\sigma
   \end{equation*}
 
-  \textbf{越限概率}（预测位移超过安全阈值 $D_\text{thr}$ 的概率）：
-  \begin{equation*}
-    P_{\text{exceed},t}
-    = 1 - F_t(D_{\text{thr}})
-    = \frac{1}{50} \sum_{i=1}^{50} \mathbb{I}\!\left(\hat{D}_t^{(i)} > D_{\text{thr}}\right)
-  \end{equation*}
-
-  \begin{block}{基准阈值设定依据}
-    \small
-    \begin{itemize}
-      \item 参考《地质灾害气象风险预警判据》及三峡库区规范
-      \item 经 LightGBM 分类任务数据驱动验证：$D_\text{thr} = 0.3\,\text{mm}$
-      \item 接近 MJ9 训练集 95\% 分位数，处于 MJ1/MJ3 的 75\%–90\% 分位数之间
-    \end{itemize}
+  \begin{block}{四级预警划分}
+    \begin{tabular}{clll}
+      \toprule
+      等级 & 颜色 & 速率范围 & 响应 \\
+      \midrule
+      I  & 绿色 & $V < V_0$              & 常规监测 \\
+      II & 黄色 & $V_0 \leq V < 5V_0$    & 加密监测，现场巡查 \\
+      III& 橙色 & $5V_0 \leq V < 10V_0$  & 启动应急预案 \\
+      IV & 红色 & $V \geq 10V_0$         & 人员撤离 \\
+      \bottomrule
+    \end{tabular}
   \end{block}
 \end{frame}
 
-\begin{frame}{五级预警体系}
+\begin{frame}{藕塘滑坡三点 $V_0$ 计算结果}
   \begin{table}
     \centering
-    \caption{基于越限概率的滑坡预警等级划分标准}
-    \begin{tabular}{cccl}
+    \caption{三点基准速率 $V_0$ 与预警阈值（mm/月）}
+    \begin{tabular}{lccccc}
       \toprule
-      预警等级 & 颜色 & 越限概率范围 & 响应措施 \\
+      监测点 & $\bar V$ & $\sigma$ & $V_0$（黄） & $5V_0$（橙） & $10V_0$（红） \\
       \midrule
-      I 级 & 绿色 & $P < 5\%$ & 常规监测，每月 1 次 \\
-      II 级 & 蓝色 & $5\% \leq P < 20\%$ & 加密监测，每周 1 次 \\
-      III 级 & 黄色 & $20\% \leq P < 50\%$ & 现场巡查，每日 1 次 \\
-      IV 级 & 橙色 & $50\% \leq P < 80\%$ & 启动应急预案，实时监测 \\
-      V 级 & 红色 & $P \geq 80\%$ & 人员撤离，封闭区域 \\
+      MJ9 & 1.86 & 2.29 & 7.37  & 36.85  & 73.71  \\
+      MJ1 & 6.26 & 5.56 & 20.50 & 102.51 & 205.02 \\
+      MJ3 & 4.79 & 5.81 & 18.80 & 93.99  & 187.97 \\
       \bottomrule
     \end{tabular}
   \end{table}
   \vspace{0.3em}
-  \small 阈值（5\%/20\%/50\%/80\%）综合考虑统计学显著性水平、工程实践经验与应急响应能力
+  \begin{itemize}
+    \item 三点 $V_0$ 差异达 3 倍，与各点位移基线高度吻合
+    \item 各点独立确定阈值，避免"一刀切"造成灵敏度失衡
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{预警时序结果——MJ1 监测点}
@@ -454,99 +465,112 @@
   \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/chapter4/warning_timeseries.pdf}
 \end{frame}
 
-\begin{frame}{阶跃变形期预警细节}
-  \textbf{典型事件（2020年3月）}
-  \begin{itemize}
-    \item 3月12日：$P=6\%$，触发\textbf{蓝色预警}
-    \item 3月14日：$P=40\%$，升级\textbf{黄色预警}
-    \item 3月15日：$P=62\%$，升级\textbf{橙色预警}
-    \item 3月16日：$P=86\%$，升级\textbf{红色预警}（5天内完成四级跃升）
-    \item 红色预警持续35天，早于4月连续暴雨约一个月
-  \end{itemize}
-  \vspace{0.3em}
-  \begin{alertblock}{提前量}
-    实现提前 \alert{2–4 天}预警，为应急响应争取宝贵时间
+\begin{frame}{四级概率判据}
+  设第 $i$ 次 LSTM 预测的未来 30 天月速率为 $V_t^{(i)}$，则：
+  \begin{equation*}
+    \begin{aligned}
+      P_{\text{green}}(t)  &= \tfrac{1}{50}\textstyle\sum_{i=1}^{50}\mathbb{I}(V_t^{(i)} < V_0) \\
+      P_{\text{yellow}}(t) &= \tfrac{1}{50}\textstyle\sum_{i=1}^{50}\mathbb{I}(V_0 \leq V_t^{(i)} < 5V_0) \\
+      P_{\text{orange}}(t) &= \tfrac{1}{50}\textstyle\sum_{i=1}^{50}\mathbb{I}(5V_0 \leq V_t^{(i)} < 10V_0) \\
+      P_{\text{red}}(t)    &= \tfrac{1}{50}\textstyle\sum_{i=1}^{50}\mathbb{I}(V_t^{(i)} \geq 10V_0)
+    \end{aligned}
+  \end{equation*}
+  \begin{equation*}
+    \text{Level}(t) = \arg\max_{L \in \{\text{green,yellow,orange,red}\}} P_L(t)
+  \end{equation*}
+  \begin{alertblock}{优势}
+    无需分布假设；天然耦合 LSTM 输出；50次集成抗抖动；物理意义明确
   \end{alertblock}
 \end{frame}
 
-\begin{frame}{MJ1 阶跃变形期预警细节}
-  \centering
-  \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/chapter4/mj1_active_period.pdf}
-\end{frame}
-
-\begin{frame}{预警提前时间统计}
-  \begin{columns}[T]
-    \begin{column}{0.58\textwidth}
-      \begin{table}
-        \centering
-        \footnotesize
-        \caption{MJ1 监测点预警提前时间统计}
-        \begin{tabular}{lccc}
-          \toprule
-          预警等级 & 事件数 & 平均（天） & 最大（天） \\
-          \midrule
-          黄色 & 28 & \alert{2.3} & 5 \\
-          橙色 & 15 & 1.8 & 4 \\
-          红色 & 6  & 1.2 & 3 \\
-          \bottomrule
-        \end{tabular}
-      \end{table}
-    \end{column}
-    \begin{column}{0.38\textwidth}
-      \textbf{规律分析}
-      \begin{itemize}
-        \item 预警等级越高，提前时间越短——符合滑坡演化物理规律
-        \item 即使红色预警，平均仍提前 1.2 天
-        \item 传统速率法提前时间接近 0（$\leq 0.5$ 天）
-      \end{itemize}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{SHAP 归因解释——典型预警事件}
-  \textbf{主要驱动因素（2020年3月15日橙色预警，$P=62\%$）}
+\begin{frame}{阶跃变形期预警演示（训练期 in-sample）}
+  \textbf{2017年7--12月阶跃段演示（MJ1）}
   \begin{itemize}
-    \item \alert{库水位消落}（167.5→166.6\,m，30天消落1.0\,m）：贡献约 \textbf{39.5\%}
-    \item \alert{历史位移累积}（30天累计5.5\,mm）：贡献约 \textbf{34.2\%}
-    \item 气温变化（最低温4.7→9.9\,℃）：贡献约 \textbf{21.1\%}
-    \item 地下水位等其他因素：约 5.2\%
+    \item LSTM 预测月速率 50\% 分位随库水位消落与汛期降雨明显上升
+    \item 9--10月间连续超过 $V_0 = 20.50$\,mm/月
+    \item 共触发\alert{黄色预警 70 天}，未触发橙色/红色
+    \item 黄色预警与实测阶跃变形期显著重叠
   \end{itemize}
   \vspace{0.3em}
-  \begin{block}{结论}
-    库水位消落与位移累积效应是触发预警的主要机制（合计73.7\%），降雨直接贡献仅0.1\%
+  \textbf{MJ3 同期演示}：触发\alert{黄色预警 129 天}（位移增量最大，响应最强）
+  \vspace{0.3em}
+  \begin{block}{测试集盲测（2019年7月—2020年6月）}
+    三点实测月速率均未超过各自 $V_0$，三点均\textbf{零误报}，特异性 100\%
   \end{block}
 \end{frame}
 
-\begin{frame}{SHAP 归因——橙色预警事件}
+\begin{frame}{MJ1 阶跃段演示图}
+  \centering
+  \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/chapter4/mj1_train_demo_201706.pdf}
+\end{frame}
+
+\begin{frame}{三点预警结果对比}
+  \begin{table}
+    \centering
+    \footnotesize
+    \caption{三点预警方法混淆矩阵（测试集）}
+    \begin{tabular}{llcccc}
+      \toprule
+      监测点 & 方法 & TP & FP & FN & TN \\
+      \midrule
+      \multirow{2}{*}{MJ9} & 传统速率预警 & 0 & 0 & 0 & 256 \\
+                           & 本文概率预警 & 0 & 0 & 0 & 256 \\
+      \midrule
+      \multirow{2}{*}{MJ1} & 传统速率预警 & 0 & 0 & 0 & 261 \\
+                           & 本文概率预警 & 0 & 0 & 0 & 261 \\
+      \midrule
+      \multirow{2}{*}{MJ3} & 传统速率预警 & 0 & 0 & 0 & 261 \\
+                           & 本文概率预警 & 0 & 0 & 0 & 261 \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  \vspace{0.2em}
+  \begin{itemize}
+    \item 测试集三点均 \alert{100\% 特异性、零误报}
+    \item 测试集无真实越限事件，召回率待更长序列验证
+    \item 训练期演示：MJ1 触发 70 天、MJ3 触发 129 天黄色预警
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{SHAP 归因解释——典型预警事件}
+  \textbf{主要驱动因素（2017年9月28日 MJ1 黄色预警，月速率中位数 36.2\,mm/月）}
+  \begin{itemize}
+    \item \alert{历史位移累积效应}（过去5天位移持续累积）：贡献约 \textbf{40.7\%}
+    \item \alert{库水位调度}（30天内 152→167\,m，快速抬升 +14.7\,m）：贡献约 \textbf{36.8\%}
+    \item 地下水位变化（30天内上升 +7.46\,m）：贡献约 \textbf{18.4\%}
+    \item 气温变化与降雨直接贡献：约 4.1\%
+  \end{itemize}
+  \vspace{0.3em}
+  \begin{block}{结论}
+    前期位移累积、库水位快速升高、地下水位补给三大因素合计贡献约 95.9\%，与"主汛期末蓄水启动→位移加速"规律高度吻合
+  \end{block}
+\end{frame}
+
+\begin{frame}{SHAP 归因——黄色预警事件}
   \centering
   \includegraphics[width=\textwidth,height=1\textheight,keepaspectratio]{figures/chapter4/shap_explanation.pdf}
 \end{frame}
 
 \begin{frame}{与传统速率预警方法对比}
   \begin{columns}[T]
-    \begin{column}{0.58\textwidth}
-      \begin{table}
-        \centering
-        \footnotesize
-        \caption{MJ1 监测点预警性能指标对比}
-        \begin{tabular}{lcccc}
-          \toprule
-          方法 & 准确率 & 召回率 & 精确率 & F1 \\
-          \midrule
-          传统速率预警 & 89.7\% & 77.8\% & 70.0\% & 73.7\% \\
-          \textbf{本文方法} & \alert{95.2\%} & \alert{88.9\%} & \alert{85.7\%} & \alert{87.3\%} \\
-          \bottomrule
-        \end{tabular}
-      \end{table}
-    \end{column}
-    \begin{column}{0.38\textwidth}
-      \textbf{提升幅度}
+    \begin{column}{0.55\textwidth}
+      \textbf{方法差异（相同 $V_0$ 阈值体系）}
       \begin{itemize}
-        \item 准确率 $+5.5$ 个百分点
-        \item 召回率 $+11.1$ 个百分点（漏报率从 22.2\% 降至 11.1\%）
-        \item 精确率 $+15.7$ 个百分点（误报率从 30.0\% 降至 14.3\%）
-        \item F1 分数 $+13.6$ 个百分点
+        \item 传统方法：实测月速率（后验，无前瞻）
+        \item 本文方法：LSTM 50次集成预测月速率（前瞻 + 不确定性量化）
       \end{itemize}
+      \vspace{0.5em}
+      \textbf{测试集定量结果}：两种方法均 100\% 特异性、零误报（测试集无真实越限事件）
+    \end{column}
+    \begin{column}{0.41\textwidth}
+      \textbf{本文方法的结构性优势}
+      \begin{enumerate}
+        \item \textbf{前瞻性}：预警可早于实测越限
+        \item \textbf{不确定性量化}：输出四级概率而非单一等级
+        \item \textbf{鲁棒性}：50次集成抗随机初始化抖动
+        \item \textbf{可解释性}：SHAP 归因解释触发原因
+        \item \textbf{空间适应性}：各点独立 $V_0$，避免灵敏度失衡
+      \end{enumerate}
     \end{column}
   \end{columns}
 \end{frame}
@@ -558,9 +582,9 @@
 \begin{frame}{主要结论}
   \small
   \begin{enumerate}
-    \item \textbf{特征分析}：LightGBM+SHAP 定量揭示库水位消落（贡献 39.5\%）与历史位移累积（贡献 34.2\%）为主控因子，验证滑坡变形累积驱动机制
-    \item \textbf{位移预测}：LSTM 模型测试集 $R^2=0.7916$，RMSE=5.55\,mm，相对误差 0.56\%，达工程应用精度；50次运行集成成功量化认知不确定性（变异系数 0.55\%）
-    \item \textbf{概率预警}：基于越限概率的五级预警体系准确率 95.2\%，召回率 88.9\%，F1 分数 87.3\%，预警提前量 1--3 天，显著优于传统速率法
+    \item \textbf{特征分析}：LightGBM+SHAP 定量揭示库水位消落（39.5\%）与历史位移累积（34.2\%）为主控因子，气温（21.1\%）与地下水位（5.1\%）次之，验证滑坡变形累积驱动机制
+    \item \textbf{位移预测}：LSTM 模型 MJ1 测试集 $R^2=0.7916$，RMSE=5.55\,mm，相对误差 0.56\%，达工程应用精度；50次运行变异系数 $<1\%$，成功量化认知不确定性
+    \item \textbf{概率预警}：基于 $V_0 = 1.5\bar V + 2\sigma$ 的四级动态预警体系，测试集三点均 100\% 特异性、零误报；训练期 2017 年阶跃段演示中 MJ1 与 MJ3 分别触发 70 天与 129 天黄色预警
   \end{enumerate}
   \vspace{0.2em}
   \begin{alertblock}{核心贡献}
