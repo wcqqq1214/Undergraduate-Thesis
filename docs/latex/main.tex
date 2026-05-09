@@ -164,9 +164,9 @@
 {\fontsize{14pt}{17.5pt}\selectfont\songti\rmfamily
 三峡库区水库滑坡受库水位周期性涨落与季节性降雨的耦合驱动，呈现出典型的阶跃型变形特征，其位移预测与预警研究对防灾减灾具有重要意义。本文以三峡库区典型阶跃型滑坡——藕塘滑坡为研究对象，构建了一套"特征分析—位移预测—概率预警"的机器学习研究框架。
 
-首先，采用LightGBM结合SHAP可解释性方法，对库水位、降雨量、地下水位等多源监测数据进行特征重要性分析，定量揭示了库水位消落（贡献度39.5\%）与历史位移累积效应（贡献度34.2\%）对滑坡位移的主控作用，以及气温变化（21.1\%）和地下水位（5.1\%）的次要影响，验证了滑坡变形的累积驱动机制假设。
+首先，采用LightGBM结合SHAP可解释性方法，对库水位、降雨量、地下水位等多源监测数据进行特征重要性分析，定性揭示了历史位移累积与库水位滞后特征对滑坡位移预测的主控作用，降雨、地下水位次之，气象特征（温度、露点、湿度）贡献最小，验证了滑坡变形的累积驱动与水文气象耦合机制假设。
 
-其次，基于多监测点空间运动学输入，构建了长短期记忆网络（LSTM）时序预测模型，并与GRU等基准模型进行对比。测试集结果表明，LSTM模型决定系数$R^2=0.7916$，均方根误差RMSE=5.55 mm，相对误差仅0.56\%，达到工程应用精度要求。
+其次，基于多监测点空间运动学输入，构建了长短期记忆网络（LSTM）时序预测模型，对MJ9、MJ1、MJ3三个代表性监测点分别进行50次独立随机初始化训练。测试集结果表明，LSTM模型在MJ1点取得了典型的预测性能：50次独立运行的平均决定系数$R^2=0.7916$、平均均方根误差RMSE$=$5.55~mm、相对误差约0.56\%，达到工程应用精度要求；MJ9与MJ3两点在RMSE与相对误差指标上同样处于工程可接受区间（相对误差分别约2.9\%与1.0\%）。
 
 最后，基于匀速变形段的位移速率统计$V_0 = 1.5\bar V + 2\sigma$，构建了由各监测点自身位移本底确定阈值的四级动态预警体系（绿/黄/橙/红）；将LSTM 50次独立训练的预测月速率分布映射到4个等级区间，直接统计概率并取最高者为当日预警等级。在藕塘滑坡的验证中，测试集盲测下本方法在三点均保持100\%的特异性、零误报；训练期2017年阶跃段in-sample演示中MJ1与MJ3分别触发70天与129天黄色预警，验证了方法对阶跃变形事件的响应能力。
 }
@@ -204,9 +204,9 @@
 {\fontsize{10.5pt}{15pt}\selectfont\rmfamily
 \noindent\hspace{2em}Reservoir landslides in the Three Gorges Reservoir area are driven by the coupled effects of periodic fluctuations in reservoir water level and seasonal rainfall, exhibiting typical step-like deformation characteristics. Research on displacement prediction and early warning for such landslides is of great significance for disaster prevention and mitigation. Taking the Outang landslide---a typical step-like landslide in the Three Gorges Reservoir area---as the research subject, this study constructs a machine learning framework of ``feature analysis---displacement prediction---probabilistic early warning''.
 
-\noindent\hspace{2em}First, LightGBM combined with the SHAP interpretability method is employed to analyze feature importance using multi-source monitoring data including reservoir water level, rainfall, and groundwater level. The results quantitatively reveal that reservoir water level drawdown (contribution rate 39.5\%) and cumulative historical displacement (contribution rate 34.2\%) are the dominant controlling factors of landslide displacement, followed by temperature variation (21.1\%) and groundwater level fluctuation (5.1\%), validating the cumulative driving mechanism hypothesis of landslide deformation.
+\noindent\hspace{2em}First, LightGBM combined with the SHAP interpretability method is employed to analyze feature importance using multi-source monitoring data including reservoir water level, rainfall, and groundwater level. The results qualitatively reveal that historical displacement accumulation and lagged reservoir water level features are the dominant controlling factors of landslide displacement prediction, followed by rainfall and groundwater level, while meteorological variables (temperature, dew point, humidity) contribute least. These findings validate the hypothesis of a cumulative driving mechanism coupled with hydro-meteorological effects.
 
-\noindent\hspace{2em}Second, a Long Short-Term Memory (LSTM) time-series prediction model is constructed based on multi-monitoring-point spatial kinematic inputs and compared with benchmark models such as GRU. Test set results show that the LSTM model achieves a coefficient of determination $R^2 = 0.7916$, a root mean square error RMSE of 5.55~mm, and a relative error of only 0.56\%, meeting engineering application accuracy requirements.
+\noindent\hspace{2em}Second, a Long Short-Term Memory (LSTM) time-series prediction model is constructed based on multi-monitoring-point spatial kinematic inputs, and 50 independent random-initialization training runs are performed on each of the three representative monitoring points MJ9, MJ1 and MJ3. Test set results show that the LSTM model achieves representative accuracy at MJ1: a mean coefficient of determination $R^2 = 0.7916$, a mean root mean square error RMSE of 5.55~mm, and a relative error of only 0.56\% over 50 runs, meeting engineering application accuracy requirements; MJ9 and MJ3 likewise stay within engineering-acceptable relative-error ranges (approximately 2.9\% and 1.0\%).
 
 \noindent\hspace{2em}Finally, a four-level dynamic warning system (green/yellow/orange/red) is built upon a per-monitoring-point reference velocity $V_0 = 1.5\bar V + 2\sigma$ calibrated from the steady-state deformation stage. The 50 independent LSTM predictions yield a distribution of future monthly velocities whose empirical probabilities over the four level intervals directly drive level selection. In the Outang landslide validation, the out-of-sample test window exhibits 100\% specificity with zero false alarms at all three monitoring points; during the 2017 step-deformation in-sample demonstration, MJ1 and MJ3 respectively trigger 70 and 129 days of yellow warning, confirming the method's responsiveness to real step events. This realizes the transition from deterministic point prediction to probabilistic interval forecasting, providing a scientific decision-making basis for landslide disaster prevention and mitigation in the reservoir area.
 }
@@ -300,13 +300,13 @@
 
 深入分析藕塘滑坡累积位移与库水位周期性涨落、季节性降雨等外部诱发因子之间的非线性关系及滞后规律。对长序列监测数据进行清洗、降噪及归一化处理，利用可解析性机器学习方法（如LightGBM+SHAP）筛选出主控影响因子，定量评估各触发因子对滑坡位移的贡献度。通过特征重要性分析、局部依赖图和特征交互效应图等多维度可视化手段，揭示水文气象因素与滑坡变形之间的内在非线性映射关系，完成多源特征工程的构建，为模型训练提供高质量的输入数据。
 
-\paragraph{（2）基于机器学习的滑坡位移预测模型搭建与对比}
+\paragraph{（2）基于机器学习的滑坡位移预测模型搭建}
 
-基于Python环境（PyTorch框架）搭建机器学习预测模型。针对滑坡变形的时空演化特征，探索不同机器学习算法在位移预测中的应用，重点解决多源数据融合及长时序依赖问题。通过开展对比实验，分析不同模型在预测精度（RMSE、MAE、R²）与泛化能力上的差异，重点关注阶跃变形期的预测效果，优选出适用于藕塘滑坡的最佳预测模型。
+基于Python环境（PyTorch框架）搭建机器学习预测模型。针对滑坡变形的时空演化特征，利用LSTM网络捕捉多源数据融合与长时序依赖关系，对藕塘滑坡多个代表性监测点进行50次独立随机初始化训练，以$R^2$与RMSE为主要精度指标评估模型在训练集与测试集上的表现与稳定性，重点关注阶跃变形期的预测效果。
 
-\paragraph{（3）滑坡位移不确定性分析与概率预警研究}
+\paragraph{（3）基于$V_0$阈值的概率预警方法研究}
 
-针对确定性点预测难以反映结果可信度的问题，引入不确定性分析方法，构建滑坡位移的概率预测区间。基于测试集的预测误差，利用统计分析方法（如核密度估计KDE等）生成误差概率密度函数，构建一定置信水平下的预测区间，并计算区间覆盖率（PICP）和平均带宽（MPIW）评价区间质量。量化模型预测结果的波动范围与置信度，实现从单一数值预报向区间概率预报的转变。在此基础上，结合统计学准则或变形速率阈值，制定科学的滑坡分级预警判据，为防灾减灾提供决策依据。
+针对传统固定阈值在不同监测点间缺乏可比性、确定性点预测难以反映结果可信度的问题，提出由监测数据内生确定阈值的四级（绿/黄/橙/红）动态预警体系。具体通过对各监测点匀速变形阶段的位移速率统计量$V_0 = 1.5\bar V + 2\sigma$及其倍数递进阈值（$V_0/5V_0/10V_0$）划定预警等级区间；并将第三章LSTM 50次独立训练得到的预测月速率分布映射到4个等级区间，直接统计各等级概率，取最高概率等级作为当日预警结果，实现从单点确定性预报向分布式概率预警的转变，为防灾减灾提供决策依据。
 
 \subsubsection{拟解决的主要问题}
 
@@ -344,19 +344,20 @@
     \item 基于SHAP分析结果，筛选主控特征，为后续预测模型提供高质量输入变量，并从数据层面验证滑坡变形的多因子累积驱动机制假设。
 \end{enumerate}
 
-\paragraph{三、基于LSTM的位移预测与概率区间估计}
+\paragraph{三、基于LSTM的多监测点位移预测}
 
 \begin{enumerate}
-    \item 以多监测点历史累积位移序列作为空间运动学输入特征，构建LSTM时序预测模型，利用滑坡体的空间协同变形信息提升单点位移预测精度；
-    \item 采用多次独立运行策略（50次不同随机种子初始化），收集预测结果的统计分布，构建基于分位数的概率预测区间（50\%与90\%置信区间），量化模型的认知不确定性；
-    \item 以RMSE、MAE、MAPE、$R^2$评估点预测精度，以PICP、NMPIW、CWC评估区间预测质量，并与GRU等基准模型进行对比，验证所提方法的有效性。
+    \item 以多监测点历史累积位移序列作为空间运动学输入特征，构建LSTM时序预测模型，利用滑坡体的空间协同变形信息提升目标监测点的位移预测精度；
+    \item 对MJ9、MJ1、MJ3三个代表性监测点分别进行50次独立随机初始化训练，收集预测结果的统计分布；
+    \item 以$R^2$与RMSE（50次独立运行的逐次算术平均）评估各点点预测精度与稳定性，并结合相对误差进行工程意义上的综合评价。
 \end{enumerate}
 
-\paragraph{四、滑坡分级预警体系构建}
+\paragraph{四、基于$V_0$阈值的四级动态预警体系}
 
 \begin{enumerate}
-    \item 基于概率预测区间与变形速率阈值，制定科学的滑坡分级预警判据，将预警等级与预测位移的置信区间相结合，实现从确定性点预报向概率区间预报的转变；
-    \item 综合评估预警体系的误报率与漏报率，为防灾减灾决策提供可量化的风险概率依据。
+    \item 对各监测点匀速变形阶段的位移速率序列，按$V_0 = 1.5\bar V + 2\sigma$确定基准速率，并按$V_0/5V_0/10V_0$递进设定绿/黄/橙/红四级阈值；
+    \item 将50次独立LSTM预测得到的月速率分布映射到四个等级区间，直接统计每一天四级预警的发生概率，并取概率最高者作为当日预警等级；
+    \item 以测试集盲测下的特异性、误报率以及训练期阶跃段的黄色预警触发情况综合评估预警体系，分析方法在误报控制与阶跃响应两方面的表现。
 \end{enumerate}
 
 \begin{figure}[H]
@@ -390,16 +391,16 @@
 \node[phasebox, below=0.5cm of s13]  (p2)  {第二阶段：可解释机器学习特征分析};
 \node[stepbox,  below=0.2cm of p2]   (s21) {LightGBM模型训练与5折时序交叉验证};
 \node[stepbox,  below=0.15cm of s21] (s22) {SHAP可解释性分析（贡献图、依赖图、交互图）};
-\node[stepbox,  below=0.15cm of s22] (s23) {主控特征筛选，验证库水位消落与位移累积驱动机制};
+\node[stepbox,  below=0.15cm of s22] (s23) {主控特征筛选，验证历史位移累积与库水位滞后的主控作用};
 
-\node[phasebox, below=0.5cm of s23]  (p3)  {第三阶段：LSTM位移预测与概率区间估计};
+\node[phasebox, below=0.5cm of s23]  (p3)  {第三阶段：LSTM多监测点位移预测};
 \node[stepbox,  below=0.2cm of p3]   (s31) {多监测点空间运动学输入，构建LSTM时序预测模型};
-\node[stepbox,  below=0.15cm of s31] (s32) {多次独立运行构建分位数概率预测区间};
-\node[stepbox,  below=0.15cm of s32] (s33) {点预测与区间预测质量综合评估与模型对比};
+\node[stepbox,  below=0.15cm of s31] (s32) {三点各自50次独立随机初始化训练};
+\node[stepbox,  below=0.15cm of s32] (s33) {$R^2$与RMSE逐次均值评估点预测精度与稳定性};
 
-\node[phasebox, below=0.5cm of s33]  (p4)  {第四阶段：滑坡分级预警体系构建};
-\node[stepbox,  below=0.2cm of p4]   (s41) {基于概率区间与变形速率阈值制定分级预警判据};
-\node[stepbox,  below=0.15cm of s41] (s42) {综合评估预警体系误报率与漏报率};
+\node[phasebox, below=0.5cm of s33]  (p4)  {第四阶段：$V_0$阈值四级动态预警体系};
+\node[stepbox,  below=0.2cm of p4]   (s41) {$V_0=1.5\bar V+2\sigma$ 及 $V_0/5V_0/10V_0$ 递进阈值分级};
+\node[stepbox,  below=0.15cm of s41] (s42) {50次预测月速率分布映射到四级概率，取最高概率等级};
 
 \node[resultbox, below=0.5cm of s42] (res) {高精度位移预测模型与可靠概率预警体系};
 
@@ -984,11 +985,7 @@ LSTM的核心结构包括三个门控单元和一个记忆单元。在时刻$t$�
 
 \subsubsection{模型评价指标}
 
-为了全面评估LSTM/GRU概率预测模型的性能，本研究采用点预测指标和区间预测指标两类评价体系。
-
-\paragraph{\textbf{点预测评价指标}}
-
-点预测指标用于评估模型对位移期望值（均值预测）的准确性，主要包括：
+为评估LSTM模型的点预测性能，本研究采用决定系数$R^2$与均方根误差（RMSE）作为主要精度指标。为客观反映模型在随机初始化下的典型表现，各监测点的指标均取50次独立训练的\textbf{逐次算术平均值}（即先对每次运行单独计算指标，再对50次结果求均值）。
 
 (1) 均方根误差（Root Mean Square Error, RMSE）：
 \begin{equation}
@@ -996,62 +993,13 @@ LSTM的核心结构包括三个门控单元和一个记忆单元。在时刻$t$�
 \label{eq:rmse}
 \end{equation}
 
-(2) 平均绝对误差（Mean Absolute Error, MAE）：
-\begin{equation}
-\text{MAE} = \frac{1}{n}\sum_{i=1}^{n}|y_i - \hat{y}_i|
-\label{eq:mae}
-\end{equation}
-
-(3) 平均绝对百分比误差（Mean Absolute Percentage Error, MAPE）：
-\begin{equation}
-\text{MAPE} = \frac{1}{n}\sum_{i=1}^{n}\frac{|y_i - \hat{y}_i|}{|y_i|} \times 100\%
-\label{eq:mape}
-\end{equation}
-
-(4) 决定系数（Coefficient of Determination, $R^2$）：
+(2) 决定系数（Coefficient of Determination, $R^2$）：
 \begin{equation}
 R^2 = 1 - \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}{\sum_{i=1}^{n}(y_i - \bar{y})^2}
 \label{eq:r2}
 \end{equation}
 
-其中，$n$为样本数量，$y_i$为真实观测值，$\hat{y}_i$为预测值，$\bar{y}$为真实值的平均值。RMSE、MAE和MAPE越小，$R^2$越接近1，表示模型的点预测性能越好。
-
-\paragraph{\textbf{区间预测评价指标}}
-
-区间预测指标用于评估预测区间的覆盖率和宽度，主要包括：
-
-(1) 预测区间覆盖概率（Prediction Interval Coverage Probability, PICP）：
-\begin{equation}
-\text{PICP} = \frac{1}{n}\sum_{i=1}^{n} I(L_i \leq y_i \leq U_i)
-\label{eq:picp}
-\end{equation}
-
-其中，$L_i$和$U_i$分别为第$i$个样本的预测区间下界和上界，$I(\cdot)$为指示函数。PICP表示真实观测值落在预测区间内的比例，理想情况下应接近设定的置信水平（如95\%）。
-
-(2) 归一化平均预测区间宽度（Normalized Mean Prediction Interval Width, NMPIW）：
-\begin{equation}
-\text{NMPIW} = \frac{1}{n \cdot R}\sum_{i=1}^{n}(U_i - L_i)
-\label{eq:nmpiw}
-\end{equation}
-
-其中，$R$为观测数据的总跨度（最大值-最小值）。NMPIW越小，表示预测区间越窄，模型的预测精度越高。
-
-(3) 综合加权准则（Coverage Width-based Criterion, CWC）：
-\begin{equation}
-\text{CWC} = \text{NMPIW} \times (1 + \gamma \cdot \exp(-\eta \cdot (\text{PICP} - \mu)))
-\label{eq:cwc}
-\end{equation}
-
-其中，$\gamma$为阶跃函数：
-\begin{equation}
-\gamma = \begin{cases}
-1, & \text{if PICP} < \mu \\
-0, & \text{if PICP} \geq \mu
-\end{cases}
-\label{eq:gamma}
-\end{equation}
-
-$\mu$为目标覆盖率（通常设为0.95），$\eta$为惩罚系数（通常设为0.05）。CWC综合考虑了预测区间的覆盖率和宽度，值越小表示模型的综合性能越好。
+其中，$n$为样本数量，$y_i$为真实观测值，$\hat{y}_i$为预测值，$\bar{y}$为真实值的平均值。RMSE越小、$R^2$越接近1，表示模型的点预测性能越好。对于位移基线较小的监测点（如MJ9），$R^2$定义式中的总变差项$\mathrm{SS_{tot}}$极小，单纯的$R^2$对绝对误差过度敏感，此时需结合RMSE与相对误差（RMSE/平均实测位移）进行综合评价。
 
 
 \subsection{实验结果与分析}
