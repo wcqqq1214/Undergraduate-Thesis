@@ -101,11 +101,8 @@ def plot_warning_timeseries(target='MJ1'):
     ax3.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    output_png = FIGURES_DIR / f'warning_timeseries_{target}.png'
     output_pdf = FIGURES_DIR / f'warning_timeseries_{target}.pdf'
-    plt.savefig(output_png, dpi=300, bbox_inches='tight')
     plt.savefig(output_pdf, dpi=300, bbox_inches='tight', format='pdf')
-    print(f"✓ 已保存: {output_png}")
     print(f"✓ 已保存: {output_pdf}")
     plt.close()
 

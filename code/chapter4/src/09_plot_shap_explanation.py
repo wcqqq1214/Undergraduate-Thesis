@@ -199,11 +199,9 @@ def plot_shap_waterfall(shap_values, base_value, sample_idx: int,
     ax.grid(axis='x', alpha=0.3)
     plt.tight_layout()
 
-    out_png = FIGURES_DIR / 'shap_waterfall.png'
     out_pdf = FIGURES_DIR / 'shap_waterfall.pdf'
-    plt.savefig(out_png, dpi=300, bbox_inches='tight')
     plt.savefig(out_pdf, dpi=300, bbox_inches='tight', format='pdf')
-    print(f"✓ SHAP瀑布图已保存: {out_png}")
+    print(f"✓ SHAP瀑布图已保存: {out_pdf}")
     plt.close()
 
 
@@ -298,11 +296,9 @@ def plot_shap_bar_aggregated(category_pct: dict, event_date: str):
 
     plt.tight_layout(rect=[0, 0, 0.88, 0.92])
 
-    out_png = FIGURES_DIR / 'shap_explanation.png'
     out_pdf = FIGURES_DIR / 'shap_explanation.pdf'
-    plt.savefig(out_png, dpi=300, bbox_inches='tight')
     plt.savefig(out_pdf, dpi=300, bbox_inches='tight', format='pdf')
-    print(f"✓ SHAP归因图已保存: {out_png}")
+    print(f"✓ SHAP归因图已保存: {out_pdf}")
     plt.close()
 
 

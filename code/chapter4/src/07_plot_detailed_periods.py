@@ -138,11 +138,9 @@ def plot_detailed_period(data, start_date, end_date, target):
 
     plt.tight_layout()
     tag = start_date.strftime("%Y%m%d")
-    out_png = FIGURES_DIR / f'detailed_period_{target}_{tag}.png'
     out_pdf = FIGURES_DIR / f'detailed_period_{target}_{tag}.pdf'
-    plt.savefig(out_png, dpi=300, bbox_inches='tight')
     plt.savefig(out_pdf, dpi=300, bbox_inches='tight', format='pdf')
-    print(f'✓ 已保存: {out_png}')
+    print(f'✓ 已保存: {out_pdf}')
     plt.close()
 
 

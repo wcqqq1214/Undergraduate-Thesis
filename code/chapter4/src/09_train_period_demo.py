@@ -148,8 +148,6 @@ def plot_demo_period(target, period_name, start, end, dates, in_monthly, actual_
 
     tag = start.strftime('%Y%m')
     out_pdf = FIGURES_DIR / f'{target.lower()}_train_demo_{tag}.pdf'
-    plt.savefig(FIGURES_DIR / f'{target.lower()}_train_demo_{tag}.png', dpi=300,
-                bbox_inches='tight')
     plt.savefig(out_pdf, dpi=300, bbox_inches='tight', format='pdf')
     plt.close()
 

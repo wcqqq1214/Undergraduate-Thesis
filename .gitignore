@@ -75,3 +75,10 @@ Thumbs.db
 /原始监测数据/
 /docs/superpowers
 /papers/
+
+# 参考资料（大文件 + 版权考虑，不随仓库分发）
+物理引导的阶跃型水库滑坡变形智能概率预测模型与预警方法研究.docx
+
+# 绘图脚本产物：只保留 PDF，PNG 可再生
+code/chapter*/outputs/**/*.png
+code/chapter*/outputs/*.png

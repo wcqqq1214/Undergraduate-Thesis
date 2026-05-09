@@ -155,11 +155,9 @@ def plot_active_period(target='MJ1', start_date=None, end_date=None):
     plt.setp(ax2.xaxis.get_majorticklabels(), rotation=45, ha='right')
     plt.tight_layout()
 
-    out_png = FIGURES_DIR / f'{target.lower()}_active_period.png'
     out_pdf = FIGURES_DIR / f'{target.lower()}_active_period.pdf'
-    plt.savefig(out_png, dpi=300, bbox_inches='tight')
     plt.savefig(out_pdf, dpi=300, bbox_inches='tight', format='pdf')
-    print(f'✓ 已保存: {out_png}')
+    print(f'✓ 已保存: {out_pdf}')
 
     print(f'\n统计 [{target}] {start_date.date()} ~ {end_date.date()}')
     print(f'  实测月速率范围 {actual_slice.min():.2f} ~ {actual_slice.max():.2f} mm/M')

@@ -40,9 +40,8 @@ def load_point(tag):
 
 def save_fig(fig, name):
     fig.savefig(f'{FIG_DIR}/{name}.pdf', dpi=300, bbox_inches='tight')
-    fig.savefig(f'{FIG_DIR}/{name}.png', dpi=300, bbox_inches='tight')
     plt.close(fig)
-    print(f'已保存: {name}.pdf / {name}.png')
+    print(f'已保存: {name}.pdf')
 
 
 # 预先加载三个点的数据，避免重复 IO
