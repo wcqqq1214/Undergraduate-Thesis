@@ -35,7 +35,7 @@
 - **深度学习框架**：TensorFlow/Keras
 - **机器学习库**：scikit-learn, LightGBM
 - **可解释性分析**：SHAP
-- **时序预测**：LSTM（长短期记忆网络）、GRU
+- **时序预测**：LSTM（长短期记忆网络），与 GRU 等基准模型对比
 - **论文排版**：LaTeX (XeTeX)
 
 ## 论文编译
