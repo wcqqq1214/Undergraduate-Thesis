@@ -85,6 +85,16 @@
 \geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
 \onehalfspacing
 
+% 页码字号：小五号(9pt)
+\usepackage{fancyhdr}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\fontsize{9pt}{11pt}\selectfont\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{plain}
+
 % 章节标题格式（titlesec）
 % 一级标题：三号(16pt)黑体加粗，居中，段前后1行
 \newcommand{\sectionbreak}{\clearpage}
@@ -1624,8 +1634,15 @@ V_t^{\text{obs}} = \sum_{\tau=t-29}^{t}(D_\tau - D_{\tau-1})
 \endgroup
 
 % —— 致谢 ——
+% 标题"致\hspace{1em}谢"：三号(16pt)黑体居中，上下各空一行
 \clearpage
-\section*{致谢}
+\begingroup
+  \titleformat{\section}[block]
+    {\centering\fontsize{16pt}{20pt}\selectfont\heiti\bfseries}
+    {}{0em}{}
+  \titlespacing*{\section}{0pt}{\baselineskip}{\baselineskip}
+  \section*{致\hspace{1em}谢}
+\endgroup
 \addcontentsline{toc}{section}{致谢}
 \fangsong % 致谢用仿宋字体，注释/删掉则使用宋体
 
