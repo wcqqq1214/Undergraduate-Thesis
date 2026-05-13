@@ -18,14 +18,21 @@
 
 ```
 ├── docs/latex/                  # 论文 LaTeX 源文件
-│   ├── main.tex                # 主文档
+│   ├── main.tex                # 论文正文
 │   ├── slides.tex              # 答辩幻灯片（beamer）
+│   ├── references.bib          # 参考文献
 │   ├── thesis_cover_page.pdf   # 封面（外部 PDF 导入）
-│   └── fonts/                  # 字体文件
+│   ├── thesis_end_page.pdf     # 封底（外部 PDF 导入）
+│   ├── fonts/                  # 字体文件
+│   └── figures/                # 插图（按章节分目录）
 ├── code/                        # 实验代码
 │   ├── chapter2/                # 第二章：LightGBM+SHAP 特征分析
 │   ├── chapter3/                # 第三章：LSTM 位移预测与概率区间
 │   └── chapter4/                # 第四章：V0 四级动态概率预警
+├── data/                        # 原始监测数据
+├── scripts/                     # 项目级脚本
+├── .gitignore
+├── LICENSE
 └── README.md
 ```
 
