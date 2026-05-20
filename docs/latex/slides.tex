@@ -14,9 +14,9 @@
 \usepackage{appendixnumberbeamer}
 
 % ===== 字体（与论文一致）=====
-\setCJKmainfont{simsun.ttc}[Path=fonts/, AutoFakeBold=3, BoldFont=simhei.ttf]
+\setCJKmainfont{simsun.ttc}[Path=fonts/, AutoFakeBold=3]
 \setCJKsansfont{simhei.ttf}[Path=fonts/, AutoFakeBold=3]
-\setCJKmonofont{simsun.ttc}[Path=fonts/]
+\setCJKmonofont{simsun.ttc}[Path=fonts/, AutoFakeBold=3]
 \setCJKfamilyfont{heiti}{simhei.ttf}[Path=fonts/, AutoFakeBold=2]
 \setCJKfamilyfont{songbold}{simsun.ttc}[Path=fonts/, AutoFakeBold=2]
 \newcommand{\heiti}{\CJKfamily{heiti}}
@@ -24,6 +24,9 @@
 \setmainfont{times.ttf}[
     BoldFont=timesbd.ttf, ItalicFont=timesi.ttf, BoldItalicFont=timesbi.ttf,
     Path=fonts/]
+
+% 正文使用宋体（beamer 默认 sans，强制切换为 rmfamily），粗体用仿粗而非黑体
+\setbeamerfont{normal text}{family=\rmfamily}
 
 \xeCJKsetup{PunctStyle=quanjiao}
 
