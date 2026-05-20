@@ -64,7 +64,7 @@
     \item 三峡库区水库滑坡受\alert{库水位周期涨落}与\alert{季节性降雨}耦合驱动，呈典型\textbf{阶跃型}变形特征
     \item 传统确定性点预测难以量化风险可信度，单一阈值预警缺乏适应性
   \end{itemize}
-  \vspace{0.6em}
+  \vspace{0.2em}
   \textbf{研究目标}
   \begin{itemize}
     \item 构建``特征分析—位移预测—概率预警''机器学习框架
@@ -76,42 +76,45 @@
 % 3. 藕塘滑坡概况
 % ============================================================
 \begin{frame}{藕塘滑坡概况}
-  \begin{columns}[T]
-    \begin{column}{0.42\textwidth}
-      \includegraphics[width=\textwidth,height=0.45\textheight,keepaspectratio]{figures/chapter2/Panoramic_map_of_Outang_landslide.pdf}
-      \vspace{0.8em}
-      \textbf{基本特征}
-      \begin{itemize}
-        \item 重庆市奉节县安坪镇，长江南岸
-        \item 体积约 $9\times10^7\,\text{m}^3$，最大厚度 114\,m
-        \item 三个子区，多期次复合滑动
-        \item 软弱夹层控制变形，遇水软化显著
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.54\textwidth}
-      \includegraphics[width=\textwidth,height=0.45\textheight,keepaspectratio]{figures/chapter2/monitoring_data_overview.pdf}
-      \vspace{0.8em}
-      \textbf{监测数据}
-      \begin{itemize}
-        \item 时间：2016年7月—2020年6月（4年，1457条日尺度记录）
-        \item GNSS 位移：MJ1（中部）、MJ3（中后部）、MJ9（后缘）
-        \item 地下水、库水位、降雨、气象要素同步采集
-      \end{itemize}
-    \end{column}
-  \end{columns}
+  \textbf{基本特征}
+  \begin{itemize}
+    \item 重庆市奉节县安坪镇，长江南岸
+    \item 体积约 $9\times10^7\,\text{m}^3$，最大厚度 114\,m
+    \item 三个子区，多期次复合滑动
+    \item 软弱夹层控制变形，遇水软化显著
+  \end{itemize}
+  \vspace{0.8em}
+  \textbf{变形特征}
+  \begin{itemize}
+    \item 典型\textbf{阶跃型}变形：库水位消落期与主汛期加速，高水位维持期趋于平缓
+    \item 空间分异：后缘 MJ9 变幅最小，中后部 MJ3 与中部 MJ1 变幅较大
+    \item 受库水位周期涨落与季节性降雨耦合驱动
+  \end{itemize}
 \end{frame}
 
 % ============================================================
-% 4. 技术路线
+% 4. 监测数据概览
+% ============================================================
+\begin{frame}{监测数据概览}
+  \centering
+  \includegraphics[width=\textwidth,height=0.65\textheight,keepaspectratio]{figures/chapter2/monitoring_data_overview.pdf}
+  \vspace{0.3em}
+  \begin{itemize}
+    \item 时间：2016年7月—2020年6月（4年，1457条日尺度记录）
+    \item GNSS 位移：MJ1（中部）、MJ3（中后部）、MJ9（后缘）\quad 地下水、库水位、降雨、气象要素同步采集
+  \end{itemize}
+\end{frame}
+
+% ============================================================
+% 5. 技术路线
 % ============================================================
 \begin{frame}{技术路线}
   \centering
-  \vspace{1em}
   \begin{tikzpicture}[
-    node distance=1.2cm,
+    node distance=0.8cm,
     box/.style={rectangle, draw=black, fill=blue!20, rounded corners=4pt,
-                text centered, minimum width=6cm, minimum height=0.9cm,
-                font=\bfseries\small, inner sep=6pt},
+                text centered, minimum width=6cm, minimum height=0.75cm,
+                font=\bfseries\small, inner sep=5pt},
     arr/.style={->, >=stealth, thick, draw=black!60},
   ]
   \node[box, fill=blue!30] (p1) {特征分析（LightGBM + SHAP）};
@@ -120,7 +123,7 @@
   \draw[arr] (p1) -- (p2);
   \draw[arr] (p2) -- (p3);
   \end{tikzpicture}
-  \vspace{1em}
+  \vspace{0.5em}
   \begin{block}{核心思路}
     \centering
     多源监测数据 $\to$ 可解释特征筛选 $\to$ 多监测点 LSTM 预测 $\to$ 概率分布映射四级预警
@@ -128,7 +131,7 @@
 \end{frame}
 
 % ============================================================
-% 5. 特征分析：LightGBM + SHAP
+% 6. 特征分析：LightGBM + SHAP
 % ============================================================
 \begin{frame}{特征分析：LightGBM + SHAP}
   \begin{columns}[T]
@@ -151,45 +154,48 @@
       \end{enumerate}
     \end{column}
   \end{columns}
-  \vspace{0.5em}
+  \vspace{0.2em}
   \begin{alertblock}{模型性能}
     回归 MSE：$0.0780 \pm 0.0641$；分类 AUC：$0.6795 \pm 0.1181$，召回率 76.23\%
   \end{alertblock}
 \end{frame}
 
 % ============================================================
-% 6. LSTM 位移预测模型
+% 7. LSTM 位移预测模型
 % ============================================================
 \begin{frame}{LSTM 位移预测模型}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \textbf{模型设计}
-      \begin{itemize}
-        \item 输入：MJ9、MJ1、MJ3、ATU4 四点历史位移序列
-        \item 利用滑坡体空间协同变形特征进行联合预测
-        \item 2层 LSTM（25→15 隐含单元）+ Dropout
-        \item Adam 优化器，MSE 损失，MinMax 归一化
-      \end{itemize}
-      \vspace{0.5em}
-      \textbf{概率预测策略}
-      \begin{itemize}
-        \item \alert{50 次独立随机初始化训练}
-        \item 收集预测统计分布，构建分位数预测区间
-        \item 量化认知不确定性
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \includegraphics[width=\textwidth,height=0.58\textheight,keepaspectratio]{figures/chapter3/lstm_fitting.pdf}
-    \end{column}
-  \end{columns}
+  \textbf{模型设计}
+  \begin{itemize}
+    \item 输入：MJ9、MJ1、MJ3、ATU4 四点历史位移序列
+    \item 利用滑坡体空间协同变形特征进行联合预测
+    \item 2层 LSTM（25→15 隐含单元）+ Dropout
+    \item Adam 优化器，MSE 损失，MinMax 归一化
+  \end{itemize}
+  \vspace{0.5em}
+  \textbf{概率预测策略}
+  \begin{itemize}
+    \item \alert{50 次独立随机初始化训练}
+    \item 收集预测统计分布，构建分位数预测区间
+    \item 量化认知不确定性
+  \end{itemize}
 \end{frame}
 
 % ============================================================
-% 7. 预测结果
+% 8. LSTM 预测拟合图
+% ============================================================
+\begin{frame}{LSTM 预测值与实测值对比}
+  \centering
+  \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/chapter3/lstm_fitting.pdf}
+\end{frame}
+
+% ============================================================
+% 9. 预测结果 (slide)
 % ============================================================
 \begin{frame}{预测结果}
+  \vspace{-0.5em}
   \begin{table}
     \centering
+    \small
     \caption{LSTM 点预测性能（50次运行均值）}
     \begin{tabular}{lcccc}
       \toprule
@@ -203,18 +209,17 @@
       \bottomrule
     \end{tabular}
   \end{table}
-  \vspace{0.2em}
+  \vspace{-0.3em}
   \textbf{关键指标}
   \begin{itemize}
     \item 点预测相对误差（RMSE/实测均值）：MJ1 \alert{0.56\%} / MJ9 2.91\% / MJ3 1.05\%，均达工程可接受精度
     \item 集成均值相对偏差：MJ1 $-$0.14\% / MJ9 $-$2.86\% / MJ3 $-$0.96\%
-    \item 三点变异系数 $<1\%$（MJ9 0.72\% / MJ1 0.62\% / MJ3 0.35\%），标准差占位移基线 $<1\%$
-    \item 50次集成成功量化认知不确定性，模型稳定可复现
+    \item 三点变异系数 $<1\%$（MJ9 0.72\% / MJ1 0.62\% / MJ3 0.35\%），50次集成标准差占位移基线 $<1\%$
   \end{itemize}
 \end{frame}
 
 % ============================================================
-% 8. 传统预警局限与本文方法
+% 10. 概率预警方法
 % ============================================================
 \begin{frame}{概率预警方法}
   \textbf{传统方法的局限}
@@ -232,7 +237,7 @@
 \end{frame}
 
 % ============================================================
-% 9. V0 计算与预警结果
+% 11. V0 计算与预警结果
 % ============================================================
 \begin{frame}{$V_0$ 阈值与预警验证}
   \begin{columns}[T]
@@ -265,28 +270,29 @@
 \end{frame}
 
 % ============================================================
-% 10. MJ1 预警时序
+% 12. MJ1 预警时序
 % ============================================================
 \begin{frame}{预警时序——MJ1 监测点}
   \centering
-  \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/chapter4/warning_timeseries.pdf}
+  \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{figures/chapter4/warning_timeseries.pdf}
 \end{frame}
 
 % ============================================================
-% 11. SHAP 预警归因
+% 13. SHAP 预警归因
 % ============================================================
 \begin{frame}{预警归因——SHAP 可解释性分析}
   \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
+    \begin{column}{0.45\textwidth}
       \textbf{典型预警事件：2017年9月28日}
       \begin{itemize}
-        \item 50次LSTM集成月速率中位数 36.2 mm/月，超过 $V_0=20.50$
+        \item LSTM集成月速率中位数 36.2 mm/月，超过 $V_0=20.50$
         \item 库水位30天上升 14.7 m，地下水位上升 7.46 m
       \end{itemize}
-      \vspace{0.5em}
+      \vspace{0.3em}
       \textbf{SHAP 归因贡献分解}
       \begin{table}
         \centering
+        \small
         \begin{tabular}{lc}
           \toprule
           驱动因素 & 贡献占比 \\
@@ -299,41 +305,39 @@
           \bottomrule
         \end{tabular}
       \end{table}
+      \vspace{0.2em}
+      {\small 位移累积 + 库水位 + 地下水位合计 95.9\%，定量复现"主汛末蓄水→位移加速"机理}
     \end{column}
-    \begin{column}{0.48\textwidth}
-      \includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{figures/chapter4/shap_waterfall.pdf}
+    \begin{column}{0.51\textwidth}
+      \includegraphics[width=\textwidth,height=0.75\textheight,keepaspectratio]{figures/chapter4/shap_waterfall.pdf}
     \end{column}
   \end{columns}
-  \vspace{0.3em}
-  \begin{block}{}
-    \centering
-    位移累积 + 库水位 + 地下水位合计贡献 95.9\%，定量复现"主汛末蓄水→位移加速"机理
-  \end{block}
 \end{frame}
 
 % ============================================================
-% 12. 主要结论
+% 14. 主要结论
 % ============================================================
 \begin{frame}{主要结论与创新点}
+  \small
   \begin{enumerate}
     \item \textbf{特征分析}：LightGBM+SHAP 定量揭示库水位消落与历史位移累积为滑坡变形主控因子，降雨、地下水位次之，气象要素贡献最小；识别最优时滞窗口（库水位 7--14 天，降雨 3--7 天）
     \item \textbf{位移预测}：多监测点 LSTM 模型 MJ1 测试集 $R^2=0.7916$，RMSE=5.55\,mm，相对误差 0.56\%，达工程应用精度；50次运行变异系数 $<1\%$，成功量化认知不确定性
-    \item \textbf{概率预警}：基于 $V_0 = 1.5\bar V + 2\sigma$ 的四级动态预警体系，各监测点独立确定阈值；测试集三点均 100\% 特异性、零误报；训练期阶跃段演示中 MJ1 与 MJ3 分别触发 70 天与 129 天黄色预警，验证方法响应能力
+    \item \textbf{概率预警}：基于 $V_0 = 1.5\bar V + 2\sigma$ 的四级动态预警体系，各监测点独立确定阈值；测试集三点均 100\% 特异性、零误报；训练期阶跃段演示中 MJ1 与 MJ3 分别触发 70 天与 129 天黄色预警
   \end{enumerate}
-  \vspace{0.3em}
+  \vspace{-0.2em}
   \begin{alertblock}{创新点}
     \begin{enumerate}
       \item LightGBM+SHAP 可解释特征工程：定量识别主控因子与最优时滞窗口
       \item 多监测点空间运动学 LSTM 联合预测：50次集成量化认知不确定性
-      \item 基于 $V_0$ 内生阈值的四级动态概率预警：从滞后性预警向前瞻性预警跨越
+      \item 基于 $V_0$ 内生阈值的四级动态概率预警：从滞后性向前瞻性跨越
     \end{enumerate}
   \end{alertblock}
-  \vspace{0.2em}
-  {\small\centering 展望：迁移学习缓解数据稀缺 · 多案例扩展验证 · 物理信息神经网络（PINN）深度融合}
+  \vspace{-0.3em}
+  {\footnotesize\centering 展望：迁移学习缓解数据稀缺 · 多案例扩展验证 · 物理信息神经网络（PINN）深度融合}
 \end{frame}
 
 % ============================================================
-% 13. 致谢
+% 15. 致谢
 % ============================================================
 \begin{frame}[standout]
   \Huge 感谢各位老师！\\[0.8em]
