@@ -206,8 +206,10 @@
   \vspace{0.2em}
   \textbf{关键指标}
   \begin{itemize}
-    \item MJ1 相对误差 \alert{0.56\%}，达工程应用精度；MJ9 2.86\% / MJ3 0.96\% 均可接受
-    \item 三点变异系数均 $<1\%$，50次集成标准差占各自位移基线 $<1\%$，模型稳定可复现
+    \item 点预测相对误差（RMSE/实测均值）：MJ1 \alert{0.56\%} / MJ9 2.91\% / MJ3 1.05\%，均达工程可接受精度
+    \item 集成均值相对偏差：MJ1 $-$0.14\% / MJ9 $-$2.86\% / MJ3 $-$0.96\%
+    \item 三点变异系数 $<1\%$（MJ9 0.72\% / MJ1 0.62\% / MJ3 0.35\%），标准差占位移基线 $<1\%$
+    \item 50次集成成功量化认知不确定性，模型稳定可复现
   \end{itemize}
 \end{frame}
 
@@ -271,22 +273,67 @@
 \end{frame}
 
 % ============================================================
-% 11. 主要结论
+% 11. SHAP 预警归因
 % ============================================================
-\begin{frame}{主要结论}
+\begin{frame}{预警归因——SHAP 可解释性分析}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{典型预警事件：2017年9月28日}
+      \begin{itemize}
+        \item 50次LSTM集成月速率中位数 36.2 mm/月，超过 $V_0=20.50$
+        \item 库水位30天上升 14.7 m，地下水位上升 7.46 m
+      \end{itemize}
+      \vspace{0.5em}
+      \textbf{SHAP 归因贡献分解}
+      \begin{table}
+        \centering
+        \begin{tabular}{lc}
+          \toprule
+          驱动因素 & 贡献占比 \\
+          \midrule
+          历史位移累积 & 40.7\% \\
+          库水位调度 & 36.8\% \\
+          地下水位变化 & 18.4\% \\
+          气温变化 & 3.8\% \\
+          降雨直接贡献 & 0.3\% \\
+          \bottomrule
+        \end{tabular}
+      \end{table}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{figures/chapter4/shap_waterfall.pdf}
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \begin{block}{}
+    \centering
+    位移累积 + 库水位 + 地下水位合计贡献 95.9\%，定量复现"主汛末蓄水→位移加速"机理
+  \end{block}
+\end{frame}
+
+% ============================================================
+% 12. 主要结论
+% ============================================================
+\begin{frame}{主要结论与创新点}
   \begin{enumerate}
     \item \textbf{特征分析}：LightGBM+SHAP 定量揭示库水位消落与历史位移累积为滑坡变形主控因子，降雨、地下水位次之，气象要素贡献最小；识别最优时滞窗口（库水位 7--14 天，降雨 3--7 天）
     \item \textbf{位移预测}：多监测点 LSTM 模型 MJ1 测试集 $R^2=0.7916$，RMSE=5.55\,mm，相对误差 0.56\%，达工程应用精度；50次运行变异系数 $<1\%$，成功量化认知不确定性
     \item \textbf{概率预警}：基于 $V_0 = 1.5\bar V + 2\sigma$ 的四级动态预警体系，各监测点独立确定阈值；测试集三点均 100\% 特异性、零误报；训练期阶跃段演示中 MJ1 与 MJ3 分别触发 70 天与 129 天黄色预警，验证方法响应能力
   \end{enumerate}
   \vspace{0.3em}
-  \begin{alertblock}{核心贡献}
-    实现从\textbf{确定性点预测}向\textbf{概率区间预报}的转变，从\textbf{滞后性预警}向\textbf{前瞻性预警}的跨越
+  \begin{alertblock}{创新点}
+    \begin{enumerate}
+      \item LightGBM+SHAP 可解释特征工程：定量识别主控因子与最优时滞窗口
+      \item 多监测点空间运动学 LSTM 联合预测：50次集成量化认知不确定性
+      \item 基于 $V_0$ 内生阈值的四级动态概率预警：从滞后性预警向前瞻性预警跨越
+    \end{enumerate}
   \end{alertblock}
+  \vspace{0.2em}
+  {\small\centering 展望：迁移学习缓解数据稀缺 · 多案例扩展验证 · 物理信息神经网络（PINN）深度融合}
 \end{frame}
 
 % ============================================================
-% 12. 致谢
+% 13. 致谢
 % ============================================================
 \begin{frame}[standout]
   \Huge 感谢各位老师！\\[0.8em]
