@@ -191,12 +191,11 @@
 % ============================================================
 % 9. 预测结果 (slide)
 % ============================================================
-\begin{frame}{预测结果}
+\begin{frame}{LSTM 预测结果（50次运行均值）}
+  \small
   \vspace{-0.5em}
   \begin{table}
     \centering
-    \small
-    \caption{LSTM 点预测性能（50次运行均值）}
     \begin{tabular}{lcccc}
       \toprule
       \multirow{2}{*}{监测点} & \multicolumn{2}{c}{训练集} & \multicolumn{2}{c}{测试集} \\
@@ -274,7 +273,7 @@
 % ============================================================
 \begin{frame}{预警时序——MJ1 监测点}
   \centering
-  \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{figures/chapter4/warning_timeseries.pdf}
+  \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/chapter4/warning_timeseries.pdf}
 \end{frame}
 
 % ============================================================
@@ -282,13 +281,14 @@
 % ============================================================
 \begin{frame}{预警归因——SHAP 可解释性分析}
   \begin{columns}[T]
-    \begin{column}{0.45\textwidth}
+    \begin{column}{0.52\textwidth}
       \textbf{典型预警事件：2017年9月28日}
       \begin{itemize}
         \item LSTM集成月速率中位数 36.2 mm/月，超过 $V_0=20.50$
         \item 库水位30天上升 14.7 m，地下水位上升 7.46 m
       \end{itemize}
-      \vspace{0.3em}
+    \end{column}
+    \begin{column}{0.44\textwidth}
       \textbf{SHAP 归因贡献分解}
       \begin{table}
         \centering
@@ -305,39 +305,41 @@
           \bottomrule
         \end{tabular}
       \end{table}
-      \vspace{0.2em}
-      {\small 位移累积 + 库水位 + 地下水位合计 95.9\%，定量复现"主汛末蓄水→位移加速"机理}
-    \end{column}
-    \begin{column}{0.51\textwidth}
-      \includegraphics[width=\textwidth,height=0.75\textheight,keepaspectratio]{figures/chapter4/shap_waterfall.pdf}
     \end{column}
   \end{columns}
 \end{frame}
 
 % ============================================================
-% 14. 主要结论
+% 14. SHAP 瀑布图
+% ============================================================
+\begin{frame}{SHAP 归因瀑布图}
+  \centering
+  \includegraphics[width=0.88\textwidth,height=0.95\textheight,keepaspectratio]{figures/chapter4/shap_waterfall.pdf}
+\end{frame}
+
+% ============================================================
+% 15. 主要结论
 % ============================================================
 \begin{frame}{主要结论与创新点}
-  \small
+  \footnotesize
+  \vspace{-0.3em}
   \begin{enumerate}
-    \item \textbf{特征分析}：LightGBM+SHAP 定量揭示库水位消落与历史位移累积为滑坡变形主控因子，降雨、地下水位次之，气象要素贡献最小；识别最优时滞窗口（库水位 7--14 天，降雨 3--7 天）
-    \item \textbf{位移预测}：多监测点 LSTM 模型 MJ1 测试集 $R^2=0.7916$，RMSE=5.55\,mm，相对误差 0.56\%，达工程应用精度；50次运行变异系数 $<1\%$，成功量化认知不确定性
-    \item \textbf{概率预警}：基于 $V_0 = 1.5\bar V + 2\sigma$ 的四级动态预警体系，各监测点独立确定阈值；测试集三点均 100\% 特异性、零误报；训练期阶跃段演示中 MJ1 与 MJ3 分别触发 70 天与 129 天黄色预警
+    \item \textbf{特征分析}：LightGBM+SHAP 定量揭示库水位消落与历史位移累积为主控因子；识别最优时滞窗口（库水位 7--14 天，降雨 3--7 天）
+    \item \textbf{位移预测}：多监测点 LSTM 模型 MJ1 测试集 $R^2=0.7916$，RMSE=5.55\,mm，相对误差 0.56\%；50次运行变异系数 $<1\%$，成功量化认知不确定性
+    \item \textbf{概率预警}：基于 $V_0 = 1.5\bar V + 2\sigma$ 的四级动态预警体系，各监测点独立确定阈值；测试集三点均 100\% 特异性、零误报；MJ1 与 MJ3 分别触发 70 天与 129 天黄色预警
   \end{enumerate}
   \vspace{-0.2em}
   \begin{alertblock}{创新点}
     \begin{enumerate}
       \item LightGBM+SHAP 可解释特征工程：定量识别主控因子与最优时滞窗口
       \item 多监测点空间运动学 LSTM 联合预测：50次集成量化认知不确定性
-      \item 基于 $V_0$ 内生阈值的四级动态概率预警：从滞后性向前瞻性跨越
+      \item 基于 $V_0$ 内生阈值的四级动态概率预警：从滞后性预警向前瞻性预警跨越
     \end{enumerate}
   \end{alertblock}
-  \vspace{-0.3em}
-  {\footnotesize\centering 展望：迁移学习缓解数据稀缺 · 多案例扩展验证 · 物理信息神经网络（PINN）深度融合}
 \end{frame}
 
 % ============================================================
-% 15. 致谢
+% 16. 致谢
 % ============================================================
 \begin{frame}[standout]
   \Huge 感谢各位老师！\\[0.8em]
