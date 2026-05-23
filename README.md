@@ -90,8 +90,3 @@ latexmk -xelatex slides.tex  # 答辩幻灯片 (beamer)
 - **代码** (`/code`, `/scripts`): [MIT License](LICENSE)
 - **论文文字与图表** (`/docs`): [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)
 
-## 注意事项
-
-- 封面、封底 PDF 及字体文件未纳入版本控制，需本地准备
-- 编译生成的中间文件（`.xdv`, `.aux`, `.log` 等）已添加到 `.gitignore`
-- 论文 PDF 通过 [GitHub Releases](https://github.com/wcqqq1214/Undergraduate-Thesis/releases) 分发，不纳入版本控制
