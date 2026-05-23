@@ -2,7 +2,7 @@
 
 本科毕业论文项目，研究三峡库区藕塘滑坡的位移预测与预警方法。
 
-**Download Thesis PDF**: [main.pdf](https://github.com/wcqqq1214/Undergraduate-Thesis/raw/main/docs/latex/main.pdf)
+[English](README_EN.md) | **Download Thesis PDF**: [main.pdf](https://github.com/wcqqq1214/Undergraduate-Thesis/raw/main/docs/latex/main.pdf)
 
 ## 研究内容
 
