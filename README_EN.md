@@ -2,7 +2,7 @@
 
 Undergraduate thesis project on landslide displacement prediction and early warning for the Outang landslide in the Three Gorges Reservoir area.
 
-[中文版本](README.md) | **Download Thesis PDF**: [main.pdf](https://github.com/wcqqq1214/Undergraduate-Thesis/raw/main/docs/latex/main.pdf)
+[中文版本](README.md) | **Download Thesis PDF**: [Wei_2026_ML_Reservoir_Landslide_Prediction.pdf](https://github.com/wcqqq1214/Undergraduate-Thesis/releases/latest/download/Wei_2026_ML_Reservoir_Landslide_Prediction.pdf)
 
 ## Research Objective
 
