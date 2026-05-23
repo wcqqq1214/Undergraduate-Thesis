@@ -37,7 +37,7 @@ The monitoring period spans from July 2016 to June 2020, covering 4 complete hyd
 ### LSTM Time-Series Displacement Prediction
 
 - A multi-input **LSTM** (Long Short-Term Memory) network predicts daily displacement at three monitoring points simultaneously
-- Input features include historical displacement, water level, rainfall, and cross-monitoring-point spatial kinematics
+- Input features are the historical cumulative displacement time series from four monitoring points (MJ9, MJ1, MJ3, ATU4), leveraging spatial kinematic correlations across the landslide body
 - **50 independent training runs** with random weight initialization are performed to capture model (epistemic) uncertainty
 - The ensemble of predictions forms a predictive distribution, from which **50% and 90% confidence intervals** are constructed
 
@@ -76,9 +76,12 @@ The monitoring period spans from July 2016 to June 2020, covering 4 complete hyd
 ├── code/                        # Experiment code
 │   ├── chapter2/                # Ch.2: LightGBM + SHAP feature analysis
 │   ├── chapter3/                # Ch.3: LSTM displacement prediction
-│   └── chapter4/                # Ch.4: V₀ probabilistic early warning
+│   ├── chapter4/                # Ch.4: V₀ probabilistic early warning
+│   ├── scripts/                 # Shared utilities
+│   └── utils/                   # Helper tools
 ├── data/                        # Raw monitoring data
 ├── scripts/                     # Project-level utilities
+├── .gitignore
 ├── LICENSE
 └── README.md
 ```
