@@ -2,6 +2,8 @@
 
 本科毕业论文项目，研究三峡库区藕塘滑坡的位移预测与预警方法。
 
+**Download Thesis PDF**: [main.pdf](https://github.com/wcqqq1214/Undergraduate-Thesis/raw/main/docs/latex/main.pdf)
+
 ## 研究内容
 
 本研究以三峡库区典型阶跃型滑坡——藕塘滑坡为研究对象，运用机器学习方法开展滑坡位移预测及预警研究，主要包括：
@@ -55,7 +57,7 @@ latexmk -xelatex main.tex    # 论文正文
 latexmk -xelatex slides.tex  # 答辩幻灯片 (beamer)
 ```
 
-## 📄 License
+## License
 
 - **Code** (`/code`, `/scripts`): [MIT License](LICENSE)
 - **Thesis Text & Figures** (`/docs`): [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)
