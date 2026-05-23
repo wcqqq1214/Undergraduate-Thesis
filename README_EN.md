@@ -68,11 +68,6 @@ The monitoring period spans from July 2016 to June 2020, covering 4 complete hyd
 ## Project Structure
 
 ```
-├── docs/latex/                  # LaTeX source files
-│   ├── main.tex                # Thesis manuscript
-│   ├── slides.tex              # Defense slides (beamer)
-│   ├── references.bib          # Bibliography
-│   └── figures/                # Figures (by chapter)
 ├── code/                        # Experiment code
 │   ├── chapter2/                # Ch.2: LightGBM + SHAP feature analysis
 │   ├── chapter3/                # Ch.3: LSTM displacement prediction
@@ -80,10 +75,17 @@ The monitoring period spans from July 2016 to June 2020, covering 4 complete hyd
 │   ├── scripts/                 # Shared utilities
 │   └── utils/                   # Helper tools
 ├── data/                        # Raw monitoring data
+├── docs/
+│   └── latex/                   # LaTeX source files
+│       ├── figures/             # Figures (by chapter)
+│       ├── main.tex             # Thesis manuscript
+│       ├── references.bib       # Bibliography
+│       └── slides.tex           # Defense slides (beamer)
 ├── scripts/                     # Project-level utilities
 ├── .gitignore
 ├── LICENSE
-└── README.md
+├── README.md
+└── README_EN.md
 ```
 
 ## Tech Stack
