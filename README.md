@@ -55,6 +55,11 @@ latexmk -xelatex main.tex    # 论文正文
 latexmk -xelatex slides.tex  # 答辩幻灯片 (beamer)
 ```
 
+## 📄 License
+
+- **Code** (`/code`, `/scripts`): [MIT License](LICENSE)
+- **Thesis Text & Figures** (`/docs`): [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)
+
 ## 注意事项
 
 - 封面为外部 PDF（`thesis_cover_page.pdf`），通过 `\includepdf` 导入
