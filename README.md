@@ -2,7 +2,7 @@
 
 本科毕业论文项目，研究三峡库区藕塘滑坡的位移预测与预警方法。
 
-[English](README_EN.md) | **Download Thesis PDF**: [Wei_2026_ML_Reservoir_Landslide_Prediction.pdf](https://github.com/wcqqq1214/Undergraduate-Thesis/releases/latest/download/Wei_2026_ML_Reservoir_Landslide_Prediction.pdf)
+[English](README_EN.md) | **下载论文PDF**：[Wei_2026_ML_Reservoir_Landslide_Prediction.pdf](https://github.com/wcqqq1214/Undergraduate-Thesis/releases/latest/download/Wei_2026_ML_Reservoir_Landslide_Prediction.pdf)
 
 ## 研究目标
 
@@ -88,10 +88,10 @@ latexmk -xelatex main.tex    # 论文正文
 latexmk -xelatex slides.tex  # 答辩幻灯片 (beamer)
 ```
 
-## License
+## 许可证
 
-- **Code** (`/code`, `/scripts`): [MIT License](LICENSE)
-- **Thesis Text & Figures** (`/docs`): [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)
+- **代码** (`/code`, `/scripts`): [MIT License](LICENSE)
+- **论文文字与图表** (`/docs`): [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)
 
 ## 注意事项
 
