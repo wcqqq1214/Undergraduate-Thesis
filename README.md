@@ -18,12 +18,12 @@
 
 | 数据类型 | 说明 |
 |---------|------|
-| **地表位移** | 多个 GPS 监测点（MJ1、MJ3、MJ9 等）的累积位移（mm），涵盖缓慢蠕变与阶跃变形阶段 |
+| **地表位移** | 多个 GNSS 地表位移监测点（MJ9、MJ1、MJ3）的累积位移（mm），涵盖缓慢蠕变与阶跃变形阶段 |
 | **库水位** | 三峡水库逐日水位（m），每年在 145–175 m 之间周期性调度 |
 | **降雨量** | 邻近气象站记录的逐日降雨量（mm） |
 | **地下水位** | 滑坡体钻孔地下水位高程（m） |
 
-监测时段约为 2007–2019 年，覆盖多个水文周期和数次典型阶跃加速事件。
+监测时段为 2016 年 7 月至 2020 年 6 月，共 4 个完整水文年、1457 条日尺度记录，覆盖多个库水位调度周期和数次典型阶跃加速事件。
 
 ## 研究方法
 
@@ -54,9 +54,6 @@
 │   ├── main.tex                # 论文正文
 │   ├── slides.tex              # 答辩幻灯片（beamer）
 │   ├── references.bib          # 参考文献
-│   ├── thesis_cover_page.pdf   # 封面（外部 PDF 导入）
-│   ├── thesis_end_page.pdf     # 封底（外部 PDF 导入）
-│   ├── fonts/                  # 字体文件
 │   └── figures/                # 插图（按章节分目录）
 ├── code/                        # 实验代码
 │   ├── chapter2/                # 第二章：LightGBM+SHAP 特征分析
@@ -72,7 +69,7 @@
 ## 技术栈
 
 - **编程语言**：Python 3.x
-- **深度学习框架**：Pytorch
+- **深度学习框架**：PyTorch
 - **机器学习库**：scikit-learn, LightGBM
 - **可解释性分析**：SHAP
 - **时序预测**：LSTM（长短期记忆网络）
@@ -95,7 +92,6 @@ latexmk -xelatex slides.tex  # 答辩幻灯片 (beamer)
 
 ## 注意事项
 
-- 封面为外部 PDF（`thesis_cover_page.pdf`），通过 `\includepdf` 导入
-- 字体文件已包含在 `fonts/` 目录中，编译时会自动加载
+- 封面、封底 PDF 及字体文件未纳入版本控制，需本地准备
 - 编译生成的中间文件（`.xdv`, `.aux`, `.log` 等）已添加到 `.gitignore`
-- 仅保留最终的 PDF 文件在版本控制中
+- 论文 PDF 通过 [GitHub Releases](https://github.com/wcqqq1214/Undergraduate-Thesis/releases) 分发，不纳入版本控制

@@ -18,12 +18,12 @@ The dataset consists of long-term field monitoring records from the Outang lands
 
 | Data Type | Description |
 |-----------|-------------|
-| **Surface displacement** | Cumulative displacement (mm) measured at multiple GPS monitoring points (MJ1, MJ3, MJ9, etc.), covering both slow-creep and step-like deformation phases |
+| **Surface displacement** | Cumulative displacement (mm) measured at multiple GNSS surface displacement monitoring points (MJ9, MJ1, MJ3), covering both slow-creep and step-like deformation phases |
 | **Reservoir water level** | Daily water level (m) of the Three Gorges Reservoir, varying seasonally between 145–175 m |
 | **Rainfall** | Daily precipitation (mm) recorded at nearby meteorological stations |
 | **Groundwater level** | Groundwater table elevation (m) at boreholes within the landslide area |
 
-The monitoring period spans from approximately 2007 to 2019, capturing multiple hydrological cycles and several distinct step-like acceleration events.
+The monitoring period spans from July 2016 to June 2020, covering 4 complete hydrological years with 1,457 daily records, capturing multiple reservoir operation cycles and several distinct step-like acceleration events.
 
 ## Methodology
 
