@@ -71,6 +71,11 @@ Thumbs.db
 *.snm
 *.vrb
 
+# PDF（编译产物通过 Release 分发）
+*.pdf
+!code/**/*.pdf
+!docs/latex/figures/**/*.pdf
+
 # Project-specific
 /原始监测数据/
 /docs/superpowers
