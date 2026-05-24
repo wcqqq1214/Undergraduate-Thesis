@@ -107,17 +107,17 @@
   {\thesection}{1em}{}
 \titlespacing*{\section}{0pt}{\baselineskip}{\baselineskip}
 
-% 二级标题：小三号(15pt)黑体加粗，顶格，段前后0.5行
+% 二级标题：小三号(15pt)黑体加粗，顶格，上下不空行
 \titleformat{\subsection}[block]
   {\fontsize{15pt}{20pt}\selectfont\heiti\bfseries}
   {\thesubsection}{1em}{}
-\titlespacing*{\subsection}{0pt}{0.5\baselineskip}{0.5\baselineskip}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt}
 
-% 三级标题：四号(14pt)黑体加粗，顶格
+% 三级标题：四号(14pt)黑体加粗，顶格，上下不空行
 \titleformat{\subsubsection}[block]
   {\fontsize{14pt}{18pt}\selectfont\heiti\bfseries}
   {\thesubsubsection}{1em}{}
-\titlespacing*{\subsubsection}{0pt}{0.3\baselineskip}{0.3\baselineskip}
+\titlespacing*{\subsubsection}{0pt}{0pt}{0pt}
 
 % 四级标题：小四号(12pt)宋体不加粗，顶格，有编号
 \renewcommand{\theparagraph}{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}.\arabic{paragraph}}
