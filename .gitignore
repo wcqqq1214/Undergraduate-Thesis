@@ -75,6 +75,8 @@ Thumbs.db
 *.pdf
 !code/**/*.pdf
 !docs/latex/figures/**/*.pdf
+!docs/latex/thesis_cover_page.pdf
+!docs/latex/thesis_end_page.pdf
 
 # Project-specific
 /原始监测数据/
