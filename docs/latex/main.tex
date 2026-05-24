@@ -6,13 +6,19 @@
 \usepackage{geometry}
 \usepackage{setspace}
 \usepackage{booktabs}
+% 三线表线宽：上/下 1.5 磅，中间 0.5 磅
+\setlength{\heavyrulewidth}{1.5pt}
+\setlength{\lightrulewidth}{0.5pt}
 \usepackage{multirow}
 \usepackage{caption}
 \DeclareCaptionFont{wuhao}{\fontsize{10.5pt}{13pt}\selectfont}
-\captionsetup{font={wuhao,bf}, labelfont={wuhao,bf}, labelsep=space,
+\captionsetup{font={wuhao}, labelfont={wuhao}, labelsep=space,
               justification=centering, skip=6pt}
 \captionsetup[figure]{position=below}
 \captionsetup[table]{position=above}
+% 表内字体：宋体五号(10.5pt)，英文 Times New Roman 五号
+\usepackage{etoolbox}
+\AtBeginEnvironment{table}{\fontsize{10.5pt}{13pt}\selectfont}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,positioning,fit,backgrounds,shapes.geometric}
 \usepackage{ulem}       % \uline 下划线
