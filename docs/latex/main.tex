@@ -37,19 +37,19 @@
 % 一级：顶格，编号宽度容纳"第一章"
 \setlength{\cftsecindent}{0em}
 \setlength{\cftsecnumwidth}{3.5em}
-% 二级：左缩进2字符（2×12pt=24pt≈2em）
-\setlength{\cftsubsecindent}{2em}
+% 二级：左缩进1中文字
+\setlength{\cftsubsecindent}{1em}
 \setlength{\cftsubsecnumwidth}{1.8em}
-% 三级：左缩进4字符
-\setlength{\cftsubsubsecindent}{4em}
+% 三级：左缩进2中文字
+\setlength{\cftsubsubsecindent}{2em}
 \setlength{\cftsubsubsecnumwidth}{2.6em}
-% 目录内容字体：小四号宋体
-\renewcommand{\cftsecfont}{\fontsize{12pt}{15pt}\selectfont}
-\renewcommand{\cftsubsecfont}{\fontsize{12pt}{15pt}\selectfont}
-\renewcommand{\cftsubsubsecfont}{\fontsize{12pt}{15pt}\selectfont}
-\renewcommand{\cftsecpagefont}{\fontsize{12pt}{15pt}\selectfont}
-\renewcommand{\cftsubsecpagefont}{\fontsize{12pt}{15pt}\selectfont}
-\renewcommand{\cftsubsubsecpagefont}{\fontsize{12pt}{15pt}\selectfont}
+% 目录内容字体：小四号宋体（14.5pt × linespread ≈ 20pt）
+\renewcommand{\cftsecfont}{\fontsize{12pt}{14.5pt}\selectfont}
+\renewcommand{\cftsubsecfont}{\fontsize{12pt}{14.5pt}\selectfont}
+\renewcommand{\cftsubsubsecfont}{\fontsize{12pt}{14.5pt}\selectfont}
+\renewcommand{\cftsecpagefont}{\fontsize{12pt}{14.5pt}\selectfont}
+\renewcommand{\cftsubsecpagefont}{\fontsize{12pt}{14.5pt}\selectfont}
+\renewcommand{\cftsubsubsecpagefont}{\fontsize{12pt}{14.5pt}\selectfont}
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
 \renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}}
 \renewcommand{\cftsubsubsecleader}{\cftdotfill{\cftdotsep}}
@@ -144,8 +144,8 @@
 \includepdf{thesis_cover_page.pdf}
 
 
-% ===== 前置部分：罗马数字页码 =====
-\pagenumbering{Roman}
+% ===== 前置部分：小写罗马数字页码 =====
+\pagenumbering{roman}
 \setcounter{page}{1}
 
 % ===== 中文摘要页 =====
@@ -220,7 +220,14 @@
 
 \newpage
 
-{\setstretch{1.25}\fontsize{12pt}{15pt}\selectfont\tableofcontents}
+% 目录标题局部覆盖为三号(16pt)黑体居中，上下空一行
+\begingroup
+  \titleformat{\section}[block]
+    {\centering\fontsize{16pt}{20pt}\selectfont\heiti\bfseries}
+    {}{0em}{}
+  \titlespacing*{\section}{0pt}{\baselineskip}{\baselineskip}
+  \tableofcontents
+\endgroup
 
 \newpage
 
