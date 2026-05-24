@@ -73,12 +73,12 @@
 % 启用中文引号自动映射（"..." → ""...""）
 \xeCJKsetup{PunctStyle=quanjiao}
 
-% 双语图表标题命令（中文在上，英文在下）
+% 图表标题命令
 % \figcaption{中文}{English}  \tabcaption{中文}{English}
 \newcommand{\figcaption}[2]{%
-  \caption[#1]{{\CJKfamily{songbold}#1}\\[2pt]Figure~\thefigure\quad#2}}
+  \caption[#1]{{\CJKfamily{songbold}#1}}}
 \newcommand{\tabcaption}[2]{%
-  \caption[#1]{{\CJKfamily{songbold}#1}\\[2pt]Table~\thetable\quad#2}}
+  \caption[#1]{{\CJKfamily{songbold}#1}}}
 
 \geometry{left=2.2cm,right=2.2cm,top=2.54cm,bottom=2.54cm}
 \linespread{1.3793}  % 固定行距约20磅（12pt * 1.2 * 1.3793 ≈ 20pt）
@@ -358,22 +358,22 @@
 
 \begin{figure}[H]
 \centering
-\scalebox{0.90}{%
+\scalebox{0.85}{%
 \begin{tikzpicture}[
     node distance=0cm,
     every node/.style={font=\small},
     titlebox/.style={rectangle, draw=black, fill=blue!25, rounded corners=4pt,
-                     text centered, minimum width=10cm, minimum height=0.8cm,
-                     font=\small\bfseries, text width=9.5cm, inner sep=5pt},
+                     text centered, minimum width=10cm, minimum height=0.7cm,
+                     font=\small\bfseries, text width=9.5cm, inner sep=4pt},
     phasebox/.style={rectangle, draw=black!80, fill=blue!12, rounded corners=3pt,
-                     text centered, minimum width=10cm, minimum height=0.75cm,
-                     font=\small\bfseries, text width=9.5cm, inner sep=5pt},
+                     text centered, minimum width=10cm, minimum height=0.65cm,
+                     font=\small\bfseries, text width=9.5cm, inner sep=4pt},
     stepbox/.style={rectangle, draw=black!40, fill=gray!8, rounded corners=2pt,
-                    text centered, minimum width=9cm, minimum height=0.65cm,
-                    font=\small, text width=8.5cm, inner sep=4pt},
+                    text centered, minimum width=9cm, minimum height=0.55cm,
+                    font=\small, text width=8.5cm, inner sep=3pt},
     resultbox/.style={rectangle, draw=black, fill=green!20, rounded corners=4pt,
-                      text centered, minimum width=10cm, minimum height=0.8cm,
-                      font=\small\bfseries, text width=9.5cm, inner sep=5pt},
+                      text centered, minimum width=10cm, minimum height=0.7cm,
+                      font=\small\bfseries, text width=9.5cm, inner sep=4pt},
     arr/.style={->, >=stealth, thick, draw=black!60},
 ]
 
