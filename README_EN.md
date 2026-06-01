@@ -4,6 +4,8 @@ Undergraduate thesis project on landslide displacement prediction and early warn
 
 [中文版本](README.md) | **Download Thesis PDF**: [Wei_2026_ML_Reservoir_Landslide_Prediction.pdf](https://github.com/wcqqq1214/Undergraduate-Thesis/releases/latest/download/Wei_2026_ML_Reservoir_Landslide_Prediction.pdf)
 
+> **Note**: The released paper in the Releases page was written in Microsoft Word and is nearly identical to the LaTeX source (`docs/latex/`) in content, with only minor typesetting differences.
+
 ## Research Objective
 
 This study investigates the Outang landslide, a typical step-like reservoir landslide in the Three Gorges Reservoir area, aiming to:

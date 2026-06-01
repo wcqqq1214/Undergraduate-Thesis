@@ -4,6 +4,8 @@
 
 [English](README_EN.md) | **下载论文PDF**：[Wei_2026_ML_Reservoir_Landslide_Prediction.pdf](https://github.com/wcqqq1214/Undergraduate-Thesis/releases/latest/download/Wei_2026_ML_Reservoir_Landslide_Prediction.pdf)
 
+> **注**：Release 中发布的论文为 Word 编写版本，内容与 LaTeX 源文件（`docs/latex/`）几乎完全一致，仅排版细节略有差异。
+
 ## 研究目标
 
 以三峡库区典型阶跃型滑坡——藕塘滑坡为研究对象，运用机器学习方法开展滑坡位移预测及预警研究，具体包括：
